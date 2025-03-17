@@ -3,8 +3,8 @@ package model
 import "time"
 
 type Timestamp struct {
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	UpdatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"-"`
 }
 
 func buildTimestamp() Timestamp {

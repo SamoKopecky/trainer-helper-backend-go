@@ -18,7 +18,7 @@ type Exercise struct {
 	Id          int32 `bun:",pk,autoincrement"`
 	TimestlotId int32
 	GroupId     int32
-	note        string
+	note        *string
 	SetType
 	Timestamp
 }
@@ -27,7 +27,7 @@ func BuildExercise(timeslotId, groupId int32, note string, setType SetType) *Exe
 	return &Exercise{
 		TimestlotId: timeslotId,
 		GroupId:     groupId,
-		note:        note,
+		note:        &note,
 		SetType:     setType,
 		Timestamp:   buildTimestamp(),
 	}

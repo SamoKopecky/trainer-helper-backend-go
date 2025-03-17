@@ -9,16 +9,16 @@ import (
 type Timeslot struct {
 	bun.BaseModel `bun:"table:timeslot"`
 
-	Id        int32 `bun:",pk,autoincrement"`
-	TrainerId int32
-	UserId    int32
-	Name      string
-	Start     time.Time
-	End       time.Time
+	Id        int32     `bun:",pk,autoincrement" json:"id"`
+	TrainerId int32     `json:"trainer_id"`
+	UserId    *int32    `json:"user_id"`
+	Name      string    `json:"name"`
+	Start     time.Time `json:"start"`
+	End       time.Time `json:"end"`
 	Timestamp
 }
 
-func BuildTimeslot(name, email string, start, end time.Time, trainerId, userId int32) *Timeslot {
+func BuildTimeslot(name string, start, end time.Time, trainerId int32, userId *int32) *Timeslot {
 	return &Timeslot{
 		Name:      name,
 		Start:     start,
