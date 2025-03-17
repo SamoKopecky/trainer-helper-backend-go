@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
+	"trainer-helper/model"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -30,6 +32,17 @@ func main() {
 	println("Result:", num)
 
 	run_migrations(sqldb, dsn)
+
+	person := model.BuildPerson("a", "b")
+	res, err := db.NewInsert().Model(person).Exec(ctx)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%+v\n", res)
+	user := new(model.Person)
+	err = db.NewSelect().Model(user).Where("id = ?", 1).Scan(ctx)
+	fmt.Printf("%+v\n", user)
 
 }
 
