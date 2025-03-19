@@ -1,14 +1,12 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 	"trainer-helper/crud"
-	"trainer-helper/model"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -33,7 +31,7 @@ func main() {
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db = bun.NewDB(sqldb, pgdialect.New())
 	runMigrations(sqldb, dsn)
-	// seedDb(*db)
+	seedDb(*db)
 	crud := crud.CRUDTimeslot{Db: db}
 	timeslots, err := crud.GetByTimeRange(time.Now().Add(-2*24*time.Hour), time.Now().Add(10*24*time.Hour))
 	if err != nil {
@@ -75,23 +73,4 @@ func runMigrations(sql *sql.DB, dsn string) {
 	}
 
 	m.Up()
-}
-
-func seedDb(db bun.DB) {
-	ctx := context.Background()
-	const TRAINER_ID = 1
-	var timeslots []model.Timeslot
-	timeNow := time.Now()
-
-	for i := 0; i < 7; i++ {
-		timeslots = append(timeslots, *model.BuildTimeslot("some name", timeNow, timeNow.Add(1*time.Hour), TRAINER_ID, nil))
-		timeNow = timeNow.Add(24 * time.Hour)
-	}
-
-	res, err := db.NewInsert().Model(&timeslots).Exec(ctx)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v", res)
-
 }
