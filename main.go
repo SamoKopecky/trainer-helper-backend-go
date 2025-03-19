@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -17,6 +16,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 )
 
 type DbContext struct {
@@ -30,14 +30,22 @@ func main() {
 	dsn := "postgres://root:alpharius@localhost/trainer_helper?sslmode=disable"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db = bun.NewDB(sqldb, pgdialect.New())
+	db.AddQueryHook(bundebug.NewQueryHook(
+		bundebug.WithVerbose(true),
+	))
 	runMigrations(sqldb, dsn)
-	seedDb(*db)
-	crud := crud.CRUDTimeslot{Db: db}
-	timeslots, err := crud.GetByTimeRange(time.Now().Add(-2*24*time.Hour), time.Now().Add(10*24*time.Hour))
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("res :", len(timeslots))
+	// seedDb(*db)
+	// crud := crud.CRUDTimeslot{Db: db}
+	// timeslots, err := crud.GetByTimeRange(time.Now().Add(-2*24*time.Hour), time.Now().Add(10*24*time.Hour))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// for _, el := range timeslots {
+	// 	fmt.Printf("%+v\n", el)
+	// 	if el.UserId != nil {
+	// 		fmt.Printf("\n%s\n", *el.PersonName)
+	// 	}
+	// }
 	api()
 }
 
