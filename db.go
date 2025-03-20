@@ -16,6 +16,7 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 )
 
 type DbConn struct {
@@ -24,14 +25,16 @@ type DbConn struct {
 	Dsn    string
 }
 
-func GetDbConn() DbConn {
+func GetDbConn(debug bool) DbConn {
 	// TODO: Make config
 	dsn := "postgres://root:alpharius@localhost/trainer_helper?sslmode=disable"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
-	// db.AddQueryHook(bundebug.NewQueryHook(
-	// 	bundebug.WithVerbose(true),
-	// ))
+	if debug {
+		db.AddQueryHook(bundebug.NewQueryHook(
+			bundebug.WithVerbose(true),
+		))
+	}
 	return DbConn{
 		Conn:   db,
 		Driver: sqldb,

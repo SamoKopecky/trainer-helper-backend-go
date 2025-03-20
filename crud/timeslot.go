@@ -22,7 +22,7 @@ func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]TimeslotFu
 	var timeslots []TimeslotFull
 	var err error
 
-	c.Db.NewSelect().
+	err = c.Db.NewSelect().
 		Model((*model.Timeslot)(nil)).
 		ColumnExpr("person.name AS person_name").
 		ColumnExpr("timeslot.*").
