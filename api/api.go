@@ -22,14 +22,16 @@ func RunApi(db *bun.DB) {
 		}
 	})
 	e.Use(middleware.Logger())
-	e.GET("/-/ping", func(c echo.Context) error {
-		cc := c.(*dbContext)
-		crud := crud.CRUDTimeslot{Db: db}
-		timeslots, err := crud.GetByTimeRange(time.Now().Add(-2*24*time.Hour), time.Now().Add(10*24*time.Hour))
-		if err != nil {
-			log.Fatal(err)
-		}
-		return cc.JSON(http.StatusOK, timeslots)
-	})
+	e.GET("/-/ping", test)
 	e.Logger.Fatal(e.Start(":1323"))
+}
+
+func test(c echo.Context) error {
+	cc := c.(*dbContext)
+	crud := crud.CRUDTimeslot{Db: cc.Db}
+	timeslots, err := crud.GetByTimeRange(time.Now().Add(-2*24*time.Hour), time.Now().Add(10*24*time.Hour))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cc.JSON(http.StatusOK, timeslots)
 }
