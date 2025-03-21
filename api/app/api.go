@@ -1,39 +1,30 @@
-package api
+package app
 
 import (
-	"fmt"
 	"net/http"
+	"trainer-helper/api"
+	"trainer-helper/api/timeslot_handler"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/uptrace/bun"
-
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
-
-type dbContext struct {
-	Db *bun.DB
-	echo.Context
-}
-
-func (c dbContext) badRequest(err error) error {
-	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid query parameters", "reason": fmt.Sprint(err)})
-}
 
 func RunApi(db *bun.DB) {
 	e := echo.New()
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &dbContext{Db: db, Context: c}
+			cc := &api.DbContext{Db: db, Context: c}
 			return next(cc)
 		}
 	})
 	e.Use(middleware.Logger())
 
 	e.GET("/-/ping", pong)
-	e.GET("/timeslot", timeslotGet)
-	e.POST("/timeslot", timeslotPost)
-	e.DELETE("/timeslot", timeslotDelete)
+	e.GET("/timeslot", timeslot_handler.Get)
+	e.POST("/timeslot", timeslot_handler.Post)
+	e.DELETE("/timeslot", timeslot_handler.Delete)
+	e.PUT("/timeslot", timeslot_handler.Put)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

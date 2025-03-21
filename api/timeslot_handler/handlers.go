@@ -1,37 +1,22 @@
-package api
+package timeslot_handler
 
 import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
+	"trainer-helper/api"
 	"trainer-helper/crud"
 	"trainer-helper/model"
 
 	"github.com/labstack/echo/v4"
 )
 
-type timeslotGetParams struct {
-	StartDate time.Time `query:"start_date"`
-	EndDate   time.Time `query:"end_date"`
-}
+func Get(c echo.Context) error {
+	cc := c.(*api.DbContext)
 
-type timeslotPostParams struct {
-	TrainerId int32     `json:"trainer_id"`
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
-}
-
-type timeslotDeleteParams struct {
-	TimeslotId int32 `json:"timeslot_id"`
-}
-
-func timeslotGet(c echo.Context) error {
-	cc := c.(*dbContext)
-
-	params, err := bindParams[timeslotGetParams](cc)
+	params, err := api.BindParams[timeslotGetParams](cc)
 	if err != nil {
-		return cc.badRequest(err)
+		return cc.BadRequest(err)
 	}
 
 	crud := crud.CRUDTimeslot{Db: cc.Db}
@@ -42,12 +27,12 @@ func timeslotGet(c echo.Context) error {
 	return cc.JSON(http.StatusOK, timeslots)
 }
 
-func timeslotPost(c echo.Context) error {
-	cc := c.(*dbContext)
+func Post(c echo.Context) error {
+	cc := c.(*api.DbContext)
 
-	params, err := bindParams[timeslotPostParams](cc)
+	params, err := api.BindParams[timeslotPostParams](cc)
 	if err != nil {
-		return cc.badRequest(err)
+		return cc.BadRequest(err)
 	}
 
 	crud := crud.CRUDTimeslot{Db: cc.Db}
@@ -64,16 +49,16 @@ func timeslotPost(c echo.Context) error {
 	return cc.JSON(http.StatusOK, newTimeslot)
 }
 
-func timeslotDelete(c echo.Context) error {
-	cc := c.(*dbContext)
+func Delete(c echo.Context) error {
+	cc := c.(*api.DbContext)
 
-	params, err := bindParams[timeslotDeleteParams](cc)
+	params, err := api.BindParams[timeslotDeleteParams](cc)
 	if err != nil {
-		return cc.badRequest(err)
+		return cc.BadRequest(err)
 	}
 
 	crud := crud.CRUDTimeslot{Db: cc.Db}
-	timeslot, err := crud.Delete(params.TimeslotId)
+	timeslot, err := crud.Delete(params.Id)
 
 	if err != nil {
 		log.Fatal(err)
@@ -84,4 +69,18 @@ func timeslotDelete(c echo.Context) error {
 	}
 
 	return cc.JSON(http.StatusOK, timeslot)
+}
+
+func Put(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	params, err := api.BindParams[timeslotPutParams](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	crud := crud.CRUDTimeslot{Db: cc.Db}
+	model := params.toModel()
+	crud.Update(&model)
+	return err
 }
