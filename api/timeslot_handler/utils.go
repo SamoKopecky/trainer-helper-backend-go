@@ -33,7 +33,6 @@ func toFullTimeslot(timeslot *model.Timeslot, crudPerson crud.CRUDPerson) model.
 	full := model.TimeslotFull{
 		Timeslot: *timeslot,
 	}
-	log.Printf("%+v\n", full)
 	if timeslot.UserId == nil {
 		return full
 	}

@@ -12,8 +12,8 @@ type timeslotGetParams struct {
 
 type timeslotPostParams struct {
 	TrainerId int32     `json:"trainer_id"`
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+	Start     time.Time `json:"start"`
+	End       time.Time `json:"end"`
 }
 
 type timeslotDeleteParams struct {

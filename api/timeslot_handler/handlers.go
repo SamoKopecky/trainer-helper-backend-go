@@ -39,10 +39,11 @@ func Post(c echo.Context) error {
 	crudPerson := crud.CRUDPerson{Db: cc.Db}
 
 	timeslotName := fmt.Sprintf("from %s to %s on %s",
-		humanTime(params.StartDate),
-		humanTime(params.EndDate),
-		humanDate(params.StartDate))
-	newTimeslot := model.BuildTimeslot(timeslotName, params.StartDate, params.EndDate, params.TrainerId, nil)
+		humanTime(params.Start),
+		humanTime(params.End),
+		humanDate(params.Start))
+	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, params.TrainerId, nil)
+	fmt.Printf("params: %+v\n", params)
 	err = crudTimeslot.Insert(newTimeslot)
 	if err != nil {
 		log.Fatal(err)

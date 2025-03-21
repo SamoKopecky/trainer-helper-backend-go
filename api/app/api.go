@@ -19,6 +19,7 @@ func RunApi(db *bun.DB) {
 		}
 	})
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORS())
 
 	e.GET("/-/ping", pong)
 	e.GET("/timeslot", timeslot_handler.Get)
