@@ -1,7 +1,10 @@
 package timeslot_handler
 
 import (
+	"log"
 	"time"
+	"trainer-helper/crud"
+	"trainer-helper/model"
 )
 
 func humanTime(time time.Time) string {
@@ -24,4 +27,21 @@ func derefTime(ptr *time.Time) time.Time {
 		return time.Time{}
 	}
 	return *ptr
+}
+
+func toFullTimeslot(timeslot *model.Timeslot, crudPerson crud.CRUDPerson) model.TimeslotFull {
+	full := model.TimeslotFull{
+		Timeslot: *timeslot,
+	}
+	log.Printf("%+v\n", full)
+	if timeslot.UserId == nil {
+		return full
+	}
+
+	person, err := crudPerson.Get(*timeslot.UserId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	full.PersonName = &person.Name
+	return full
 }

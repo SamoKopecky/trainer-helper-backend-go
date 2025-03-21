@@ -8,18 +8,13 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type TimeslotFull struct {
-	model.Timeslot
-	PersonName *string `json:"person_name"`
-}
-
 type CRUDTimeslot struct {
 	Db *bun.DB
 }
 
-func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]TimeslotFull, error) {
+func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]model.TimeslotFull, error) {
 	ctx := context.Background()
-	var timeslots []TimeslotFull
+	var timeslots []model.TimeslotFull
 	var err error
 
 	err = c.Db.NewSelect().
@@ -36,7 +31,9 @@ func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]TimeslotFu
 func (c CRUDTimeslot) Insert(timeslot *model.Timeslot) error {
 	ctx := context.Background()
 
-	_, err := c.Db.NewInsert().Model(timeslot).Exec(ctx)
+	_, err := c.Db.NewInsert().
+		Model(timeslot).
+		Exec(ctx)
 
 	return err
 }

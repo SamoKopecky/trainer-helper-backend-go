@@ -27,3 +27,8 @@ func BuildTimeslot(name string, start, end time.Time, trainerId int32, userId *i
 		UserId:    userId,
 		Timestamp: buildTimestamp()}
 }
+
+type TimeslotFull struct {
+	Timeslot
+	PersonName *string `json:"person_name"`
+}

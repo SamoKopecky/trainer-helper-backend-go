@@ -35,18 +35,20 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.CRUDTimeslot{Db: cc.Db}
+	crudTimeslot := crud.CRUDTimeslot{Db: cc.Db}
+	crudPerson := crud.CRUDPerson{Db: cc.Db}
+
 	timeslotName := fmt.Sprintf("from %s to %s on %s",
 		humanTime(params.StartDate),
 		humanTime(params.EndDate),
 		humanDate(params.StartDate))
 	newTimeslot := model.BuildTimeslot(timeslotName, params.StartDate, params.EndDate, params.TrainerId, nil)
-	err = crud.Insert(newTimeslot)
+	err = crudTimeslot.Insert(newTimeslot)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return cc.JSON(http.StatusOK, newTimeslot)
+	return cc.JSON(http.StatusOK, toFullTimeslot(newTimeslot, crudPerson))
 }
 
 func Delete(c echo.Context) error {
@@ -57,8 +59,9 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.CRUDTimeslot{Db: cc.Db}
-	timeslot, err := crud.Delete(params.Id)
+	crudTimeslot := crud.CRUDTimeslot{Db: cc.Db}
+	crudPerson := crud.CRUDPerson{Db: cc.Db}
+	timeslot, err := crudTimeslot.Delete(params.Id)
 
 	if err != nil {
 		log.Fatal(err)
@@ -68,7 +71,7 @@ func Delete(c echo.Context) error {
 		return cc.NoContent(http.StatusNotFound)
 	}
 
-	return cc.JSON(http.StatusOK, timeslot)
+	return cc.JSON(http.StatusOK, toFullTimeslot(timeslot, crudPerson))
 }
 
 func Put(c echo.Context) error {
