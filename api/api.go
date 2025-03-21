@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -15,8 +16,8 @@ type dbContext struct {
 	echo.Context
 }
 
-func (c dbContext) badRequest() error {
-	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid query parameters"})
+func (c dbContext) badRequest(err error) error {
+	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid query parameters", "reason": fmt.Sprint(err)})
 }
 
 func RunApi(db *bun.DB) {
@@ -31,6 +32,8 @@ func RunApi(db *bun.DB) {
 
 	e.GET("/-/ping", pong)
 	e.GET("/timeslot", timeslotGet)
+	e.POST("/timeslot", timeslotPost)
+	e.DELETE("/timeslot", timeslotDelete)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

@@ -6,3 +6,6 @@ db:
 up-db:
 	docker compose up db -d
 
+
+test:
+	go test ./...

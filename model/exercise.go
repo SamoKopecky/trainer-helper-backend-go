@@ -14,8 +14,8 @@ const (
 
 type Exercise struct {
 	bun.BaseModel `bun:"table:exercise"`
+	IdModel
 
-	Id          int32 `bun:",pk,autoincrement"`
 	TimestlotId int32
 	GroupId     int32
 	note        *string

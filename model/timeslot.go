@@ -8,8 +8,8 @@ import (
 
 type Timeslot struct {
 	bun.BaseModel `bun:"table:timeslot"`
+	IdModel
 
-	Id        int32     `bun:",pk,autoincrement" json:"id"`
 	TrainerId int32     `json:"trainer_id"`
 	UserId    *int32    `json:"user_id"`
 	Name      string    `json:"name"`

@@ -6,8 +6,8 @@ import (
 
 type WorkSet struct {
 	bun.BaseModel `bun:"table:work_set"`
+	IdModel
 
-	Id         int32 `bun:",pk,autoincrement"`
 	ExerciseId int32
 	reps       int32
 	intensity  string

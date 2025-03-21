@@ -13,3 +13,11 @@ func buildTimestamp() Timestamp {
 		UpdatedAt: time.Now(),
 	}
 }
+
+type IdModel struct {
+	Id int32 `bun:",pk,autoincrement" json:"id"`
+}
+
+func (im IdModel) IsEmpty() bool {
+	return im.Id == 0
+}

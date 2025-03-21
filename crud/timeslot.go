@@ -32,3 +32,24 @@ func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]TimeslotFu
 
 	return timeslots, err
 }
+
+func (c CRUDTimeslot) Insert(timeslot *model.Timeslot) error {
+	ctx := context.Background()
+
+	_, err := c.Db.NewInsert().Model(timeslot).Exec(ctx)
+
+	return err
+}
+
+func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
+	ctx := context.Background()
+
+	var timeslot model.Timeslot
+	_, err := c.Db.NewDelete().
+		Model(&timeslot).
+		Where("id = ?", timeslotId).
+		Returning("*").
+		Exec(ctx)
+
+	return &timeslot, err
+}
