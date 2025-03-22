@@ -25,18 +25,18 @@ func Get(c echo.Context) error {
 	}
 
 	crudExercise := crud.CRUDExercise{Db: cc.Db}
-	crudTimeslot := crud.CRUDTimeslot{Db: cc.Db}
+	crudTimeslot := crud.NewCRUDTimeslot(cc.Db)
 	res, err := crudExercise.GetExerciseWorkSets(params.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Create a slice of points so that we can append worksets
-	exercisesMap := make(map[int32]*model.FullExercise)
+	exercisesMap := make(map[int32]*model.ExerciseWorkSets)
 
 	for _, r := range res {
 		val, ok := exercisesMap[r.ExerciseId]
 		if !ok {
-			val = &model.FullExercise{
+			val = &model.ExerciseWorkSets{
 				Exercise: r.ToExercise(),
 			}
 			exercisesMap[r.ExerciseId] = val
@@ -47,14 +47,15 @@ func Get(c echo.Context) error {
 	}
 	exercises := slices.Collect(maps.Values(exercisesMap))
 	if len(exercises) == 0 {
-		exercises = []*model.FullExercise{}
+		exercises = []*model.ExerciseWorkSets{}
 	}
 	apiTimeslot, err := crudTimeslot.GetById(params.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
+	// TODO: sort
 
-	return cc.JSON(http.StatusOK, model.FullExercises{
+	return cc.JSON(http.StatusOK, model.TimeslotExercises{
 		Timeslot:  apiTimeslot,
 		Exercises: exercises,
 	})

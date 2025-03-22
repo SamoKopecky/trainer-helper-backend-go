@@ -2,6 +2,7 @@ package timeslot_handler
 
 import (
 	"time"
+	"trainer-helper/api"
 	"trainer-helper/model"
 )
 
@@ -34,8 +35,8 @@ func (tpp timeslotPutParams) toModel() model.Timeslot {
 			Id: tpp.Id,
 		},
 		UserId: tpp.UserId,
-		Name:   derefString(tpp.Name),
-		Start:  derefTime(tpp.Start),
-		End:    derefTime(tpp.End),
+		Name:   api.DerefString(tpp.Name),
+		Start:  api.DerefTime(tpp.Start),
+		End:    api.DerefTime(tpp.End),
 	}
 }

@@ -19,7 +19,7 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.CRUDTimeslot{Db: cc.Db}
+	crud := crud.NewCRUDTimeslot(cc.Db)
 	timeslots, err := crud.GetByTimeRange(params.StartDate, params.EndDate)
 	if err != nil {
 		log.Fatal(err)
@@ -35,7 +35,7 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crudTimeslot := crud.CRUDTimeslot{Db: cc.Db}
+	crudTimeslot := crud.NewCRUDTimeslot(cc.Db)
 	crudPerson := crud.CRUDPerson{Db: cc.Db}
 
 	timeslotName := fmt.Sprintf("from %s to %s on %s",
@@ -59,7 +59,7 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crudTimeslot := crud.CRUDTimeslot{Db: cc.Db}
+	crudTimeslot := crud.NewCRUDTimeslot(cc.Db)
 	crudPerson := crud.CRUDPerson{Db: cc.Db}
 	timeslot, err := crudTimeslot.Delete(params.Id)
 
@@ -82,7 +82,7 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.CRUDTimeslot{Db: cc.Db}
+	crud := crud.NewCRUDTimeslot(cc.Db)
 	model := params.toModel()
 	crud.Update(&model)
 	return err

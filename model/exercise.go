@@ -33,15 +33,15 @@ func BuildExercise(timeslotId, groupId int32, note string, setType SetType) *Exe
 	}
 }
 
-type FullExercise struct {
+type ExerciseWorkSets struct {
 	Exercise
 	WorkSetCount int32     `json:"work_set_count"`
 	WorkSets     []WorkSet `json:"work_sets"`
 }
 
-type FullExercises struct {
-	Timeslot  ApiTimeslot     `json:"timeslot"`
-	Exercises []*FullExercise `json:"exercises"`
+type TimeslotExercises struct {
+	Timeslot  ApiTimeslot         `json:"timeslot"`
+	Exercises []*ExerciseWorkSets `json:"exercises"`
 }
 
 type CRUDExerciseWorkSets struct {

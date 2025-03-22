@@ -8,8 +8,8 @@ type Person struct {
 	bun.BaseModel `bun:"table:person"`
 	IdModel
 
-	Name  string
-	Email string
+	Name  string `json:"name"`
+	Email string `json:"email"`
 	Timestamp
 }
 

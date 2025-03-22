@@ -6,7 +6,9 @@ import (
 	"time"
 	"trainer-helper/api"
 	"trainer-helper/api/exercise_handler"
+	"trainer-helper/api/person_handler"
 	"trainer-helper/api/timeslot_handler"
+	"trainer-helper/api/work_set_handler"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -80,6 +82,8 @@ func RunApi(db *bun.DB) {
 	e.DELETE("/timeslot", timeslot_handler.Delete)
 	e.PUT("/timeslot", timeslot_handler.Put)
 	e.GET("/exercise/:id", exercise_handler.Get)
+	e.PUT("/workset", work_set_handler.Put)
+	e.GET("/person", person_handler.Get)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

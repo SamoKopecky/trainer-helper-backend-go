@@ -9,7 +9,11 @@ import (
 )
 
 type CRUDTimeslot struct {
-	Db *bun.DB
+	CRUDBase[model.Timeslot]
+}
+
+func NewCRUDTimeslot(db *bun.DB) CRUDTimeslot {
+	return CRUDTimeslot{CRUDBase: CRUDBase[model.Timeslot]{Db: db}}
 }
 
 func (c CRUDTimeslot) getTimeslotQuery() *bun.SelectQuery {
@@ -64,16 +68,4 @@ func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
 		Exec(ctx)
 
 	return &timeslot, err
-}
-
-func (c CRUDTimeslot) Update(timeslot *model.Timeslot) error {
-	ctx := context.Background()
-
-	_, err := c.Db.NewUpdate().
-		Model(timeslot).
-		OmitZero().
-		WherePK().
-		Exec(ctx)
-
-	return err
 }
