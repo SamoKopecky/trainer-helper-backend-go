@@ -16,19 +16,50 @@ type Exercise struct {
 	bun.BaseModel `bun:"table:exercise"`
 	IdModel
 
-	TimestlotId int32
-	GroupId     int32
-	note        *string
-	SetType
+	TimeslotId int32   `json:"timeslot_id"`
+	GroupId    int32   `json:"group_id"`
+	Note       *string `json:"note"`
+	SetType    SetType `json:"set_type"`
 	Timestamp
 }
 
 func BuildExercise(timeslotId, groupId int32, note string, setType SetType) *Exercise {
 	return &Exercise{
-		TimestlotId: timeslotId,
-		GroupId:     groupId,
-		note:        &note,
-		SetType:     setType,
-		Timestamp:   buildTimestamp(),
+		TimeslotId: timeslotId,
+		GroupId:    groupId,
+		Note:       &note,
+		SetType:    setType,
+		Timestamp:  buildTimestamp(),
 	}
+}
+
+type FullExercise struct {
+	Exercise
+	WorkSetCount int32     `json:"work_set_count"`
+	WorkSets     []WorkSet `json:"work_sets"`
+}
+
+type FullExercises struct {
+	Timeslot  ApiTimeslot     `json:"timeslot"`
+	Exercises []*FullExercise `json:"exercises"`
+}
+
+type CRUDExerciseWorkSets struct {
+	ExerciseId int32
+	WorkSetId  int32
+	Exercise
+	WorkSet
+}
+
+func (cews CRUDExerciseWorkSets) ToWorkSet() WorkSet {
+	res := cews.WorkSet
+	res.Id = cews.WorkSetId
+	res.ExerciseId = cews.ExerciseId
+	return res
+}
+
+func (cews CRUDExerciseWorkSets) ToExercise() Exercise {
+	res := cews.Exercise
+	res.Id = cews.ExerciseId
+	return res
 }

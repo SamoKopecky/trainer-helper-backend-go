@@ -29,8 +29,8 @@ func derefTime(ptr *time.Time) time.Time {
 	return *ptr
 }
 
-func toFullTimeslot(timeslot *model.Timeslot, crudPerson crud.CRUDPerson) model.TimeslotFull {
-	full := model.TimeslotFull{
+func toFullTimeslot(timeslot *model.Timeslot, crudPerson crud.CRUDPerson) model.ApiTimeslot {
+	full := model.ApiTimeslot{
 		Timeslot: *timeslot,
 	}
 	if timeslot.UserId == nil {

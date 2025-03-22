@@ -43,7 +43,6 @@ func Post(c echo.Context) error {
 		humanTime(params.End),
 		humanDate(params.Start))
 	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, params.TrainerId, nil)
-	fmt.Printf("params: %+v\n", params)
 	err = crudTimeslot.Insert(newTimeslot)
 	if err != nil {
 		log.Fatal(err)

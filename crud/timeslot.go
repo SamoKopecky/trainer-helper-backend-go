@@ -12,20 +12,35 @@ type CRUDTimeslot struct {
 	Db *bun.DB
 }
 
-func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]model.TimeslotFull, error) {
-	ctx := context.Background()
-	var timeslots []model.TimeslotFull
-	var err error
-
-	err = c.Db.NewSelect().
+func (c CRUDTimeslot) getTimeslotQuery() *bun.SelectQuery {
+	return c.Db.NewSelect().
 		Model((*model.Timeslot)(nil)).
 		ColumnExpr("person.name AS person_name").
 		ColumnExpr("timeslot.*").
+		Join("LEFT JOIN person ON person.id = timeslot.user_id")
+}
+
+func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]model.ApiTimeslot, error) {
+	ctx := context.Background()
+	var timeslots []model.ApiTimeslot
+
+	err := c.getTimeslotQuery().
 		Where("start BETWEEN ? AND ?", startDate, endDate).
-		Join("LEFT JOIN person ON person.id = timeslot.user_id").
 		Scan(ctx, &timeslots)
 
 	return timeslots, err
+}
+
+func (c CRUDTimeslot) GetById(timeslotId int32) (model.ApiTimeslot, error) {
+	ctx := context.Background()
+	var timeslot model.ApiTimeslot
+
+	err := c.getTimeslotQuery().
+		Where("timeslot.id = ?", timeslotId).
+		Scan(ctx, &timeslot)
+
+	return timeslot, err
+
 }
 
 func (c CRUDTimeslot) Insert(timeslot *model.Timeslot) error {
