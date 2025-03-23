@@ -2,6 +2,8 @@ package model
 
 import "time"
 
+const EmptyId = 0
+
 type Timestamp struct {
 	UpdatedAt time.Time `json:"-"`
 	CreatedAt time.Time `json:"-"`
@@ -19,5 +21,5 @@ type IdModel struct {
 }
 
 func (im IdModel) IsEmpty() bool {
-	return im.Id == 0
+	return im.Id == EmptyId
 }
