@@ -18,16 +18,16 @@ import (
 )
 
 const (
-	ColorReset  = "\033[0m"
-	ColorRed    = "\033[31m"
-	ColorGreen  = "\033[32m"
-	ColorYellow = "\033[33m"
-	ColorBlue   = "\033[34m"
-	ColorCyan   = "\033[36m"
+	ColorReset   = "\033[0m"
+	ColorRed     = "\033[31m"
+	ColorGreen   = "\033[32m"
+	ColorYellow  = "\033[33m"
+	ColorBlue    = "\033[34m"
+	ColorMagenta = "\033[35m"
+	ColorCyan    = "\033[36m"
 )
 
-// Custom logger middleware
-func ColorfulLogger(next echo.HandlerFunc) echo.HandlerFunc {
+func CustomLogger(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Start timer
 		start := time.Now()
@@ -45,22 +45,29 @@ func ColorfulLogger(next echo.HandlerFunc) echo.HandlerFunc {
 		status := c.Response().Status
 		ip := c.RealIP()
 
-		// Determine the color based on the status code
-		color := ColorGreen
-		if status >= 400 && status < 500 {
-			color = ColorYellow
-		} else if status >= 500 {
-			color = ColorRed
+		// Determine the color for the method
+		var methodColor string
+		switch method {
+		case "GET":
+			methodColor = ColorBlue // Blue for GET
+		case "POST":
+			methodColor = ColorGreen // Green for POST
+		case "PUT":
+			methodColor = ColorYellow // Yellow for PUT
+		case "DELETE":
+			methodColor = ColorRed // Red for DELETE
+		default:
+			methodColor = ColorCyan // Default color for other methods
 		}
 
-		// Log the details in a colorful format
-		fmt.Printf("%s[%s] %s%-10s %s%s %s(%d) %s[%v]%s\n",
-			ColorCyan, stop.Format("2006-01-02 15:04:05"), // Timestamp
-			color, method, // HTTP method
-			path,                  // URL path
-			ColorBlue, ip, status, // IP and status
-			ColorYellow, latency, // Latency
-			ColorReset, // Reset color
+		// Log the details
+		fmt.Printf("[%s] %s%-6s%s %s %s(%d) [%v]\n",
+			stop.Format("2006-01-02 15:04:05"), // Timestamp
+			methodColor, method, ColorReset,    // HTTP method with color and reset
+			path,    // URL path
+			ip,      // Client IP
+			status,  // Status code
+			latency, // Latency
 		)
 
 		return err
@@ -79,7 +86,7 @@ func RunApi(db *bun.DB) {
 			return next(cc)
 		}
 	})
-	e.Use(ColorfulLogger)
+	e.Use(CustomLogger)
 	e.Use(middleware.CORS())
 
 	e.GET("/-/ping", pong)
