@@ -11,13 +11,11 @@ type CRUDBase[T any] struct {
 }
 
 func (c CRUDBase[T]) Update(model *T) error {
-	ctx := context.Background()
-
 	_, err := c.Db.NewUpdate().
 		Model(model).
 		OmitZero().
 		WherePK().
-		Exec(ctx)
+		Exec(context.Background())
 
 	return err
 }

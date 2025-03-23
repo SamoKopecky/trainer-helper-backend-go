@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/crud"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,8 +11,7 @@ import (
 func Get(c echo.Context) error {
 	cc := c.(*api.DbContext)
 
-	crud := crud.CRUDPerson{Db: cc.Db}
-	persons, err := crud.GetAll()
+	persons, err := cc.CRUDPerson.GetAll()
 	if err != nil {
 		log.Fatal(err)
 	}

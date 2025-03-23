@@ -2,14 +2,17 @@ package crud
 
 import (
 	"context"
-	"log"
 	"trainer-helper/model"
 
 	"github.com/uptrace/bun"
 )
 
 type CRUDExercise struct {
-	Db *bun.DB
+	CRUDBase[model.Exercise]
+}
+
+func NewCRUDExercise(db *bun.DB) CRUDExercise {
+	return CRUDExercise{CRUDBase: CRUDBase[model.Exercise]{Db: db}}
 }
 
 func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]model.CRUDExerciseWorkSets, error) {
@@ -23,8 +26,15 @@ func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]model.CRUDExerciseWorkSet
 		Join("JOIN work_set ON work_set.exercise_id = exercise.id").
 		Where("exercise.timeslot_id = ?", Id).
 		Scan(ctx, &res)
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	return res, err
+}
+
+func (c CRUDExercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) error {
+	_, err := c.Db.NewDelete().
+		Model((*model.Exercise)(nil)).
+		Where("timeslot_id = ?", timeslotId).
+		Where("id = ?", exerciseId).
+		Exec(context.Background())
+	return err
 }

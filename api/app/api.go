@@ -9,6 +9,7 @@ import (
 	"trainer-helper/api/person_handler"
 	"trainer-helper/api/timeslot_handler"
 	"trainer-helper/api/work_set_handler"
+	"trainer-helper/crud"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -69,7 +70,11 @@ func RunApi(db *bun.DB) {
 	e := echo.New()
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &api.DbContext{Db: db, Context: c}
+			cc := &api.DbContext{Context: c,
+				CRUDExercise: crud.NewCRUDExercise(db),
+				CRUDTimeslot: crud.NewCRUDTimeslot(db),
+				CRUDWorkSet:  crud.NewCRUDWorkSet(db),
+				CRUDPerson:   crud.CRUDPerson{Db: db}}
 			return next(cc)
 		}
 	})
@@ -82,6 +87,8 @@ func RunApi(db *bun.DB) {
 	e.DELETE("/timeslot", timeslot_handler.Delete)
 	e.PUT("/timeslot", timeslot_handler.Put)
 	e.GET("/exercise/:id", exercise_handler.Get)
+	e.PUT("/exercise", exercise_handler.Put)
+	e.DELETE("/exercise", exercise_handler.Delete)
 	e.PUT("/workset", work_set_handler.Put)
 	e.GET("/person", person_handler.Get)
 

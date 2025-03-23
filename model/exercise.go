@@ -10,6 +10,7 @@ const (
 	Squat    SetType = "Squat"
 	Deadlift SetType = "Deadlift"
 	RDL      SetType = "RDL"
+	None     SetType = ""
 )
 
 type Exercise struct {

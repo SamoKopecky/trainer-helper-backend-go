@@ -1,8 +1,9 @@
 package work_set_handler
 
 import (
+	"log"
+	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/crud"
 
 	"github.com/labstack/echo/v4"
 )
@@ -15,8 +16,10 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.NewCRUDWorkSet(cc.Db)
 	model := params.toModel()
-	crud.Update(&model)
-	return err
+	err = cc.CRUDWorkSet.Update(&model)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cc.NoContent(http.StatusOK)
 }

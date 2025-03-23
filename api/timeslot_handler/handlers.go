@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/crud"
 	"trainer-helper/model"
 
 	"github.com/labstack/echo/v4"
@@ -19,11 +18,11 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.NewCRUDTimeslot(cc.Db)
-	timeslots, err := crud.GetByTimeRange(params.StartDate, params.EndDate)
+	timeslots, err := cc.CRUDTimeslot.GetByTimeRange(params.StartDate, params.EndDate)
 	if err != nil {
 		log.Fatal(err)
 	}
+	// TODO: If empty return empty array
 	return cc.JSON(http.StatusOK, timeslots)
 }
 
@@ -35,20 +34,17 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crudTimeslot := crud.NewCRUDTimeslot(cc.Db)
-	crudPerson := crud.CRUDPerson{Db: cc.Db}
-
 	timeslotName := fmt.Sprintf("from %s to %s on %s",
 		humanTime(params.Start),
 		humanTime(params.End),
 		humanDate(params.Start))
 	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, params.TrainerId, nil)
-	err = crudTimeslot.Insert(newTimeslot)
+	err = cc.CRUDTimeslot.Insert(newTimeslot)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return cc.JSON(http.StatusOK, toFullTimeslot(newTimeslot, crudPerson))
+	return cc.JSON(http.StatusOK, toFullTimeslot(newTimeslot, cc.CRUDPerson))
 }
 
 func Delete(c echo.Context) error {
@@ -59,9 +55,7 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crudTimeslot := crud.NewCRUDTimeslot(cc.Db)
-	crudPerson := crud.CRUDPerson{Db: cc.Db}
-	timeslot, err := crudTimeslot.Delete(params.Id)
+	timeslot, err := cc.CRUDTimeslot.Delete(params.Id)
 
 	if err != nil {
 		log.Fatal(err)
@@ -71,7 +65,7 @@ func Delete(c echo.Context) error {
 		return cc.NoContent(http.StatusNotFound)
 	}
 
-	return cc.JSON(http.StatusOK, toFullTimeslot(timeslot, crudPerson))
+	return cc.JSON(http.StatusOK, toFullTimeslot(timeslot, cc.CRUDPerson))
 }
 
 func Put(c echo.Context) error {
@@ -82,8 +76,11 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := crud.NewCRUDTimeslot(cc.Db)
+	crud := cc.CRUDTimeslot
 	model := params.toModel()
-	crud.Update(&model)
-	return err
+	err = crud.Update(&model)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cc.NoContent(http.StatusOK)
 }
