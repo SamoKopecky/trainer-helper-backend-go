@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"trainer-helper/api"
+	"trainer-helper/api/app"
 )
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 		dbConn.SeedDb()
 	}
 
-	api.RunApi(dbConn.Conn)
+	app.RunApi(dbConn.Conn)
 }

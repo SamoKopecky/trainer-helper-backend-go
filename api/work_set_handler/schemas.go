@@ -1,0 +1,24 @@
+package work_set_handler
+
+import (
+	"trainer-helper/api"
+	"trainer-helper/model"
+)
+
+type workSetPutRequest struct {
+	Id       int32   `json:"id"`
+	Reps     *int32  `json:"reps"`
+	Inensity *string `json:"intensity"`
+	Rpe      *int32  `json:"rpe"`
+}
+
+func (wspr workSetPutRequest) toModel() model.WorkSet {
+	return model.WorkSet{
+		IdModel: model.IdModel{
+			Id: wspr.Id,
+		},
+		Rpe:       wspr.Rpe,
+		Reps:      api.DerefInt(wspr.Reps),
+		Intensity: api.DerefString(wspr.Inensity),
+	}
+}

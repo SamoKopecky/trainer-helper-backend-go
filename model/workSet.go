@@ -6,20 +6,20 @@ import (
 
 type WorkSet struct {
 	bun.BaseModel `bun:"table:work_set"`
+	IdModel
 
-	Id         int32 `bun:",pk,autoincrement"`
-	ExerciseId int32
-	reps       int32
-	intensity  string
-	rpe        int32
+	ExerciseId int32  `json:"exercise_id"`
+	Reps       int32  `json:"reps"`
+	Intensity  string `json:"intensity"`
+	Rpe        *int32 `json:"rpe"`
 	Timestamp
 }
 
-func BuildWorkset(exerciseId, reps, rpe int32, intensity string) *WorkSet {
+func BuildWorkSet(exerciseId, reps int32, rpe *int32, intensity string) *WorkSet {
 	return &WorkSet{
 		ExerciseId: exerciseId,
-		reps:       reps,
-		rpe:        rpe,
-		intensity:  intensity,
+		Reps:       reps,
+		Rpe:        rpe,
+		Intensity:  intensity,
 		Timestamp:  buildTimestamp()}
 }

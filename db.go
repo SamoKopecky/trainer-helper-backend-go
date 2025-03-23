@@ -69,7 +69,9 @@ func (d DbConn) RunMigrations() {
 
 func (d DbConn) SeedDb() {
 	personId := d.seedUsers()
-	d.seedTimeslots(personId)
+	timeslots := d.seedTimeslots(personId)
+	exerciseIds := d.seedExercises(timeslots[0].Id)
+	d.seedWorkSets(exerciseIds)
 
 }
 
@@ -84,7 +86,7 @@ func (d DbConn) seedUsers() int32 {
 	return user.Id
 }
 
-func (d DbConn) seedTimeslots(personId int32) {
+func (d DbConn) seedTimeslots(personId int32) []model.Timeslot {
 	ctx := context.Background()
 	const TRAINER_ID = 1
 	var timeslots []model.Timeslot
@@ -98,5 +100,58 @@ func (d DbConn) seedTimeslots(personId int32) {
 	_, err := d.Conn.NewInsert().Model(&timeslots).Exec(ctx)
 	if err != nil {
 		panic(err)
+	}
+
+	return timeslots
+}
+
+func (d DbConn) seedExercises(timeslotId int32) []int32 {
+	ctx := context.Background()
+	exerciseTypes := []model.SetType{model.Squat, model.RDL}
+	exerciseIds := []int32{}
+
+	for i, eType := range exerciseTypes {
+		exercise := model.BuildExercise(timeslotId, int32(i), "some note", eType)
+		_, err := d.Conn.NewInsert().Model(exercise).Exec(ctx)
+		if err != nil {
+			panic(err)
+		}
+		exerciseIds = append(exerciseIds, exercise.Id)
+	}
+	return exerciseIds
+}
+
+func (d DbConn) seedWorkSets(exerciseIds []int32) {
+	ctx := context.Background()
+	squatData := []struct {
+		reps     int32
+		inensity string
+	}{
+		{reps: 4, inensity: "105Kg"},
+		{reps: 3, inensity: "105Kg"},
+		{reps: 6, inensity: "95kg"},
+		{reps: 5, inensity: "95Kg"},
+	}
+	rdlData := []struct {
+		reps     int32
+		inensity string
+	}{
+		{reps: 7, inensity: "100Kg"},
+		{reps: 7, inensity: "100Kg"},
+	}
+
+	for _, squat := range squatData {
+		work_set := model.BuildWorkSet(exerciseIds[0], squat.reps, nil, squat.inensity)
+		_, err := d.Conn.NewInsert().Model(work_set).Exec(ctx)
+		if err != nil {
+			panic(err)
+		}
+	}
+	for _, squat := range rdlData {
+		work_set := model.BuildWorkSet(exerciseIds[1], squat.reps, nil, squat.inensity)
+		_, err := d.Conn.NewInsert().Model(work_set).Exec(ctx)
+		if err != nil {
+			panic(err)
+		}
 	}
 }

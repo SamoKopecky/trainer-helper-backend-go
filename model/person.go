@@ -6,10 +6,10 @@ import (
 
 type Person struct {
 	bun.BaseModel `bun:"table:person"`
+	IdModel
 
-	Id    int32 `bun:",pk,autoincrement"`
-	Name  string
-	Email string
+	Name  string `json:"name"`
+	Email string `json:"email"`
 	Timestamp
 }
 
