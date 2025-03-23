@@ -12,14 +12,14 @@ type CRUDExercise struct {
 }
 
 func NewCRUDExercise(db *bun.DB) CRUDExercise {
-	return CRUDExercise{CRUDBase: CRUDBase[model.Exercise]{Db: db}}
+	return CRUDExercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
 }
 
 func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]model.CRUDExerciseWorkSets, error) {
 	ctx := context.Background()
 	var res []model.CRUDExerciseWorkSets
 
-	err := c.Db.NewSelect().
+	err := c.db.NewSelect().
 		Model((*model.Exercise)(nil)).
 		ColumnExpr("exercise.timeslot_id, exercise.group_id, exercise.set_type, exercise.note, exercise.id AS exercise_id").
 		ColumnExpr("work_set.exercise_id, work_set.reps, work_set.intensity, work_set.rpe, work_set.id AS work_set_id").
@@ -31,7 +31,7 @@ func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]model.CRUDExerciseWorkSet
 }
 
 func (c CRUDExercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) error {
-	_, err := c.Db.NewDelete().
+	_, err := c.db.NewDelete().
 		Model((*model.Exercise)(nil)).
 		Where("timeslot_id = ?", timeslotId).
 		Where("id = ?", exerciseId).

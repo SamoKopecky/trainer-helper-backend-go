@@ -89,3 +89,35 @@ func Delete(c echo.Context) error {
 
 	return cc.NoContent(http.StatusOK)
 }
+
+func Post(c echo.Context) error {
+	cc := c.(*api.DbContext)
+	params, err := api.BindParams[exercisePostParams](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	// Create exercise
+	newExercise := model.BuildExercise(params.TimeslotId, params.GroupId, "", model.None)
+	err = cc.CRUDExercise.Insert(newExercise)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create worksets
+	newWorkSets := make([]model.WorkSet, 2)
+	for i := range 2 {
+		newWorkSets[i] = *model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
+	}
+	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return cc.JSON(http.StatusOK, model.ExerciseWorkSets{
+		Exercise:     *newExercise,
+		WorkSetCount: int32(len(newWorkSets)),
+		WorkSets:     newWorkSets,
+	})
+
+}

@@ -13,11 +13,11 @@ type CRUDTimeslot struct {
 }
 
 func NewCRUDTimeslot(db *bun.DB) CRUDTimeslot {
-	return CRUDTimeslot{CRUDBase: CRUDBase[model.Timeslot]{Db: db}}
+	return CRUDTimeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 
 func (c CRUDTimeslot) getTimeslotQuery() *bun.SelectQuery {
-	return c.Db.NewSelect().
+	return c.db.NewSelect().
 		Model((*model.Timeslot)(nil)).
 		ColumnExpr("person.name AS person_name").
 		ColumnExpr("timeslot.*").
@@ -47,21 +47,11 @@ func (c CRUDTimeslot) GetById(timeslotId int32) (model.ApiTimeslot, error) {
 
 }
 
-func (c CRUDTimeslot) Insert(timeslot *model.Timeslot) error {
-	ctx := context.Background()
-
-	_, err := c.Db.NewInsert().
-		Model(timeslot).
-		Exec(ctx)
-
-	return err
-}
-
 func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
 	ctx := context.Background()
 
 	var timeslot model.Timeslot
-	_, err := c.Db.NewDelete().
+	_, err := c.db.NewDelete().
 		Model(&timeslot).
 		Where("id = ?", timeslotId).
 		Returning("*").

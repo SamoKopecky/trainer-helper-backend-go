@@ -89,6 +89,7 @@ func RunApi(db *bun.DB) {
 	e.GET("/exercise/:id", exercise_handler.Get)
 	e.PUT("/exercise", exercise_handler.Put)
 	e.DELETE("/exercise", exercise_handler.Delete)
+	e.POST("/exercise", exercise_handler.Post)
 	e.PUT("/workset", work_set_handler.Put)
 	e.GET("/person", person_handler.Get)
 
