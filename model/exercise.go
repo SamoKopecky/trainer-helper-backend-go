@@ -1,6 +1,8 @@
 package model
 
 import (
+	"sort"
+
 	"github.com/uptrace/bun"
 )
 
@@ -50,6 +52,12 @@ type CRUDExerciseWorkSets struct {
 	WorkSetId  int32
 	Exercise
 	WorkSet
+}
+
+func (ews ExerciseWorkSets) SortWorkSets() {
+	sort.Slice(ews.WorkSets, func(i, j int) bool {
+		return ews.WorkSets[i].Id < ews.WorkSets[j].Id
+	})
 }
 
 func (cews CRUDExerciseWorkSets) ToWorkSet() WorkSet {
