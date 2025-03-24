@@ -22,8 +22,14 @@ func buildTimestamp() Timestamp {
 		UpdatedAt: time.Now(),
 	}
 }
-func (*Timestamp) BeforeUpdate(ctx context.Context, query *bun.UpdateQuery) error {
-	query.Set("updated_at = ?", time.Now())
+
+func (t *Timeslot) BeforeAppendModel(ctx context.Context, query bun.Query) error {
+	switch query.(type) {
+	case *bun.InsertQuery:
+		t.CreatedAt = time.Now()
+	case *bun.UpdateQuery:
+		t.UpdatedAt = time.Now()
+	}
 	return nil
 }
 

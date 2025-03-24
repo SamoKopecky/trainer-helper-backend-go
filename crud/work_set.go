@@ -16,7 +16,9 @@ func NewCRUDWorkSet(db *bun.DB) CRUDWorkSet {
 }
 
 func (c CRUDWorkSet) InsertMany(work_sets *[]model.WorkSet) error {
-	_, err := c.db.NewInsert().Model(work_sets).Exec(context.Background())
+	_, err := c.db.NewInsert().
+		Model(work_sets).
+		Exec(context.Background())
 
 	return err
 }

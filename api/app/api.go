@@ -7,6 +7,7 @@ import (
 	"trainer-helper/api"
 	"trainer-helper/api/exercise_handler"
 	"trainer-helper/api/exercise_handler/count_handler"
+	"trainer-helper/api/exercise_handler/duplicate_handler"
 	"trainer-helper/api/person_handler"
 	"trainer-helper/api/timeslot_handler"
 	"trainer-helper/api/timeslot_handler/revert_handler"
@@ -102,6 +103,7 @@ func RunApi(db *bun.DB) {
 	e.POST("/exercise", exercise_handler.Post)
 	e.PUT("/exercise/count", exercise_count_handler.Put)
 	e.DELETE("/exercise/count", exercise_count_handler.Delete)
+	e.POST("/exercise/duplicate", exercise_duplicate_handler.Post)
 	e.PUT("/workset", work_set_handler.Put)
 	e.GET("/person", person_handler.Get)
 

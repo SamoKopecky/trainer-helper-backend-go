@@ -9,3 +9,8 @@ up-db:
 
 test:
 	go test ./...
+
+reset-db:
+	docker compose down
+	docker compose up db -d
+

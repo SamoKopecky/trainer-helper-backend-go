@@ -24,6 +24,8 @@ type Exercise struct {
 	Note       *string `json:"note"`
 	SetType    SetType `json:"set_type"`
 	Timestamp
+
+	WorkSets []*WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`
 }
 
 func BuildExercise(timeslotId, groupId int32, note string, setType SetType) *Exercise {
@@ -36,39 +38,13 @@ func BuildExercise(timeslotId, groupId int32, note string, setType SetType) *Exe
 	}
 }
 
-type ExerciseWorkSets struct {
-	Exercise
-	WorkSetCount int32     `json:"work_set_count"`
-	WorkSets     []WorkSet `json:"work_sets"`
-}
-
 type TimeslotExercises struct {
-	Timeslot  ApiTimeslot         `json:"timeslot"`
-	Exercises []*ExerciseWorkSets `json:"exercises"`
+	Timeslot  ApiTimeslot `json:"timeslot"`
+	Exercises []*Exercise `json:"exercises"`
 }
 
-type CRUDExerciseWorkSets struct {
-	ExerciseId int32
-	WorkSetId  int32
-	Exercise
-	WorkSet
-}
-
-func (ews ExerciseWorkSets) SortWorkSets() {
-	sort.Slice(ews.WorkSets, func(i, j int) bool {
-		return ews.WorkSets[i].Id < ews.WorkSets[j].Id
+func (e Exercise) SortWorkSets() {
+	sort.Slice(e.WorkSets, func(i, j int) bool {
+		return e.WorkSets[i].Id < e.WorkSets[j].Id
 	})
-}
-
-func (cews CRUDExerciseWorkSets) ToWorkSet() WorkSet {
-	res := cews.WorkSet
-	res.Id = cews.WorkSetId
-	res.ExerciseId = cews.ExerciseId
-	return res
-}
-
-func (cews CRUDExerciseWorkSets) ToExercise() Exercise {
-	res := cews.Exercise
-	res.Id = cews.ExerciseId
-	return res
 }
