@@ -38,7 +38,7 @@ func Post(c echo.Context) error {
 		humanTime(params.Start),
 		humanTime(params.End),
 		humanDate(params.Start))
-	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, params.TrainerId, nil)
+	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, nil, params.TrainerId, nil)
 	err = cc.CRUDTimeslot.Insert(newTimeslot)
 	if err != nil {
 		log.Fatal(err)
@@ -76,9 +76,8 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	crud := cc.CRUDTimeslot
 	model := params.toModel()
-	err = crud.Update(&model)
+	err = cc.CRUDTimeslot.Update(&model)
 	if err != nil {
 		log.Fatal(err)
 	}

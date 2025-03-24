@@ -17,6 +17,7 @@ func NewCRUDTimeslot(db *bun.DB) CRUDTimeslot {
 }
 
 func (c CRUDTimeslot) getTimeslotQuery() *bun.SelectQuery {
+	// Actually only selects not self deleted
 	return c.db.NewSelect().
 		Model((*model.Timeslot)(nil)).
 		ColumnExpr("person.name AS person_name").
@@ -51,6 +52,7 @@ func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
 	ctx := context.Background()
 
 	var timeslot model.Timeslot
+	// Actually does soft delete
 	_, err := c.db.NewDelete().
 		Model(&timeslot).
 		Where("id = ?", timeslotId).
@@ -58,4 +60,16 @@ func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
 		Exec(ctx)
 
 	return &timeslot, err
+}
+
+func (c CRUDTimeslot) RevertSolfDelete(timeslotId int32) error {
+	// TODO: properly work with updated_at everywhere!
+	_, err := c.db.NewUpdate().
+		Model((*model.Timeslot)(nil)).
+		Set("deleted_at = ?", nil).
+		WhereAllWithDeleted().
+		Where("id = ?", timeslotId).
+		Exec(context.Background())
+
+	return err
 }
