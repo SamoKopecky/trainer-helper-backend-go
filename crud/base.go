@@ -10,9 +10,9 @@ type CRUDBase[T any] struct {
 	db *bun.DB
 }
 
-func (c CRUDBase[T]) Update(model *T) error {
+func (c CRUDBase[T]) Update(modelT *T) error {
 	_, err := c.db.NewUpdate().
-		Model(model).
+		Model(modelT).
 		OmitZero().
 		WherePK().
 		Exec(context.Background())

@@ -63,7 +63,6 @@ func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
 }
 
 func (c CRUDTimeslot) RevertSolfDelete(timeslotId int32) error {
-	// TODO: properly work with updated_at everywhere!
 	_, err := c.db.NewUpdate().
 		Model((*model.Timeslot)(nil)).
 		Set("deleted_at = ?", nil).
