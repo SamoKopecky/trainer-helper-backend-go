@@ -49,3 +49,9 @@ func (e Exercise) SortWorkSets() {
 		return e.WorkSets[i].Id < e.WorkSets[j].Id
 	})
 }
+
+func (e *Exercise) ToNew(timeslotId int32) {
+	e.Id = EmptyId
+	e.Timestamp = buildTimestamp()
+	e.TimeslotId = timeslotId
+}

@@ -23,3 +23,9 @@ func BuildWorkSet(exerciseId, reps int32, rpe *int32, intensity string) *WorkSet
 		Intensity:  intensity,
 		Timestamp:  buildTimestamp()}
 }
+
+func (ws *WorkSet) ToNew(exerciseId int32) {
+	ws.Id = EmptyId
+	ws.Timestamp = buildTimestamp()
+	ws.ExerciseId = exerciseId
+}

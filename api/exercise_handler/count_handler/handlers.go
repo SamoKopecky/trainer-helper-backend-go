@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )
@@ -23,7 +22,6 @@ func Put(c echo.Context) error {
 		newWorkSet.Id = model.EmptyId
 		newWorkSets[i] = &newWorkSet
 	}
-	utils.PrettyPrint(newWorkSets)
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
 	if err != nil {
 		log.Fatal(err)

@@ -28,7 +28,7 @@ func Get(c echo.Context) error {
 		log.Fatal(err)
 	}
 
-	exercises, err := cc.CRUDExercise.GetExerciseWorkSetsTwo(params.Id)
+	exercises, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -4,7 +4,6 @@ import (
 	"maps"
 	"net/http"
 	"slices"
-	"time"
 	"trainer-helper/api"
 	"trainer-helper/model"
 
@@ -26,6 +25,10 @@ func Post(c echo.Context) error {
 		return err
 	}
 
+	if len(newExercises) == 0 {
+		newExercises = []*model.Exercise{}
+	}
+
 	return cc.JSON(http.StatusOK, model.TimeslotExercises{
 		Exercises: newExercises,
 		Timeslot:  newTimeslot,
@@ -38,35 +41,29 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		return
 	}
 
-	copyExercises, err := cc.CRUDExercise.GetExerciseWorkSetsTwo(param.CopyTimeslotId)
+	copyExercises, err := cc.CRUDExercise.GetExerciseWorkSets(param.CopyTimeslotId)
 	if err != nil {
 		return
 	}
 
 	newExercisesMap := make(map[int32]*model.Exercise)
 	var newWorkSets []*model.WorkSet
-	for _, e := range copyExercises {
+	for _, exercise := range copyExercises {
 		// Adjust new exercise
-		// NOTE: Possible performance improvment, insert many
-		e.Id = model.EmptyId
-		e.TimeslotId = param.TimeslotId
-		e.CreatedAt = time.Now()
-		e.UpdatedAt = time.Now()
+		exercise.ToNew(param.TimeslotId)
 
-		err = cc.CRUDExercise.Insert(e)
+		// NOTE: Possible performance improvment, insert many
+		err = cc.CRUDExercise.Insert(exercise)
 		if err != nil {
 			return
 		}
-		for _, ws := range e.WorkSets {
-			ws.Id = model.EmptyId
-			ws.ExerciseId = e.Id
-			ws.CreatedAt = time.Now()
-			ws.UpdatedAt = time.Now()
+		for _, ws := range exercise.WorkSets {
+			ws.ToNew(exercise.Id)
 			newWorkSets = append(newWorkSets, ws)
 		}
 		// Clean up
-		e.WorkSets = nil
-		newExercisesMap[e.Id] = e
+		exercise.WorkSets = nil
+		newExercisesMap[exercise.Id] = exercise
 	}
 
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
