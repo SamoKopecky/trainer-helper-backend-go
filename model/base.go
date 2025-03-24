@@ -23,7 +23,7 @@ func buildTimestamp() Timestamp {
 	}
 }
 
-func (t *Timeslot) BeforeAppendModel(ctx context.Context, query bun.Query) error {
+func (t *Timestamp) BeforeAppendModel(ctx context.Context, query bun.Query) error {
 	switch query.(type) {
 	case *bun.InsertQuery:
 		t.CreatedAt = time.Now()
