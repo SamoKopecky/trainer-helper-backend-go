@@ -1,4 +1,22 @@
 services:
+  backend:
+    environment:
+      APP_ENV: "dev"
+      APP_DB_HOST: "db"
+      APP_DB_PASSWORD: "alpharius"
+    build:
+      context: .
+    ports:
+      - '2001:2001'
+    depends_on:
+      db:
+        condition: service_started
+    command:
+      - /bin/bash
+      - -c
+      - |
+        ./wait-for.sh -t 10 db:5432 -- echo "wait-for: Postgres DB is ready"
+        /app/trainer-helper --debug
   db:
     image: postgres:17.2
     environment:

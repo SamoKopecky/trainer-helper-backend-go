@@ -1,7 +1,6 @@
 package timeslot_revert_handler
 
 import (
-	"log"
 	"net/http"
 	"trainer-helper/api"
 
@@ -18,7 +17,7 @@ func Put(c echo.Context) error {
 
 	err = cc.CRUDTimeslot.RevertSolfDelete(params.Id)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	return cc.NoContent(http.StatusOK)
 }

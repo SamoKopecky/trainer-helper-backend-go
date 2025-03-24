@@ -1,7 +1,6 @@
 package work_set_handler
 
 import (
-	"log"
 	"net/http"
 	"trainer-helper/api"
 
@@ -19,7 +18,7 @@ func Put(c echo.Context) error {
 	model := params.toModel()
 	err = cc.CRUDWorkSet.Update(&model)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	return cc.NoContent(http.StatusOK)
 }
