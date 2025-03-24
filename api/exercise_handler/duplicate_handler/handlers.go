@@ -34,12 +34,20 @@ func Post(c echo.Context) error {
 
 func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
 	err = cc.CRUDExercise.DeleteByTimeslot(param.TimeslotId)
+	if err != nil {
+		return
+	}
+
 	copyExercises, err := cc.CRUDExercise.GetExerciseWorkSetsTwo(param.CopyTimeslotId)
+	if err != nil {
+		return
+	}
 
 	newExercisesMap := make(map[int32]*model.Exercise)
-	var newWorkSets []model.WorkSet
+	var newWorkSets []*model.WorkSet
 	for _, e := range copyExercises {
 		// Adjust new exercise
+		// NOTE: Possible performance improvment, insert many
 		e.Id = model.EmptyId
 		e.TimeslotId = param.TimeslotId
 		e.CreatedAt = time.Now()
@@ -54,7 +62,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 			ws.ExerciseId = e.Id
 			ws.CreatedAt = time.Now()
 			ws.UpdatedAt = time.Now()
-			newWorkSets = append(newWorkSets, *ws)
+			newWorkSets = append(newWorkSets, ws)
 		}
 		// Clean up
 		e.WorkSets = nil
@@ -68,7 +76,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 
 	for _, ws := range newWorkSets {
 		if e, ok := newExercisesMap[ws.ExerciseId]; ok {
-			e.WorkSets = append(e.WorkSets, &ws)
+			e.WorkSets = append(e.WorkSets, ws)
 		}
 	}
 	newExercises = slices.Collect(maps.Values(newExercisesMap))

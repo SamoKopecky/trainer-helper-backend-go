@@ -15,7 +15,7 @@ func NewCRUDExercise(db *bun.DB) CRUDExercise {
 	return CRUDExercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
 }
 
-func (c CRUDExercise) GetExerciseWorkSetsTwo(Id int32) ([]*model.Exercise, error) {
+func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]*model.Exercise, error) {
 	ctx := context.Background()
 	var res []*model.Exercise
 

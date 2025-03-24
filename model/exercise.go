@@ -25,6 +25,7 @@ type Exercise struct {
 	SetType    SetType `json:"set_type"`
 	Timestamp
 
+	// Not used in DB model
 	WorkSets []*WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`
 }
 

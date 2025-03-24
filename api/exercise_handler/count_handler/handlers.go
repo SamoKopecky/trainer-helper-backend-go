@@ -17,11 +17,11 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	newWorkSets := make([]model.WorkSet, params.Count)
+	newWorkSets := make([]*model.WorkSet, params.Count)
 	for i := range params.Count {
 		newWorkSet := params.WorkSetTemplate
 		newWorkSet.Id = model.EmptyId
-		newWorkSets[i] = newWorkSet
+		newWorkSets[i] = &newWorkSet
 	}
 	utils.PrettyPrint(newWorkSets)
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)

@@ -3,6 +3,7 @@ package exercise_handler
 import (
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
@@ -27,19 +28,27 @@ func Get(c echo.Context) error {
 		log.Fatal(err)
 	}
 
-	res, err := cc.CRUDExercise.GetExerciseWorkSetsTwo(params.Id)
+	exercises, err := cc.CRUDExercise.GetExerciseWorkSetsTwo(params.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if res == nil {
-		res = []*model.Exercise{}
+	if exercises == nil {
+		exercises = []*model.Exercise{}
 	}
 
-	// TODO: Sort
+	sort.Slice(exercises, func(i, j int) bool {
+		if exercises[i].GroupId == exercises[j].GroupId {
+			return exercises[i].Id < exercises[j].Id
+		}
+		return exercises[i].GroupId < exercises[j].GroupId
+	})
+	for _, exercise := range exercises {
+		exercise.SortWorkSets()
+	}
 
 	return cc.JSON(http.StatusOK, model.TimeslotExercises{
 		Timeslot:  apiTimeslot,
-		Exercises: res,
+		Exercises: exercises,
 	})
 
 }
@@ -91,15 +100,15 @@ func Post(c echo.Context) error {
 
 	// Create worksets
 	const workSetCount = 2
-	newWorkSets := make([]model.WorkSet, workSetCount)
+	newWorkSets := make([]*model.WorkSet, workSetCount)
 	for i := range workSetCount {
-		newWorkSets[i] = *model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
+		newWorkSets[i] = model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
 	}
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// TODO: Fix
+	newExercise.WorkSets = newWorkSets
 	return cc.JSON(http.StatusOK, newExercise)
 }
