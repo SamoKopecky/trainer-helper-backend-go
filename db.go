@@ -93,7 +93,7 @@ func (d DbConn) seedTimeslots(personId int32) []model.Timeslot {
 	timeNow := time.Now()
 
 	for range 7 {
-		timeslots = append(timeslots, *model.BuildTimeslot("some name", timeNow, timeNow.Add(1*time.Hour), TRAINER_ID, &personId))
+		timeslots = append(timeslots, *model.BuildTimeslot("some name", timeNow, timeNow.Add(1*time.Hour), nil, TRAINER_ID, &personId))
 		timeNow = timeNow.Add(24 * time.Hour)
 	}
 

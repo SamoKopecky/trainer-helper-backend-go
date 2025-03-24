@@ -2,9 +2,7 @@ package exercise_handler
 
 import (
 	"log"
-	"maps"
 	"net/http"
-	"slices"
 	"sort"
 	"strconv"
 	"trainer-helper/api"
@@ -30,36 +28,14 @@ func Get(c echo.Context) error {
 		log.Fatal(err)
 	}
 
-	res, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
+	exercises, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// Create a slice of points so that we can append worksets
-	exercisesMap := make(map[int32]*model.ExerciseWorkSets)
-	for _, r := range res {
-		val, ok := exercisesMap[r.ExerciseId]
-		if !ok {
-			val = &model.ExerciseWorkSets{
-				Exercise: r.ToExercise(),
-			}
-			exercisesMap[r.ExerciseId] = val
-		}
-		val.WorkSets = append(val.WorkSets, r.ToWorkSet())
-		val.WorkSetCount += 1
-
+	if exercises == nil {
+		exercises = []*model.Exercise{}
 	}
 
-	exercises := slices.Collect(maps.Values(exercisesMap))
-	if len(exercises) == 0 {
-		return cc.JSON(http.StatusOK, model.TimeslotExercises{
-			Timeslot:  apiTimeslot,
-			Exercises: []*model.ExerciseWorkSets{},
-		})
-
-	}
-
-	// Sort, TODO: make a separate function and test it
 	sort.Slice(exercises, func(i, j int) bool {
 		if exercises[i].GroupId == exercises[j].GroupId {
 			return exercises[i].Id < exercises[j].Id
@@ -124,19 +100,15 @@ func Post(c echo.Context) error {
 
 	// Create worksets
 	const workSetCount = 2
-	newWorkSets := make([]model.WorkSet, workSetCount)
+	newWorkSets := make([]*model.WorkSet, workSetCount)
 	for i := range workSetCount {
-		newWorkSets[i] = *model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
+		newWorkSets[i] = model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
 	}
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return cc.JSON(http.StatusOK, model.ExerciseWorkSets{
-		Exercise:     *newExercise,
-		WorkSetCount: int32(len(newWorkSets)),
-		WorkSets:     newWorkSets,
-	})
-
+	newExercise.WorkSets = newWorkSets
+	return cc.JSON(http.StatusOK, newExercise)
 }

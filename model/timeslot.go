@@ -16,16 +16,18 @@ type Timeslot struct {
 	Start     time.Time `json:"start"`
 	End       time.Time `json:"end"`
 	Timestamp
+	DeletedAt *time.Time `json:"-" bun:",soft_delete,nullzero"`
 }
 
-func BuildTimeslot(name string, start, end time.Time, trainerId int32, userId *int32) *Timeslot {
+func BuildTimeslot(name string, start, end time.Time, deletedAt *time.Time, trainerId int32, userId *int32) *Timeslot {
 	return &Timeslot{
 		Name:      name,
 		Start:     start,
 		End:       end,
 		TrainerId: trainerId,
 		UserId:    userId,
-		Timestamp: buildTimestamp()}
+		Timestamp: buildTimestamp(),
+		DeletedAt: deletedAt}
 }
 
 type ApiTimeslot struct {
