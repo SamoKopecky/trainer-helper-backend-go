@@ -2,7 +2,6 @@ package timeslot_handler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
@@ -20,9 +19,12 @@ func Get(c echo.Context) error {
 
 	timeslots, err := cc.CRUDTimeslot.GetByTimeRange(params.StartDate, params.EndDate)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	// TODO: If empty return empty array
+	if len(timeslots) == 0 {
+		timeslots = []model.ApiTimeslot{}
+	}
+
 	return cc.JSON(http.StatusOK, timeslots)
 }
 
@@ -41,10 +43,14 @@ func Post(c echo.Context) error {
 	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, nil, params.TrainerId, nil)
 	err = cc.CRUDTimeslot.Insert(newTimeslot)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	return cc.JSON(http.StatusOK, toFullTimeslot(newTimeslot, cc.CRUDPerson))
+	full, err := toFullTimeslot(newTimeslot, cc.CRUDPerson)
+	if err != nil {
+		return err
+	}
+	return cc.JSON(http.StatusOK, full)
 }
 
 func Delete(c echo.Context) error {
@@ -58,14 +64,18 @@ func Delete(c echo.Context) error {
 	timeslot, err := cc.CRUDTimeslot.Delete(params.Id)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if timeslot.IsEmpty() {
 		return cc.NoContent(http.StatusNotFound)
 	}
 
-	return cc.JSON(http.StatusOK, toFullTimeslot(timeslot, cc.CRUDPerson))
+	full, err := toFullTimeslot(timeslot, cc.CRUDPerson)
+	if err != nil {
+		return err
+	}
+	return cc.JSON(http.StatusOK, full)
 }
 
 func Put(c echo.Context) error {
@@ -79,7 +89,7 @@ func Put(c echo.Context) error {
 	model := params.toModel()
 	err = cc.CRUDTimeslot.Update(&model)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	return cc.NoContent(http.StatusOK)
 }

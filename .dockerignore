@@ -1,0 +1,8 @@
+/tmp
+trainer-helper
+Dockerfile
+.git/
+.gitignore
+.dockerignore
+Makefile
+

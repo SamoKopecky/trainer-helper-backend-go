@@ -1,7 +1,6 @@
 package exercise_handler
 
 import (
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -25,12 +24,12 @@ func Get(c echo.Context) error {
 	// Get timeslot
 	apiTimeslot, err := cc.CRUDTimeslot.GetById(params.Id)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	exercises, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	if exercises == nil {
 		exercises = []*model.Exercise{}
@@ -63,7 +62,7 @@ func Put(c echo.Context) error {
 	model := params.toModel()
 	err = cc.CRUDExercise.Update(&model)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return cc.NoContent(http.StatusOK)
@@ -78,7 +77,7 @@ func Delete(c echo.Context) error {
 
 	err = cc.CRUDExercise.DeleteByExerciseAndTimeslot(params.TimeslotId, params.ExerciseId)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return cc.NoContent(http.StatusOK)
@@ -95,7 +94,7 @@ func Post(c echo.Context) error {
 	newExercise := model.BuildExercise(params.TimeslotId, params.GroupId, "", model.None)
 	err = cc.CRUDExercise.Insert(newExercise)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Create worksets
@@ -106,7 +105,7 @@ func Post(c echo.Context) error {
 	}
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	newExercise.WorkSets = newWorkSets

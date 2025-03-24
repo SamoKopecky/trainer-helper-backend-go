@@ -1,7 +1,6 @@
 package exercise_count_handler
 
 import (
-	"log"
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
@@ -24,7 +23,7 @@ func Put(c echo.Context) error {
 	}
 	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return cc.JSON(http.StatusOK, newWorkSets)
@@ -39,7 +38,7 @@ func Delete(c echo.Context) error {
 
 	ids, err := cc.CRUDWorkSet.DeleteMany(params.WorkSetIds)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return cc.JSON(http.StatusOK, ids)

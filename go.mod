@@ -3,6 +3,7 @@ module trainer-helper
 go 1.24.0
 
 require (
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/golang-migrate/migrate/v4 v4.18.2
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/uptrace/bun v1.2.11

@@ -25,9 +25,8 @@ type DbConn struct {
 	Dsn    string
 }
 
-func GetDbConn(debug bool) DbConn {
-	// TODO: Make config
-	dsn := "postgres://root:alpharius@localhost/trainer_helper?sslmode=disable"
+func GetDbConn(config Config, debug bool) DbConn {
+	dsn := config.GetDSN()
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 	if debug {
