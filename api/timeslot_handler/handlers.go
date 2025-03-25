@@ -46,7 +46,7 @@ func Post(c echo.Context) error {
 		return err
 	}
 
-	full, err := toFullTimeslot(newTimeslot, cc.CRUDPerson)
+	full, err := toFullTimeslot(newTimeslot)
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func Delete(c echo.Context) error {
 		return cc.NoContent(http.StatusNotFound)
 	}
 
-	full, err := toFullTimeslot(timeslot, cc.CRUDPerson)
+	full, err := toFullTimeslot(timeslot)
 	if err != nil {
 		return err
 	}

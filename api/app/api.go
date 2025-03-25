@@ -6,13 +6,15 @@ import (
 	"time"
 	"trainer-helper/api"
 	"trainer-helper/api/exercise_handler"
-	"trainer-helper/api/exercise_handler/count_handler"
-	"trainer-helper/api/exercise_handler/duplicate_handler"
+	exercise_count_handler "trainer-helper/api/exercise_handler/count_handler"
+	exercise_duplicate_handler "trainer-helper/api/exercise_handler/duplicate_handler"
 	"trainer-helper/api/person_handler"
 	"trainer-helper/api/timeslot_handler"
-	"trainer-helper/api/timeslot_handler/revert_handler"
+	timeslot_revert_handler "trainer-helper/api/timeslot_handler/revert_handler"
 	"trainer-helper/api/work_set_handler"
+	"trainer-helper/config"
 	"trainer-helper/crud"
+	"trainer-helper/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -76,15 +78,20 @@ func CustomLogger(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func RunApi(db *bun.DB) {
+func RunApi(db *bun.DB, appConfig config.Config) {
 	e := echo.New()
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			iam := service.IAM{
+				AppConfig:  appConfig,
+				AuthConfig: service.CreateAuthConfig(appConfig)}
+
 			cc := &api.DbContext{Context: c,
 				CRUDExercise: crud.NewCRUDExercise(db),
 				CRUDTimeslot: crud.NewCRUDTimeslot(db),
 				CRUDWorkSet:  crud.NewCRUDWorkSet(db),
-				CRUDPerson:   crud.CRUDPerson{Db: db}}
+				IAM:          iam}
+
 			return next(cc)
 		}
 	})

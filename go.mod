@@ -11,7 +11,10 @@ require (
 	github.com/uptrace/bun/driver/pgdriver v1.2.11
 )
 
-require github.com/fatih/color v1.18.0 // indirect
+require (
+	github.com/fatih/color v1.18.0 // indirect
+	golang.org/x/oauth2 v0.28.0 // indirect
+)
 
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect

@@ -2,7 +2,6 @@ package timeslot_handler
 
 import (
 	"time"
-	"trainer-helper/crud"
 	"trainer-helper/model"
 )
 
@@ -14,7 +13,7 @@ func humanDate(time time.Time) string {
 	return time.Format("02-01")
 }
 
-func toFullTimeslot(timeslot *model.Timeslot, crudPerson crud.CRUDPerson) (full model.ApiTimeslot, err error) {
+func toFullTimeslot(timeslot *model.Timeslot) (full model.ApiTimeslot, err error) {
 	full = model.ApiTimeslot{
 		Timeslot: *timeslot,
 	}
@@ -22,10 +21,8 @@ func toFullTimeslot(timeslot *model.Timeslot, crudPerson crud.CRUDPerson) (full 
 		return
 	}
 
-	person, err := crudPerson.Get(*timeslot.UserId)
 	if err != nil {
 		return
 	}
-	full.PersonName = &person.Name
 	return
 }

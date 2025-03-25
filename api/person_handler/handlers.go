@@ -8,17 +8,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) error {
+func Get(c echo.Context) (err error) {
 	cc := c.(*api.DbContext)
 
-	persons, err := cc.CRUDPerson.GetAll()
+	users, err := cc.IAM.GetUsers()
 	if err != nil {
 		return err
 	}
 
-	if len(persons) == 0 {
-		persons = []model.Person{}
+	models := make([]model.Person, len(users))
+	for i, user := range users {
+		models[i] = user.ToPersonModel()
 	}
 
-	return cc.JSON(http.StatusOK, persons)
+	return cc.JSON(http.StatusOK, models)
 }
