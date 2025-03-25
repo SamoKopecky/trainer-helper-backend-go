@@ -1,4 +1,4 @@
-package service
+package fetcher
 
 import (
 	"context"
@@ -23,10 +23,14 @@ type KeycloakUser struct {
 	Email     string `json:"email"`
 }
 
+func (ku KeycloakUser) FullName() string {
+	return fmt.Sprintf("%s %s", ku.FirstName, ku.LastName)
+}
+
 func (ku KeycloakUser) ToPersonModel() model.Person {
 	return model.Person{
 		Id:    ku.Id,
-		Name:  fmt.Sprintf("%s %s", ku.FirstName, ku.LastName),
+		Name:  ku.FullName(),
 		Email: ku.Email,
 	}
 }
@@ -48,6 +52,10 @@ func (i IAM) getUrl(endpoint string) string {
 	return fmt.Sprintf("%s/%s", i.AppConfig.KeycloakBaseUrl, endpoint)
 }
 
+func (i IAM) getUserUrl() string {
+	return i.getUrl(fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm))
+}
+
 func (i IAM) authedRequest(request *http.Request) (response *http.Response, err error) {
 	client := oauth2.NewClient(context.Background(), i.AuthConfig.TokenSource(context.Background()))
 	response, err = client.Do(request)
@@ -59,8 +67,29 @@ func (i IAM) authedRequest(request *http.Request) (response *http.Response, err 
 
 func (i IAM) GetUsers() (users []KeycloakUser, err error) {
 	// NOTE: Possible improvments cache tese requests
-	usersEndpoint := fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm)
-	req, err := http.NewRequest("GET", i.getUrl(usersEndpoint), nil)
+	req, err := http.NewRequest("GET", i.getUserUrl(), nil)
+	if err != nil {
+		return
+	}
+
+	// TODO: Generalzie
+	resp, err := i.authedRequest(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(body, &users)
+	return
+}
+
+func (i IAM) GetUserById(userId string) (user KeycloakUser, err error) {
+	url := fmt.Sprintf("%s/%s", i.getUserUrl(), userId)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return
 	}
@@ -72,8 +101,8 @@ func (i IAM) GetUsers() (users []KeycloakUser, err error) {
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(body, &users)
+	// TODO: Handle no user response
+	err = json.Unmarshal(body, &user)
 	return
-}
 
-// TODO: GetUser name for
+}

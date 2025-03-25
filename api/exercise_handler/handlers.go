@@ -21,12 +21,6 @@ func Get(c echo.Context) error {
 		Id: int32(paramId),
 	}
 
-	// Get timeslot
-	apiTimeslot, err := cc.CRUDTimeslot.GetById(params.Id)
-	if err != nil {
-		return err
-	}
-
 	exercises, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
 	if err != nil {
 		return err
@@ -43,6 +37,11 @@ func Get(c echo.Context) error {
 	})
 	for _, exercise := range exercises {
 		exercise.SortWorkSets()
+	}
+
+	apiTimeslot, err := cc.ServiceTimeslot.GetById(params.Id)
+	if err != nil {
+		return err
 	}
 
 	return cc.JSON(http.StatusOK, model.TimeslotExercises{

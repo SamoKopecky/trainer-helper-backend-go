@@ -6,14 +6,15 @@ import (
 	"time"
 	"trainer-helper/api"
 	"trainer-helper/api/exercise_handler"
-	exercise_count_handler "trainer-helper/api/exercise_handler/count_handler"
-	exercise_duplicate_handler "trainer-helper/api/exercise_handler/duplicate_handler"
+	"trainer-helper/api/exercise_handler/count_handler"
+	"trainer-helper/api/exercise_handler/duplicate_handler"
 	"trainer-helper/api/person_handler"
 	"trainer-helper/api/timeslot_handler"
-	timeslot_revert_handler "trainer-helper/api/timeslot_handler/revert_handler"
+	"trainer-helper/api/timeslot_handler/revert_handler"
 	"trainer-helper/api/work_set_handler"
 	"trainer-helper/config"
 	"trainer-helper/crud"
+	"trainer-helper/fetcher"
 	"trainer-helper/service"
 
 	"github.com/labstack/echo/v4"
@@ -82,15 +83,18 @@ func RunApi(db *bun.DB, appConfig config.Config) {
 	e := echo.New()
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			iam := service.IAM{
+			crudTimeslot := crud.NewCRUDTimeslot(db)
+			iam := fetcher.IAM{
 				AppConfig:  appConfig,
-				AuthConfig: service.CreateAuthConfig(appConfig)}
+				AuthConfig: fetcher.CreateAuthConfig(appConfig)}
 
 			cc := &api.DbContext{Context: c,
-				CRUDExercise: crud.NewCRUDExercise(db),
-				CRUDTimeslot: crud.NewCRUDTimeslot(db),
-				CRUDWorkSet:  crud.NewCRUDWorkSet(db),
-				IAM:          iam}
+				CRUDExercise:    crud.NewCRUDExercise(db),
+				CRUDTimeslot:    crudTimeslot,
+				CRUDWorkSet:     crud.NewCRUDWorkSet(db),
+				IAM:             iam,
+				ServiceTimeslot: service.Timeslot{Crud: crudTimeslot, IAM: iam},
+			}
 
 			return next(cc)
 		}

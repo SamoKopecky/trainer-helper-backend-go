@@ -22,7 +22,7 @@ func Get(c echo.Context) error {
 		return err
 	}
 	if len(timeslots) == 0 {
-		timeslots = []model.ApiTimeslot{}
+		timeslots = []*model.Timeslot{}
 	}
 
 	return cc.JSON(http.StatusOK, timeslots)
@@ -46,11 +46,7 @@ func Post(c echo.Context) error {
 		return err
 	}
 
-	full, err := toFullTimeslot(newTimeslot)
-	if err != nil {
-		return err
-	}
-	return cc.JSON(http.StatusOK, full)
+	return cc.JSON(http.StatusOK, model.ApiTimeslot{Timeslot: *newTimeslot})
 }
 
 func Delete(c echo.Context) error {
@@ -61,21 +57,13 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	timeslot, err := cc.CRUDTimeslot.Delete(params.Id)
+	err = cc.CRUDTimeslot.Delete(params.Id)
 
 	if err != nil {
 		return err
 	}
 
-	if timeslot.IsEmpty() {
-		return cc.NoContent(http.StatusNotFound)
-	}
-
-	full, err := toFullTimeslot(timeslot)
-	if err != nil {
-		return err
-	}
-	return cc.JSON(http.StatusOK, full)
+	return cc.NoContent(http.StatusOK)
 }
 
 func Put(c echo.Context) error {

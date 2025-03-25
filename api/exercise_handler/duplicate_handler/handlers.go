@@ -98,6 +98,6 @@ func updateTimeslot(params *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		return
 	}
 
-	newApiTimeslot, err = cc.CRUDTimeslot.GetById(params.TimeslotId)
+	newApiTimeslot, err = cc.ServiceTimeslot.GetById(params.TimeslotId)
 	return
 }

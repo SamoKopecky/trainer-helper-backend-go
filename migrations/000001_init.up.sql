@@ -10,8 +10,8 @@ CREATE TABLE exercise (
 
 CREATE TABLE timeslot (
     id integer NOT NULL,
-    trainer_id integer NOT NULL,
-    trainee_id integer,
+    trainer_id character varying NOT NULL,
+    trainee_id character varying,
     name character varying NOT NULL,
     start timestamp without time zone NOT NULL,
     "end" timestamp without time zone NOT NULL,

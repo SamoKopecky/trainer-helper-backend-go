@@ -76,7 +76,7 @@ func (d DbConn) SeedDb() {
 
 func (d DbConn) seedTimeslots() []model.Timeslot {
 	ctx := context.Background()
-	const TRAINER_ID = 1
+	const TRAINER_ID = "1"
 	var timeslots []model.Timeslot
 	timeNow := time.Now()
 
