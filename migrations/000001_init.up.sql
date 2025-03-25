@@ -25,7 +25,7 @@ CREATE TABLE timeslot (
     "end" timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-	deleted_at timestamp without time zone 
+    deleted_at timestamp without time zone 
 );
 
 CREATE TABLE work_set (

@@ -76,13 +76,25 @@ func (d DbConn) SeedDb() {
 
 func (d DbConn) seedUsers() int32 {
 	ctx := context.Background()
-
-	user := *model.BuildPerson("Samo Kopecky", "abc@wow.com")
-	_, err := d.Conn.NewInsert().Model(&user).Exec(ctx)
-	if err != nil {
-		panic(err)
+	users := []struct {
+		name  string
+		email string
+	}{
+		{name: "Samo Kopecky", email: "samo.kopecky@th.com"},
+		{name: "Peter Turbo", email: "peter.turbo@gmail.com"},
+		{name: "Jozko Mrkvicka", email: "jozko.mrkvicka@gmail.com"},
+		{name: "Ibi Maiga", email: "ibi.maiga@gmail.com"},
 	}
-	return user.Id
+
+	var modelUser model.Person
+	for _, user := range users {
+		modelUser = *model.BuildPerson(user.name, user.email)
+		_, err := d.Conn.NewInsert().Model(&modelUser).Exec(ctx)
+		if err != nil {
+			log.Panic(err)
+		}
+	}
+	return modelUser.Id
 }
 
 func (d DbConn) seedTimeslots(personId int32) []model.Timeslot {
