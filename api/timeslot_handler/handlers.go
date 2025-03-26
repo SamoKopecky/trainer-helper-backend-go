@@ -6,7 +6,6 @@ import (
 	"trainer-helper/api"
 	"trainer-helper/model"
 	"trainer-helper/schemas"
-	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )

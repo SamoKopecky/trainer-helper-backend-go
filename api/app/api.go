@@ -31,10 +31,10 @@ func logError(err error, c echo.Context) {
 
 	code := http.StatusInternalServerError
 	errMsg := "Internal server error"
-	he, ok := err.(*echo.HTTPError)
+	httpError, ok := err.(*echo.HTTPError)
 	if ok {
-		code = he.Code
-		errMsg = fmt.Sprint(he.Message)
+		code = httpError.Code
+		errMsg = fmt.Sprint(httpError.Message)
 	}
 
 	if err := c.JSON(code, map[string]string{"message": errMsg}); err != nil {

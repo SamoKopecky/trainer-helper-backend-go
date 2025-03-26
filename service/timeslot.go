@@ -72,9 +72,11 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, claims *api.JwtClaims) 
 			Timeslot: timeslot,
 		}
 
-		if user, ok := iamUserMap[*timeslot.TraineeId]; ok {
-			fullName := user.FullName()
-			apiTimeslot.UserName = &fullName
+		if apiTimeslot.TraineeId != nil {
+			if user, ok := iamUserMap[*timeslot.TraineeId]; ok {
+				fullName := user.FullName()
+				apiTimeslot.UserName = &fullName
+			}
 		}
 
 		apiTimeslots[i] = apiTimeslot

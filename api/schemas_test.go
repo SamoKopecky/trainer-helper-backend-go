@@ -24,7 +24,6 @@ func TestGetAppRole(t *testing.T) {
 }
 
 func TestGetAppRoleTrainee(t *testing.T) {
-	print("\n\n now \n\n")
 	jcc := JwtClaims{
 		RealmAccess: map[string][]string{
 			"roles": {
