@@ -6,12 +6,13 @@ import (
 	"slices"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Post(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseDuplicatePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -35,7 +36,7 @@ func Post(c echo.Context) error {
 	})
 }
 
-func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
+func updateExericses(param *exerciseDuplicatePostParams, cc *schemas.DbContext) (newExercises []*model.Exercise, err error) {
 	err = cc.ExerciseCrud.DeleteByTimeslot(param.TimeslotId)
 	if err != nil {
 		return
@@ -80,7 +81,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 	return
 }
 
-func updateTimeslot(params *exerciseDuplicatePostParams, cc *api.DbContext) (newApiTimeslot model.ApiTimeslot, err error) {
+func updateTimeslot(params *exerciseDuplicatePostParams, cc *schemas.DbContext) (newApiTimeslot model.ApiTimeslot, err error) {
 	copyTimeslot, err := cc.TimeslotCrud.GetById(params.CopyTimeslotId)
 	if err != nil {
 		return

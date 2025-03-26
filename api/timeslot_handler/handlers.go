@@ -5,35 +5,32 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotGetParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
-	claims := c.Get("user")
-	utils.PrettyPrint(claims)
 
-	cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, "test")
-	timeslots, err := cc.TimeslotCrud.GetByTimeRange(params.StartDate, params.EndDate)
-	if err != nil {
-		return err
-	}
-	if len(timeslots) == 0 {
-		timeslots = []*model.Timeslot{}
+	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, cc.GetClaims())
+	utils.PrettyPrint(apiTimeslots)
+
+	if apiTimeslots == nil {
+		apiTimeslots = []model.ApiTimeslot{}
 	}
 
-	return cc.JSON(http.StatusOK, timeslots)
+	return cc.JSON(http.StatusOK, apiTimeslots)
 }
 
 func Post(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotPostParams](cc)
 	if err != nil {
@@ -54,7 +51,7 @@ func Post(c echo.Context) error {
 }
 
 func Delete(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotDeleteParams](cc)
 	if err != nil {
@@ -71,7 +68,7 @@ func Delete(c echo.Context) error {
 }
 
 func Put(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotPutParams](cc)
 	if err != nil {

@@ -2,14 +2,14 @@ package person_handler
 
 import (
 	"net/http"
-	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) (err error) {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	users, err := cc.IAMFetcher.GetUsers()
 	if err != nil {

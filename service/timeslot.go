@@ -3,10 +3,10 @@ package service
 import (
 	"log"
 	"time"
+	"trainer-helper/api"
 	"trainer-helper/crud"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
-	"trainer-helper/utils"
 )
 
 type Timeslot struct {
@@ -33,12 +33,45 @@ func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err err
 	return
 }
 
-func (t Timeslot) GetByRoleAndDate(start, end time.Time, role string) ([]model.ApiTimeslot, error) {
-	users, err := t.Fetcher.GetUsersByRole(role)
-	if err != nil {
-		return nil, err
+func (t Timeslot) GetByRoleAndDate(start, end time.Time, claims *api.JwtClaims) ([]model.ApiTimeslot, error) {
+	var err error
+	var iamUsers []fetcher.KeycloakUser
+
+	role, isTrainer := claims.GetAppRole()
+	if isTrainer {
+		iamUsers, err = t.Fetcher.GetUsersByRole(role)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		user, err := t.Fetcher.GetUserById(claims.Subject)
+		if err != nil {
+			return nil, err
+		}
+		iamUsers = append(iamUsers, user)
+
 	}
-	utils.PrettyPrint(users)
-	return nil, nil
+
+	iamUserMap := make(map[string]fetcher.KeycloakUser)
+	for _, user := range iamUsers {
+		iamUserMap[user.Id] = user
+	}
+
+	timeslots, err := t.Crud.GetByTimeRange(start, end)
+	apiTimeslots := make([]model.ApiTimeslot, len(timeslots))
+	for i, timeslot := range timeslots {
+		apiTimeslot := model.ApiTimeslot{
+			Timeslot: timeslot,
+		}
+
+		if user, ok := iamUserMap[*timeslot.TraineeId]; ok {
+			fullName := user.FullName()
+			apiTimeslot.UserName = &fullName
+		}
+
+		apiTimeslots[i] = apiTimeslot
+	}
+
+	return apiTimeslots, err
 
 }

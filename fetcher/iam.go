@@ -23,6 +23,10 @@ type KeycloakUser struct {
 	Email     string `json:"email"`
 }
 
+type RoleInfo struct {
+	Id string `json:"id"`
+}
+
 func (ku KeycloakUser) FullName() string {
 	return fmt.Sprintf("%s %s", ku.FirstName, ku.LastName)
 }
@@ -54,6 +58,10 @@ func (i IAM) getUrl(endpoint string) string {
 
 func (i IAM) getUserUrl() string {
 	return i.getUrl(fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm))
+}
+
+func (i IAM) getRoleUrl(role string) string {
+	return i.getUrl(fmt.Sprintf("admin/realms/%s/roles/%s", i.AppConfig.KeycloakRealm, role))
 }
 
 func (i IAM) authedRequest(url string) (*http.Response, error) {
@@ -97,5 +105,10 @@ func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 }
 
 func (i IAM) GetUsersByRole(role string) ([]KeycloakUser, error) {
-	return nil, nil
+	resp, err := i.authedRequest(fmt.Sprintf("%s/users", i.getRoleUrl(role)))
+	if err != nil {
+		return nil, err
+	}
+
+	return responseData[[]KeycloakUser](resp)
 }

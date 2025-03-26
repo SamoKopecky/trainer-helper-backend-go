@@ -1,9 +1,6 @@
 package app
 
 import (
-	"context"
-	"crypto/rsa"
-	"errors"
 	"fmt"
 	"net/http"
 	"trainer-helper/api"
@@ -17,25 +14,14 @@ import (
 	"trainer-helper/config"
 	"trainer-helper/crud"
 	"trainer-helper/fetcher"
+	"trainer-helper/schemas"
 	"trainer-helper/service"
-	"trainer-helper/utils"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/lestrrat-go/jwx/jwk"
 	"github.com/uptrace/bun"
-)
-
-const (
-	ColorReset   = "\033[0m"
-	ColorRed     = "\033[31m"
-	ColorGreen   = "\033[32m"
-	ColorYellow  = "\033[33m"
-	ColorBlue    = "\033[34m"
-	ColorMagenta = "\033[35m"
-	ColorCyan    = "\033[36m"
 )
 
 func logError(err error, c echo.Context) {
@@ -56,35 +42,6 @@ func logError(err error, c echo.Context) {
 	}
 }
 
-type jwtCustomClaims struct {
-	Name  string `json:"name"`
-	Admin bool   `json:"admin"`
-}
-
-func getKey(token *jwt.Token) (any, error) {
-	// TODO: Use cache, use config
-	keySet, err := jwk.Fetch(context.Background(), "http://localhost:8080/realms/trainer-helper/protocol/openid-connect/certs")
-	if err != nil {
-		return rsa.PublicKey{}, err
-	}
-
-	keyID, ok := token.Header["kid"].(string)
-	if !ok {
-		return rsa.PublicKey{}, errors.New("expecting JWT header to have a key ID in the kid field")
-	}
-
-	key, found := keySet.LookupKeyID(keyID)
-	if !found {
-		return rsa.PublicKey{}, fmt.Errorf("unable to find key %q", keyID)
-	}
-	var pubkey rsa.PublicKey
-	if err := key.Raw(&pubkey); err != nil {
-		return rsa.PublicKey{}, fmt.Errorf("Unable to get the public key. Error: %s", err.Error())
-	}
-	utils.PrettyPrint(pubkey)
-	return &pubkey, nil
-}
-
 func RunApi(db *bun.DB, appConfig config.Config) {
 	e := echo.New()
 	e.HTTPErrorHandler = logError
@@ -95,7 +52,7 @@ func RunApi(db *bun.DB, appConfig config.Config) {
 				AppConfig:  appConfig,
 				AuthConfig: fetcher.CreateAuthConfig(appConfig)}
 
-			cc := &api.DbContext{Context: c,
+			cc := &schemas.DbContext{Context: c,
 				ExerciseCrud:    crud.NewExercise(db),
 				TimeslotCrud:    crudTimeslot,
 				WorkSetCrud:     crud.NewWorkSet(db),
@@ -114,6 +71,9 @@ func RunApi(db *bun.DB, appConfig config.Config) {
 	g.Use(echojwt.WithConfig(echojwt.Config{
 		KeyFunc:       getKey,
 		SigningMethod: "RS256",
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return new(api.JwtClaims)
+		},
 	}))
 	g.GET("/timeslot", timeslot_handler.Get)
 	g.POST("/timeslot", timeslot_handler.Post)

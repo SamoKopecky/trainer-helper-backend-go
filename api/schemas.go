@@ -1,28 +1,40 @@
 package api
 
 import (
-	"fmt"
-	"net/http"
-	"trainer-helper/crud"
-	"trainer-helper/fetcher"
-	"trainer-helper/service"
+	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/golang-jwt/jwt/v5"
 )
 
-type DbContext struct {
-	echo.Context
+const (
+	trainerPostfix = "trainer_app"
+	traineePostfix = "trainee_app"
+	rolesKey       = "roles"
+)
 
-	// TODO: Rename crud to just the name without crud
-	ExerciseCrud crud.Exercise
-	TimeslotCrud crud.Timeslot
-	WorkSetCrud  crud.WorkSet
+func (jcc JwtClaims) GetAppRole() (string, bool) {
+	var trainerRole string
+	var traineeRole string
+	for k, v := range jcc.RealmAccess {
+		if k == rolesKey {
+			for _, role := range v {
+				if strings.Contains(role, trainerPostfix) {
+					traineeRole = role
+				} else if strings.Contains(role, traineePostfix) {
+					trainerRole = role
+				}
+			}
+			break
+		}
+	}
 
-	IAMFetcher fetcher.IAM
-
-	TimeslotService service.Timeslot
+	if trainerRole != "" {
+		return traineeRole, true
+	}
+	return trainerRole, false
 }
 
-func (c DbContext) BadRequest(err error) error {
-	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid query parameters", "reason": fmt.Sprint(err)})
+type JwtClaims struct {
+	RealmAccess map[string][]string `json:"realm_access"`
+	jwt.RegisteredClaims
 }

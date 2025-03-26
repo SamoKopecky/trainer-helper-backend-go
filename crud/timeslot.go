@@ -16,9 +16,9 @@ func NewTimeslot(db *bun.DB) Timeslot {
 	return Timeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 
-func (t Timeslot) GetByTimeRange(startDate, endDate time.Time) ([]*model.Timeslot, error) {
+func (t Timeslot) GetByTimeRange(startDate, endDate time.Time) ([]model.Timeslot, error) {
 	ctx := context.Background()
-	var timeslots []*model.Timeslot
+	var timeslots []model.Timeslot
 
 	err := t.db.NewSelect().
 		Model(&timeslots).

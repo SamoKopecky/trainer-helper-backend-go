@@ -11,7 +11,7 @@ type Timeslot struct {
 	IdModel
 
 	TrainerId string    `json:"trainer_id"`
-	TraineeId *string   `json:"user_id"`
+	TraineeId *string   `json:"trainee_id"`
 	Name      string    `json:"name"`
 	Start     time.Time `json:"start"`
 	End       time.Time `json:"end"`
