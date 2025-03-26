@@ -17,7 +17,7 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	timeslots, err := cc.CRUDTimeslot.GetByTimeRange(params.StartDate, params.EndDate)
+	timeslots, err := cc.TimeslotCrud.GetByTimeRange(params.StartDate, params.EndDate)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func Post(c echo.Context) error {
 		humanTime(params.End),
 		humanDate(params.Start))
 	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, nil, params.TrainerId, nil)
-	err = cc.CRUDTimeslot.Insert(newTimeslot)
+	err = cc.TimeslotCrud.Insert(newTimeslot)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.CRUDTimeslot.Delete(params.Id)
+	err = cc.TimeslotCrud.Delete(params.Id)
 
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func Put(c echo.Context) error {
 	}
 
 	model := params.toModel()
-	err = cc.CRUDTimeslot.Update(&model)
+	err = cc.TimeslotCrud.Update(&model)
 	if err != nil {
 		return err
 	}

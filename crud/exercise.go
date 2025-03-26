@@ -7,19 +7,19 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type CRUDExercise struct {
+type Exercise struct {
 	CRUDBase[model.Exercise]
 }
 
-func NewCRUDExercise(db *bun.DB) CRUDExercise {
-	return CRUDExercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
+func NewExercise(db *bun.DB) Exercise {
+	return Exercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
 }
 
-func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]*model.Exercise, error) {
+func (e Exercise) GetExerciseWorkSets(Id int32) ([]*model.Exercise, error) {
 	ctx := context.Background()
 	var res []*model.Exercise
 
-	err := c.db.NewSelect().
+	err := e.db.NewSelect().
 		Model(&res).
 		Relation("WorkSets").
 		Where("exercise.timeslot_id = ?", Id).
@@ -28,8 +28,8 @@ func (c CRUDExercise) GetExerciseWorkSets(Id int32) ([]*model.Exercise, error) {
 	return res, err
 }
 
-func (c CRUDExercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) error {
-	_, err := c.db.NewDelete().
+func (e Exercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) error {
+	_, err := e.db.NewDelete().
 		Model((*model.Exercise)(nil)).
 		Where("timeslot_id = ?", timeslotId).
 		Where("id = ?", exerciseId).
@@ -37,8 +37,8 @@ func (c CRUDExercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) 
 	return err
 }
 
-func (c CRUDExercise) DeleteByTimeslot(timeslotId int32) (err error) {
-	_, err = c.db.NewDelete().
+func (e Exercise) DeleteByTimeslot(timeslotId int32) (err error) {
+	_, err = e.db.NewDelete().
 		Model((*model.Exercise)(nil)).
 		Where("timeslot_id = ?", timeslotId).
 		Exec(context.Background())

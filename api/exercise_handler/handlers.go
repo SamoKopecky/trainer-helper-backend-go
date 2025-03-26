@@ -21,7 +21,7 @@ func Get(c echo.Context) error {
 		Id: int32(paramId),
 	}
 
-	exercises, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
+	exercises, err := cc.ExerciseCrud.GetExerciseWorkSets(params.Id)
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func Get(c echo.Context) error {
 		exercise.SortWorkSets()
 	}
 
-	apiTimeslot, err := cc.ServiceTimeslot.GetById(params.Id)
+	apiTimeslot, err := cc.TimeslotService.GetById(params.Id)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func Put(c echo.Context) error {
 	}
 
 	model := params.toModel()
-	err = cc.CRUDExercise.Update(&model)
+	err = cc.ExerciseCrud.Update(&model)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.CRUDExercise.DeleteByExerciseAndTimeslot(params.TimeslotId, params.ExerciseId)
+	err = cc.ExerciseCrud.DeleteByExerciseAndTimeslot(params.TimeslotId, params.ExerciseId)
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func Post(c echo.Context) error {
 
 	// Create exercise
 	newExercise := model.BuildExercise(params.TimeslotId, params.GroupId, "", model.None)
-	err = cc.CRUDExercise.Insert(newExercise)
+	err = cc.ExerciseCrud.Insert(newExercise)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func Post(c echo.Context) error {
 	for i := range workSetCount {
 		newWorkSets[i] = model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
 	}
-	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
+	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {
 		return err
 	}

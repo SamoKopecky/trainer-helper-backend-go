@@ -11,7 +11,7 @@ import (
 func Get(c echo.Context) (err error) {
 	cc := c.(*api.DbContext)
 
-	users, err := cc.IAM.GetUsers()
+	users, err := cc.IAMFetcher.GetUsers()
 	if err != nil {
 		return err
 	}

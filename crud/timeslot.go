@@ -8,19 +8,19 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type CRUDTimeslot struct {
+type Timeslot struct {
 	CRUDBase[model.Timeslot]
 }
 
-func NewCRUDTimeslot(db *bun.DB) CRUDTimeslot {
-	return CRUDTimeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
+func NewTimeslot(db *bun.DB) Timeslot {
+	return Timeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 
-func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]*model.Timeslot, error) {
+func (t Timeslot) GetByTimeRange(startDate, endDate time.Time) ([]*model.Timeslot, error) {
 	ctx := context.Background()
 	var timeslots []*model.Timeslot
 
-	err := c.db.NewSelect().
+	err := t.db.NewSelect().
 		Model(&timeslots).
 		Where("start BETWEEN ? AND ?", startDate, endDate).
 		Scan(ctx)
@@ -28,11 +28,11 @@ func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]*model.Tim
 	return timeslots, err
 }
 
-func (c CRUDTimeslot) GetById(timeslotId int32) (model.Timeslot, error) {
+func (t Timeslot) GetById(timeslotId int32) (model.Timeslot, error) {
 	ctx := context.Background()
 	var timeslot model.Timeslot
 
-	err := c.db.NewSelect().
+	err := t.db.NewSelect().
 		Model(&timeslot).
 		Where("timeslot.id = ?", timeslotId).
 		Scan(ctx)
@@ -41,11 +41,11 @@ func (c CRUDTimeslot) GetById(timeslotId int32) (model.Timeslot, error) {
 
 }
 
-func (c CRUDTimeslot) Delete(timeslotId int32) error {
+func (t Timeslot) Delete(timeslotId int32) error {
 	ctx := context.Background()
 
 	// Actually does soft delete
-	_, err := c.db.NewDelete().
+	_, err := t.db.NewDelete().
 		Model((*model.Timeslot)(nil)).
 		Where("id = ?", timeslotId).
 		Exec(ctx)
@@ -53,8 +53,8 @@ func (c CRUDTimeslot) Delete(timeslotId int32) error {
 	return err
 }
 
-func (c CRUDTimeslot) RevertSolfDelete(timeslotId int32) error {
-	_, err := c.db.NewUpdate().
+func (t Timeslot) RevertSolfDelete(timeslotId int32) error {
+	_, err := t.db.NewUpdate().
 		Model((*model.Timeslot)(nil)).
 		Set("deleted_at = ?", nil).
 		WhereAllWithDeleted().

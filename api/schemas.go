@@ -14,13 +14,13 @@ type DbContext struct {
 	echo.Context
 
 	// TODO: Rename crud to just the name without crud
-	CRUDExercise crud.CRUDExercise
-	CRUDTimeslot crud.CRUDTimeslot
-	CRUDWorkSet  crud.CRUDWorkSet
+	ExerciseCrud crud.Exercise
+	TimeslotCrud crud.Timeslot
+	WorkSetCrud  crud.WorkSet
 
-	IAM fetcher.IAM
+	IAMFetcher fetcher.IAM
 
-	ServiceTimeslot service.Timeslot
+	TimeslotService service.Timeslot
 }
 
 func (c DbContext) BadRequest(err error) error {

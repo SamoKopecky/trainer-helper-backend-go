@@ -21,7 +21,7 @@ func Put(c echo.Context) error {
 		newWorkSet.Id = model.EmptyId
 		newWorkSets[i] = &newWorkSet
 	}
-	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
+	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	ids, err := cc.CRUDWorkSet.DeleteMany(params.WorkSetIds)
+	ids, err := cc.WorkSetCrud.DeleteMany(params.WorkSetIds)
 	if err != nil {
 		return err
 	}

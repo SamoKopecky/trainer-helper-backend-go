@@ -15,7 +15,7 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.CRUDTimeslot.RevertSolfDelete(params.Id)
+	err = cc.TimeslotCrud.RevertSolfDelete(params.Id)
 	if err != nil {
 		return err
 	}

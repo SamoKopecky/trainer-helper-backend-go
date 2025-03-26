@@ -8,8 +8,8 @@ import (
 )
 
 type Timeslot struct {
-	Crud crud.CRUDTimeslot
-	IAM  fetcher.IAM
+	Crud    crud.Timeslot
+	Fetcher fetcher.IAM
 }
 
 func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err error) {
@@ -22,7 +22,7 @@ func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err err
 		return
 	}
 
-	iamTimeslot, err := t.IAM.GetUserById(*crudTimeslot.TraineeId)
+	iamTimeslot, err := t.Fetcher.GetUserById(*crudTimeslot.TraineeId)
 	if err != nil {
 		log.Fatal(err)
 	}

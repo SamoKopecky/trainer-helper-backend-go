@@ -83,17 +83,17 @@ func RunApi(db *bun.DB, appConfig config.Config) {
 	e := echo.New()
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			crudTimeslot := crud.NewCRUDTimeslot(db)
+			crudTimeslot := crud.NewTimeslot(db)
 			iam := fetcher.IAM{
 				AppConfig:  appConfig,
 				AuthConfig: fetcher.CreateAuthConfig(appConfig)}
 
 			cc := &api.DbContext{Context: c,
-				CRUDExercise:    crud.NewCRUDExercise(db),
-				CRUDTimeslot:    crudTimeslot,
-				CRUDWorkSet:     crud.NewCRUDWorkSet(db),
-				IAM:             iam,
-				ServiceTimeslot: service.Timeslot{Crud: crudTimeslot, IAM: iam},
+				ExerciseCrud:    crud.NewExercise(db),
+				TimeslotCrud:    crudTimeslot,
+				WorkSetCrud:     crud.NewWorkSet(db),
+				IAMFetcher:      iam,
+				TimeslotService: service.Timeslot{Crud: crudTimeslot, IAM: iam},
 			}
 
 			return next(cc)

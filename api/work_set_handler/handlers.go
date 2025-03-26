@@ -16,7 +16,7 @@ func Put(c echo.Context) error {
 	}
 
 	model := params.toModel()
-	err = cc.CRUDWorkSet.Update(&model)
+	err = cc.WorkSetCrud.Update(&model)
 	if err != nil {
 		return err
 	}
