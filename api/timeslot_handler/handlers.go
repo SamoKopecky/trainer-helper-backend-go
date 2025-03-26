@@ -20,7 +20,6 @@ func Get(c echo.Context) error {
 	}
 
 	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, cc.GetClaims())
-	utils.PrettyPrint(apiTimeslots)
 
 	if apiTimeslots == nil {
 		apiTimeslots = []model.ApiTimeslot{}

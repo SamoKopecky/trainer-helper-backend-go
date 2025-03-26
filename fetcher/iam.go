@@ -106,6 +106,7 @@ func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 
 func (i IAM) GetUsersByRole(role string) ([]KeycloakUser, error) {
 	resp, err := i.authedRequest(fmt.Sprintf("%s/users", i.getRoleUrl(role)))
+
 	if err != nil {
 		return nil, err
 	}

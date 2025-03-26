@@ -19,9 +19,9 @@ func (jcc JwtClaims) GetAppRole() (string, bool) {
 		if k == rolesKey {
 			for _, role := range v {
 				if strings.Contains(role, trainerPostfix) {
-					traineeRole = role
-				} else if strings.Contains(role, traineePostfix) {
 					trainerRole = role
+				} else if strings.Contains(role, traineePostfix) {
+					traineeRole = role
 				}
 			}
 			break
@@ -29,9 +29,9 @@ func (jcc JwtClaims) GetAppRole() (string, bool) {
 	}
 
 	if trainerRole != "" {
-		return traineeRole, true
+		return strings.Replace(trainerRole, "trainer", "trainee", -1), true
 	}
-	return trainerRole, false
+	return traineeRole, false
 }
 
 type JwtClaims struct {

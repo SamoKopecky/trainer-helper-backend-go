@@ -36,10 +36,15 @@ func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err err
 func (t Timeslot) GetByRoleAndDate(start, end time.Time, claims *api.JwtClaims) ([]model.ApiTimeslot, error) {
 	var err error
 	var iamUsers []fetcher.KeycloakUser
+	var timeslots []model.Timeslot
 
 	role, isTrainer := claims.GetAppRole()
 	if isTrainer {
 		iamUsers, err = t.Fetcher.GetUsersByRole(role)
+		if err != nil {
+			return nil, err
+		}
+		timeslots, err = t.Crud.GetByTimeRangeAndTrainerId(start, end, claims.Subject)
 		if err != nil {
 			return nil, err
 		}
@@ -49,6 +54,10 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, claims *api.JwtClaims) 
 			return nil, err
 		}
 		iamUsers = append(iamUsers, user)
+		timeslots, err = t.Crud.GetByTimeRangeAndTraineeId(start, end, claims.Subject)
+		if err != nil {
+			return nil, err
+		}
 
 	}
 
@@ -57,7 +66,6 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, claims *api.JwtClaims) 
 		iamUserMap[user.Id] = user
 	}
 
-	timeslots, err := t.Crud.GetByTimeRange(start, end)
 	apiTimeslots := make([]model.ApiTimeslot, len(timeslots))
 	for i, timeslot := range timeslots {
 		apiTimeslot := model.ApiTimeslot{

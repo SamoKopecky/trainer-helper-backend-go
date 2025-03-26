@@ -16,16 +16,24 @@ func NewTimeslot(db *bun.DB) Timeslot {
 	return Timeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 
-func (t Timeslot) GetByTimeRange(startDate, endDate time.Time) ([]model.Timeslot, error) {
-	ctx := context.Background()
-	var timeslots []model.Timeslot
+func (t Timeslot) getByTimeRange(startDate, endDate time.Time) *bun.SelectQuery {
+	return t.db.NewSelect().Where("start BETWEEN ? AND ?", startDate, endDate)
+}
 
-	err := t.db.NewSelect().
+func (t Timeslot) GetByTimeRangeAndTraineeId(startDate, endDate time.Time, traineeId string) (timeslots []model.Timeslot, err error) {
+	err = t.getByTimeRange(startDate, endDate).
 		Model(&timeslots).
-		Where("start BETWEEN ? AND ?", startDate, endDate).
-		Scan(ctx)
+		Where("trainee_id = ?", traineeId).
+		Scan(context.Background())
+	return
+}
 
-	return timeslots, err
+func (t Timeslot) GetByTimeRangeAndTrainerId(startDate, endDate time.Time, trainerId string) (timeslots []model.Timeslot, err error) {
+	err = t.getByTimeRange(startDate, endDate).
+		Model(&timeslots).
+		Where("trainer_id = ?", trainerId).
+		Scan(context.Background())
+	return
 }
 
 func (t Timeslot) GetById(timeslotId int32) (model.Timeslot, error) {
