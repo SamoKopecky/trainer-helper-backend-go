@@ -2,9 +2,11 @@ package service
 
 import (
 	"log"
+	"time"
 	"trainer-helper/crud"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
+	"trainer-helper/utils"
 )
 
 type Timeslot struct {
@@ -29,4 +31,14 @@ func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err err
 	fullName := iamTimeslot.FullName()
 	timeslot.UserName = &fullName
 	return
+}
+
+func (t Timeslot) GetByRoleAndDate(start, end time.Time, role string) ([]model.ApiTimeslot, error) {
+	users, err := t.Fetcher.GetUsersByRole(role)
+	if err != nil {
+		return nil, err
+	}
+	utils.PrettyPrint(users)
+	return nil, nil
+
 }

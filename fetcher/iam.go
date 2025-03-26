@@ -56,53 +56,46 @@ func (i IAM) getUserUrl() string {
 	return i.getUrl(fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm))
 }
 
-func (i IAM) authedRequest(request *http.Request) (response *http.Response, err error) {
+func (i IAM) authedRequest(url string) (*http.Response, error) {
+	request, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
 	client := oauth2.NewClient(context.Background(), i.AuthConfig.TokenSource(context.Background()))
-	response, err = client.Do(request)
-	if err != nil {
-		return
-	}
-	return
+	return client.Do(request)
 }
 
-func (i IAM) GetUsers() (users []KeycloakUser, err error) {
-	// NOTE: Possible improvments cache tese requests
-	req, err := http.NewRequest("GET", i.getUserUrl(), nil)
+func responseData[T any](response *http.Response) (data T, err error) {
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return
 	}
-
-	// TODO: Generalzie
-	resp, err := i.authedRequest(req)
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-	err = json.Unmarshal(body, &users)
+	err = json.Unmarshal(body, &data)
 	return
+
 }
 
-func (i IAM) GetUserById(userId string) (user KeycloakUser, err error) {
-	url := fmt.Sprintf("%s/%s", i.getUserUrl(), userId)
-	req, err := http.NewRequest("GET", url, nil)
+func (i IAM) GetUsers() ([]KeycloakUser, error) {
+	resp, err := i.authedRequest(i.getUserUrl())
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	resp, err := i.authedRequest(req)
-	defer resp.Body.Close()
+	return responseData[[]KeycloakUser](resp)
+}
 
-	body, err := io.ReadAll(resp.Body)
+func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
+	var user KeycloakUser
+
+	resp, err := i.authedRequest(fmt.Sprintf("%s/%s", i.getUserUrl(), userId))
 	if err != nil {
-		return
+		return user, err
 	}
-	// TODO: Handle no user response
-	err = json.Unmarshal(body, &user)
-	return
 
+	return responseData[KeycloakUser](resp)
+}
+
+func (i IAM) GetUsersByRole(role string) ([]KeycloakUser, error) {
+	return nil, nil
 }

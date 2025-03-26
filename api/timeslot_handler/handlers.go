@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,7 +17,10 @@ func Get(c echo.Context) error {
 	if err != nil {
 		return cc.BadRequest(err)
 	}
+	claims := c.Get("user")
+	utils.PrettyPrint(claims)
 
+	cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, "test")
 	timeslots, err := cc.TimeslotCrud.GetByTimeRange(params.StartDate, params.EndDate)
 	if err != nil {
 		return err
