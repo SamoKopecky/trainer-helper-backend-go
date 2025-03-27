@@ -33,36 +33,18 @@ func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err err
 	return
 }
 
-func (t Timeslot) GetByRoleAndDate(start, end time.Time, claims *api.JwtClaims) ([]model.ApiTimeslot, error) {
+func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.KeycloakUser, claims *api.JwtClaims) ([]model.ApiTimeslot, error) {
 	var err error
-	var iamUsers []fetcher.KeycloakUser
 	var timeslots []model.Timeslot
 
-	role, isTrainer := claims.GetAppRole()
-	if isTrainer {
-		iamUsers, err = t.Fetcher.GetUsersByRole(role)
-		if err != nil {
-			return nil, err
-		}
-		timeslots, err = t.Crud.GetByTimeRangeAndTrainerId(start, end, claims.Subject)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		user, err := t.Fetcher.GetUserById(claims.Subject)
-		if err != nil {
-			return nil, err
-		}
-		iamUsers = append(iamUsers, user)
-		timeslots, err = t.Crud.GetByTimeRangeAndTraineeId(start, end, claims.Subject)
-		if err != nil {
-			return nil, err
-		}
-
+	isTrainer := claims.IsTrainer()
+	timeslots, err = t.Crud.GetByTimeRangeAndUserId(start, end, claims.Subject, isTrainer)
+	if err != nil {
+		return nil, err
 	}
 
 	iamUserMap := make(map[string]fetcher.KeycloakUser)
-	for _, user := range iamUsers {
+	for _, user := range users {
 		iamUserMap[user.Id] = user
 	}
 

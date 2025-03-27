@@ -1,6 +1,7 @@
 package api
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -9,29 +10,52 @@ import (
 const (
 	trainerPostfix = "trainer_app"
 	traineePostfix = "trainee_app"
+	trainerRegex   = `.*` + trainerPostfix + `.*`
+	traineeRegex   = `.*` + traineePostfix + `.*`
 	rolesKey       = "roles"
 )
 
-func (jcc JwtClaims) GetAppRole() (string, bool) {
-	var trainerRole string
-	var traineeRole string
-	for k, v := range jcc.RealmAccess {
-		if k == rolesKey {
-			for _, role := range v {
-				if strings.Contains(role, trainerPostfix) {
-					trainerRole = role
-				} else if strings.Contains(role, traineePostfix) {
-					traineeRole = role
-				}
+func (jcc JwtClaims) IsTrainer() bool {
+	if roles, ok := jcc.RealmAccess[rolesKey]; ok {
+		for _, role := range roles {
+			if matched, _ := regexp.MatchString(trainerRegex, role); matched {
+				return true
 			}
-			break
 		}
 	}
+	return false
+}
 
-	if trainerRole != "" {
-		return strings.Replace(trainerRole, "trainer", "trainee", -1), true
+func (jcc JwtClaims) AppRole() (role string, isTrainer bool) {
+	isTrainer = false
+	trainerCompiled, _ := regexp.Compile(trainerRegex)
+	traineeCompiled, _ := regexp.Compile(traineeRegex)
+
+	if roles, ok := jcc.RealmAccess[rolesKey]; ok {
+		for _, r := range roles {
+			if match := trainerCompiled.FindString(r); match != "" {
+				role = match
+				isTrainer = true
+				// If trainer found, return imidiedatly
+				return
+			}
+
+			if match := traineeCompiled.FindString(r); match != "" {
+				role = match
+				// If trainee found, wait until possible trainer is found
+			}
+		}
 	}
-	return traineeRole, false
+	return
+}
+
+func (jcc JwtClaims) AppTraineeRole() (role string, isTrainer bool) {
+	role, isTrainer = jcc.AppRole()
+	if isTrainer {
+		role = strings.Replace(role, trainerPostfix, traineePostfix, -1)
+		return
+	}
+	return
 }
 
 type JwtClaims struct {

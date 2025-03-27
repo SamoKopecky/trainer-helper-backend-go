@@ -11,11 +11,10 @@ import (
 func Get(c echo.Context) (err error) {
 	cc := c.(*schemas.DbContext)
 
-	users, err := cc.IAMFetcher.GetUsers()
+	users, err := cc.PersonService.GetUsers(cc.GetClaims())
 	if err != nil {
 		return err
 	}
-
 	models := make([]model.Person, len(users))
 	for i, user := range users {
 		models[i] = user.ToPersonModel()

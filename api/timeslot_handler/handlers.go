@@ -18,7 +18,16 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, cc.GetClaims())
+	claims := cc.GetClaims()
+	users, err := cc.PersonService.GetUsers(claims)
+	if err != nil {
+		return err
+	}
+
+	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, users, claims)
+	if err != nil {
+		return err
+	}
 
 	if apiTimeslots == nil {
 		apiTimeslots = []model.ApiTimeslot{}

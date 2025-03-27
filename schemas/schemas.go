@@ -22,6 +22,7 @@ type DbContext struct {
 	IAMFetcher fetcher.IAM
 
 	TimeslotService service.Timeslot
+	PersonService   service.Person
 }
 
 func (c DbContext) GetClaims() *api.JwtClaims {
