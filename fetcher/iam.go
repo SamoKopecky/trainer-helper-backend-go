@@ -40,11 +40,11 @@ func (ku KeycloakUser) ToPersonModel() model.Person {
 }
 
 type IAM struct {
-	AppConfig  config.Config
+	AppConfig  *config.Config
 	AuthConfig clientcredentials.Config
 }
 
-func CreateAuthConfig(appConfig config.Config) clientcredentials.Config {
+func CreateAuthConfig(appConfig *config.Config) clientcredentials.Config {
 	return clientcredentials.Config{
 		ClientID:     appConfig.KeycloakAdminClientId,
 		ClientSecret: appConfig.KeycloakAdminClientSecret,
@@ -82,15 +82,6 @@ func responseData[T any](response *http.Response) (data T, err error) {
 	err = json.Unmarshal(body, &data)
 	return
 
-}
-
-func (i IAM) GetUsers() ([]KeycloakUser, error) {
-	resp, err := i.authedRequest(i.getUserUrl())
-	if err != nil {
-		return nil, err
-	}
-
-	return responseData[[]KeycloakUser](resp)
 }
 
 func (i IAM) GetUserById(userId string) (KeycloakUser, error) {

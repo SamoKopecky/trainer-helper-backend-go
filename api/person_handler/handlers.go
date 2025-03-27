@@ -11,7 +11,7 @@ import (
 func Get(c echo.Context) (err error) {
 	cc := c.(*schemas.DbContext)
 
-	users, err := cc.PersonService.GetUsers(cc.GetClaims())
+	users, err := cc.PersonService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}

@@ -42,7 +42,37 @@ func logError(err error, c echo.Context) {
 	}
 }
 
-func RunApi(db *bun.DB, appConfig config.Config) {
+func claimContextMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(*schemas.DbContext)
+		cc.Claims = cc.Get("user").(*jwt.Token).Claims.(*api.JwtClaims)
+		return next(c)
+	}
+}
+
+func trainerOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := c.(*schemas.DbContext)
+		if !cc.Claims.IsTrainer() {
+			return cc.NoContent(http.StatusForbidden)
+		}
+
+		return next(c)
+	}
+
+}
+
+func jwtMiddleware() echo.MiddlewareFunc {
+	return echojwt.WithConfig(echojwt.Config{
+		KeyFunc:       getKey,
+		SigningMethod: "RS256",
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return new(api.JwtClaims)
+		},
+	})
+}
+
+func RunApi(db *bun.DB, appConfig *config.Config) {
 	e := echo.New()
 	e.HTTPErrorHandler = logError
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -68,28 +98,27 @@ func RunApi(db *bun.DB, appConfig config.Config) {
 	e.Use(middleware.Logger())
 
 	e.GET("/-/ping", pong)
-	g := e.Group("")
-	g.Use(echojwt.WithConfig(echojwt.Config{
-		KeyFunc:       getKey,
-		SigningMethod: "RS256",
-		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return new(api.JwtClaims)
-		},
-	}))
-	g.GET("/timeslot", timeslot_handler.Get)
-	g.POST("/timeslot", timeslot_handler.Post)
-	g.DELETE("/timeslot", timeslot_handler.Delete)
-	g.PUT("/timeslot", timeslot_handler.Put)
-	g.PUT("/timeslot/revert", timeslot_revert_handler.Put)
-	g.GET("/exercise/:id", exercise_handler.Get)
-	g.PUT("/exercise", exercise_handler.Put)
-	g.DELETE("/exercise", exercise_handler.Delete)
-	g.POST("/exercise", exercise_handler.Post)
-	g.PUT("/exercise/count", exercise_count_handler.Put)
-	g.DELETE("/exercise/count", exercise_count_handler.Delete)
-	g.POST("/exercise/duplicate", exercise_duplicate_handler.Post)
-	g.PUT("/workset", work_set_handler.Put)
-	g.GET("/person", person_handler.Get)
+
+	jg := e.Group("")
+	jg.Use(jwtMiddleware())
+	jg.Use(claimContextMiddleware)
+	jg.GET("/timeslot", timeslot_handler.Get)
+	jg.GET("/exercise/:id", exercise_handler.Get)
+	jg.PUT("/exercise", exercise_handler.Put)
+	jg.DELETE("/exercise", exercise_handler.Delete)
+	jg.POST("/exercise", exercise_handler.Post)
+	jg.PUT("/exercise/count", exercise_count_handler.Put)
+	jg.DELETE("/exercise/count", exercise_count_handler.Delete)
+	jg.PUT("/workset", work_set_handler.Put)
+	jg.GET("/person", person_handler.Get)
+
+	to := jg.Group("")
+	to.Use(trainerOnlyMiddleware)
+	to.DELETE("/timeslot", timeslot_handler.Delete)
+	to.POST("/timeslot", timeslot_handler.Post)
+	to.PUT("/timeslot", timeslot_handler.Put)
+	to.PUT("/timeslot/revert", timeslot_revert_handler.Put)
+	to.POST("/exercise/duplicate", exercise_duplicate_handler.Post)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }

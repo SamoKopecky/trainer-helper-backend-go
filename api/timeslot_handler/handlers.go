@@ -18,13 +18,16 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	claims := cc.GetClaims()
-	users, err := cc.PersonService.GetUsers(claims)
+	users, err := cc.PersonService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}
 
-	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(params.StartDate, params.EndDate, users, claims)
+	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(
+		params.StartDate,
+		params.EndDate,
+		users,
+		cc.Claims)
 	if err != nil {
 		return err
 	}

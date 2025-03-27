@@ -18,5 +18,5 @@ func main() {
 		dbConn.SeedDb()
 	}
 
-	app.RunApi(dbConn.Conn, cfg)
+	app.RunApi(dbConn.Conn, &cfg)
 }

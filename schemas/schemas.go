@@ -8,7 +8,6 @@ import (
 	"trainer-helper/fetcher"
 	"trainer-helper/service"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,10 +22,8 @@ type DbContext struct {
 
 	TimeslotService service.Timeslot
 	PersonService   service.Person
-}
 
-func (c DbContext) GetClaims() *api.JwtClaims {
-	return c.Get("user").(*jwt.Token).Claims.(*api.JwtClaims)
+	Claims *api.JwtClaims
 }
 
 func (c DbContext) BadRequest(err error) error {
