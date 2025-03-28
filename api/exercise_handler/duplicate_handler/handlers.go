@@ -6,12 +6,13 @@ import (
 	"slices"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Post(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseDuplicatePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -35,13 +36,13 @@ func Post(c echo.Context) error {
 	})
 }
 
-func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
-	err = cc.CRUDExercise.DeleteByTimeslot(param.TimeslotId)
+func updateExericses(param *exerciseDuplicatePostParams, cc *schemas.DbContext) (newExercises []*model.Exercise, err error) {
+	err = cc.ExerciseCrud.DeleteByTimeslot(param.TimeslotId)
 	if err != nil {
 		return
 	}
 
-	copyExercises, err := cc.CRUDExercise.GetExerciseWorkSets(param.CopyTimeslotId)
+	copyExercises, err := cc.ExerciseCrud.GetExerciseWorkSets(param.CopyTimeslotId)
 	if err != nil {
 		return
 	}
@@ -53,7 +54,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		exercise.ToNew(param.TimeslotId)
 
 		// NOTE: Possible performance improvment, insert many
-		err = cc.CRUDExercise.Insert(exercise)
+		err = cc.ExerciseCrud.Insert(exercise)
 		if err != nil {
 			return
 		}
@@ -66,7 +67,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		newExercisesMap[exercise.Id] = exercise
 	}
 
-	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
+	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {
 		return
 	}
@@ -80,8 +81,8 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 	return
 }
 
-func updateTimeslot(params *exerciseDuplicatePostParams, cc *api.DbContext) (newApiTimeslot model.ApiTimeslot, err error) {
-	copyTimeslot, err := cc.CRUDTimeslot.GetById(params.CopyTimeslotId)
+func updateTimeslot(params *exerciseDuplicatePostParams, cc *schemas.DbContext) (newApiTimeslot model.ApiTimeslot, err error) {
+	copyTimeslot, err := cc.TimeslotCrud.GetById(params.CopyTimeslotId)
 	if err != nil {
 		return
 	}
@@ -93,11 +94,11 @@ func updateTimeslot(params *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		Name: copyTimeslot.Name,
 	}
 
-	err = cc.CRUDTimeslot.Update(&newTimeslot)
+	err = cc.TimeslotCrud.Update(&newTimeslot)
 	if err != nil {
 		return
 	}
 
-	newApiTimeslot, err = cc.CRUDTimeslot.GetById(params.TimeslotId)
+	newApiTimeslot, err = cc.TimeslotService.GetById(params.TimeslotId)
 	return
 }

@@ -12,7 +12,7 @@ type timeslotGetParams struct {
 }
 
 type timeslotPostParams struct {
-	TrainerId int32     `json:"trainer_id"`
+	TrainerId string    `json:"trainer_id"`
 	Start     time.Time `json:"start"`
 	End       time.Time `json:"end"`
 }
@@ -23,7 +23,7 @@ type timeslotDeleteParams struct {
 
 type timeslotPutParams struct {
 	Id        int32      `json:"id"`
-	UserId    *int32     `json:"user_id"`
+	TraineeId *string    `json:"trainee_id"`
 	Name      *string    `json:"name"`
 	Start     *time.Time `json:"start"`
 	End       *time.Time `json:"end"`
@@ -35,7 +35,7 @@ func (tpp timeslotPutParams) toModel() model.Timeslot {
 		IdModel: model.IdModel{
 			Id: tpp.Id,
 		},
-		UserId:    tpp.UserId,
+		TraineeId: tpp.TraineeId,
 		Name:      api.DerefString(tpp.Name),
 		Start:     api.DerefTime(tpp.Start),
 		End:       api.DerefTime(tpp.End),

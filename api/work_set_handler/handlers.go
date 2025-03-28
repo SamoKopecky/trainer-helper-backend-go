@@ -3,12 +3,13 @@ package work_set_handler
 import (
 	"net/http"
 	"trainer-helper/api"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Put(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[workSetPutRequest](cc)
 	if err != nil {
@@ -16,7 +17,7 @@ func Put(c echo.Context) error {
 	}
 
 	model := params.toModel()
-	err = cc.CRUDWorkSet.Update(&model)
+	err = cc.WorkSetCrud.Update(&model)
 	if err != nil {
 		return err
 	}

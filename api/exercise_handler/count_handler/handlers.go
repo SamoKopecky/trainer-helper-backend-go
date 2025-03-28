@@ -4,12 +4,13 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Put(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseCountPostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -21,7 +22,7 @@ func Put(c echo.Context) error {
 		newWorkSet.Id = model.EmptyId
 		newWorkSets[i] = &newWorkSet
 	}
-	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
+	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {
 		return err
 	}
@@ -30,13 +31,13 @@ func Put(c echo.Context) error {
 }
 
 func Delete(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseCountDeleteParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 
-	ids, err := cc.CRUDWorkSet.DeleteMany(params.WorkSetIds)
+	ids, err := cc.WorkSetCrud.DeleteMany(params.WorkSetIds)
 	if err != nil {
 		return err
 	}

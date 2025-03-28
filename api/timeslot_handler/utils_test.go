@@ -14,7 +14,6 @@ func TestHumanTime(t *testing.T) {
 	if got != want {
 		t.Errorf("got %s, want %s", got, want)
 	}
-
 }
 
 func TestHumanDate(t *testing.T) {
@@ -25,7 +24,6 @@ func TestHumanDate(t *testing.T) {
 	if got != want {
 		t.Errorf("got %s, want %s", got, want)
 	}
-
 }
 
 func TestToModelNil(t *testing.T) {

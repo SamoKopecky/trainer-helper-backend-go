@@ -6,12 +6,13 @@ import (
 	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	paramId, err := strconv.Atoi(cc.Param("id"))
 	if err != nil {
@@ -21,13 +22,7 @@ func Get(c echo.Context) error {
 		Id: int32(paramId),
 	}
 
-	// Get timeslot
-	apiTimeslot, err := cc.CRUDTimeslot.GetById(params.Id)
-	if err != nil {
-		return err
-	}
-
-	exercises, err := cc.CRUDExercise.GetExerciseWorkSets(params.Id)
+	exercises, err := cc.ExerciseCrud.GetExerciseWorkSets(params.Id)
 	if err != nil {
 		return err
 	}
@@ -45,6 +40,11 @@ func Get(c echo.Context) error {
 		exercise.SortWorkSets()
 	}
 
+	apiTimeslot, err := cc.TimeslotService.GetById(params.Id)
+	if err != nil {
+		return err
+	}
+
 	return cc.JSON(http.StatusOK, model.TimeslotExercises{
 		Timeslot:  apiTimeslot,
 		Exercises: exercises,
@@ -53,14 +53,14 @@ func Get(c echo.Context) error {
 }
 
 func Put(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exercisePutParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 
 	model := params.toModel()
-	err = cc.CRUDExercise.Update(&model)
+	err = cc.ExerciseCrud.Update(&model)
 	if err != nil {
 		return err
 	}
@@ -69,13 +69,13 @@ func Put(c echo.Context) error {
 }
 
 func Delete(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseDeleteParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.CRUDExercise.DeleteByExerciseAndTimeslot(params.TimeslotId, params.ExerciseId)
+	err = cc.ExerciseCrud.DeleteByExerciseAndTimeslot(params.TimeslotId, params.ExerciseId)
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func Delete(c echo.Context) error {
 }
 
 func Post(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exercisePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -92,7 +92,7 @@ func Post(c echo.Context) error {
 
 	// Create exercise
 	newExercise := model.BuildExercise(params.TimeslotId, params.GroupId, "", model.None)
-	err = cc.CRUDExercise.Insert(newExercise)
+	err = cc.ExerciseCrud.Insert(newExercise)
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func Post(c echo.Context) error {
 	for i := range workSetCount {
 		newWorkSets[i] = model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
 	}
-	err = cc.CRUDWorkSet.InsertMany(&newWorkSets)
+	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {
 		return err
 	}

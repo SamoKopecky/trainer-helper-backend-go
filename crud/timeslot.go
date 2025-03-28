@@ -8,62 +8,56 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type CRUDTimeslot struct {
+type Timeslot struct {
 	CRUDBase[model.Timeslot]
 }
 
-func NewCRUDTimeslot(db *bun.DB) CRUDTimeslot {
-	return CRUDTimeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
+func NewTimeslot(db *bun.DB) Timeslot {
+	return Timeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 
-func (c CRUDTimeslot) getTimeslotQuery() *bun.SelectQuery {
-	// Actually only selects not self deleted
-	return c.db.NewSelect().
-		Model((*model.Timeslot)(nil)).
-		ColumnExpr("person.name AS person_name").
-		ColumnExpr("timeslot.*").
-		Join("LEFT JOIN person ON person.id = timeslot.user_id")
+func (t Timeslot) GetByTimeRangeAndUserId(startDate, endDate time.Time, trainerId string, isTrainer bool) (timeslots []model.Timeslot, err error) {
+	baseQuery := t.db.NewSelect().
+		Model(&timeslots).
+		Where("start BETWEEN ? AND ?", startDate, endDate)
+
+	if isTrainer {
+		baseQuery.Where("trainer_id = ?", trainerId)
+	} else {
+		baseQuery.Where("trainee_id = ?", trainerId)
+	}
+
+	err = baseQuery.Scan(context.Background())
+	return
 }
 
-func (c CRUDTimeslot) GetByTimeRange(startDate, endDate time.Time) ([]model.ApiTimeslot, error) {
+func (t Timeslot) GetById(timeslotId int32) (model.Timeslot, error) {
 	ctx := context.Background()
-	var timeslots []model.ApiTimeslot
+	var timeslot model.Timeslot
 
-	err := c.getTimeslotQuery().
-		Where("start BETWEEN ? AND ?", startDate, endDate).
-		Scan(ctx, &timeslots)
-
-	return timeslots, err
-}
-
-func (c CRUDTimeslot) GetById(timeslotId int32) (model.ApiTimeslot, error) {
-	ctx := context.Background()
-	var timeslot model.ApiTimeslot
-
-	err := c.getTimeslotQuery().
+	err := t.db.NewSelect().
+		Model(&timeslot).
 		Where("timeslot.id = ?", timeslotId).
-		Scan(ctx, &timeslot)
+		Scan(ctx)
 
 	return timeslot, err
 
 }
 
-func (c CRUDTimeslot) Delete(timeslotId int32) (*model.Timeslot, error) {
+func (t Timeslot) Delete(timeslotId int32) error {
 	ctx := context.Background()
 
-	var timeslot model.Timeslot
 	// Actually does soft delete
-	_, err := c.db.NewDelete().
-		Model(&timeslot).
+	_, err := t.db.NewDelete().
+		Model((*model.Timeslot)(nil)).
 		Where("id = ?", timeslotId).
-		Returning("*").
 		Exec(ctx)
 
-	return &timeslot, err
+	return err
 }
 
-func (c CRUDTimeslot) RevertSolfDelete(timeslotId int32) error {
-	_, err := c.db.NewUpdate().
+func (t Timeslot) RevertSolfDelete(timeslotId int32) error {
+	_, err := t.db.NewUpdate().
 		Model((*model.Timeslot)(nil)).
 		Set("deleted_at = ?", nil).
 		WhereAllWithDeleted().

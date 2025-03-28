@@ -5,31 +5,42 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotGetParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 
-	timeslots, err := cc.CRUDTimeslot.GetByTimeRange(params.StartDate, params.EndDate)
+	users, err := cc.PersonService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}
-	if len(timeslots) == 0 {
-		timeslots = []model.ApiTimeslot{}
+
+	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(
+		params.StartDate,
+		params.EndDate,
+		users,
+		cc.Claims)
+	if err != nil {
+		return err
 	}
 
-	return cc.JSON(http.StatusOK, timeslots)
+	if apiTimeslots == nil {
+		apiTimeslots = []model.ApiTimeslot{}
+	}
+
+	return cc.JSON(http.StatusOK, apiTimeslots)
 }
 
 func Post(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotPostParams](cc)
 	if err != nil {
@@ -41,45 +52,33 @@ func Post(c echo.Context) error {
 		humanTime(params.End),
 		humanDate(params.Start))
 	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, nil, params.TrainerId, nil)
-	err = cc.CRUDTimeslot.Insert(newTimeslot)
+	err = cc.TimeslotCrud.Insert(newTimeslot)
 	if err != nil {
 		return err
 	}
 
-	full, err := toFullTimeslot(newTimeslot, cc.CRUDPerson)
-	if err != nil {
-		return err
-	}
-	return cc.JSON(http.StatusOK, full)
+	return cc.JSON(http.StatusOK, model.ApiTimeslot{Timeslot: *newTimeslot})
 }
 
 func Delete(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotDeleteParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 
-	timeslot, err := cc.CRUDTimeslot.Delete(params.Id)
+	err = cc.TimeslotCrud.Delete(params.Id)
 
 	if err != nil {
 		return err
 	}
 
-	if timeslot.IsEmpty() {
-		return cc.NoContent(http.StatusNotFound)
-	}
-
-	full, err := toFullTimeslot(timeslot, cc.CRUDPerson)
-	if err != nil {
-		return err
-	}
-	return cc.JSON(http.StatusOK, full)
+	return cc.NoContent(http.StatusOK)
 }
 
 func Put(c echo.Context) error {
-	cc := c.(*api.DbContext)
+	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timeslotPutParams](cc)
 	if err != nil {
@@ -87,7 +86,7 @@ func Put(c echo.Context) error {
 	}
 
 	model := params.toModel()
-	err = cc.CRUDTimeslot.Update(&model)
+	err = cc.TimeslotCrud.Update(&model)
 	if err != nil {
 		return err
 	}

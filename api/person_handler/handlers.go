@@ -2,23 +2,23 @@ package person_handler
 
 import (
 	"net/http"
-	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) error {
-	cc := c.(*api.DbContext)
+func Get(c echo.Context) (err error) {
+	cc := c.(*schemas.DbContext)
 
-	persons, err := cc.CRUDPerson.GetAll()
+	users, err := cc.PersonService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}
-
-	if len(persons) == 0 {
-		persons = []model.Person{}
+	models := make([]model.Person, len(users))
+	for i, user := range users {
+		models[i] = user.ToPersonModel()
 	}
 
-	return cc.JSON(http.StatusOK, persons)
+	return cc.JSON(http.StatusOK, models)
 }

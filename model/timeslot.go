@@ -10,8 +10,8 @@ type Timeslot struct {
 	bun.BaseModel `bun:"table:timeslot"`
 	IdModel
 
-	TrainerId int32     `json:"trainer_id"`
-	UserId    *int32    `json:"user_id"`
+	TrainerId string    `json:"trainer_id"`
+	TraineeId *string   `json:"trainee_id"`
 	Name      string    `json:"name"`
 	Start     time.Time `json:"start"`
 	End       time.Time `json:"end"`
@@ -19,18 +19,18 @@ type Timeslot struct {
 	DeletedAt *time.Time `json:"-" bun:",soft_delete,nullzero"`
 }
 
-func BuildTimeslot(name string, start, end time.Time, deletedAt *time.Time, trainerId int32, userId *int32) *Timeslot {
+func BuildTimeslot(name string, start, end time.Time, deletedAt *time.Time, trainerId string, traineeId *string) *Timeslot {
 	return &Timeslot{
 		Name:      name,
 		Start:     start,
 		End:       end,
 		TrainerId: trainerId,
-		UserId:    userId,
+		TraineeId: traineeId,
 		Timestamp: buildTimestamp(),
 		DeletedAt: deletedAt}
 }
 
 type ApiTimeslot struct {
 	Timeslot
-	PersonName *string `json:"person_name"`
+	UserName *string `json:"person_name"`
 }

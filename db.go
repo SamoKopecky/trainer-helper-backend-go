@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"trainer-helper/config"
 	"trainer-helper/model"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -25,7 +26,7 @@ type DbConn struct {
 	Dsn    string
 }
 
-func GetDbConn(config Config, debug bool) DbConn {
+func GetDbConn(config config.Config, debug bool) DbConn {
 	dsn := config.GetDSN()
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
@@ -67,44 +68,20 @@ func (d DbConn) RunMigrations() {
 }
 
 func (d DbConn) SeedDb() {
-	personId := d.seedUsers()
-	timeslots := d.seedTimeslots(personId)
+	timeslots := d.seedTimeslots()
 	exerciseIds := d.seedExercises(timeslots[0].Id)
 	d.seedWorkSets(exerciseIds)
 
 }
 
-func (d DbConn) seedUsers() int32 {
+func (d DbConn) seedTimeslots() []model.Timeslot {
 	ctx := context.Background()
-	users := []struct {
-		name  string
-		email string
-	}{
-		{name: "Samo Kopecky", email: "samo.kopecky@th.com"},
-		{name: "Peter Turbo", email: "peter.turbo@gmail.com"},
-		{name: "Jozko Mrkvicka", email: "jozko.mrkvicka@gmail.com"},
-		{name: "Ibi Maiga", email: "ibi.maiga@gmail.com"},
-	}
-
-	var modelUser model.Person
-	for _, user := range users {
-		modelUser = *model.BuildPerson(user.name, user.email)
-		_, err := d.Conn.NewInsert().Model(&modelUser).Exec(ctx)
-		if err != nil {
-			log.Panic(err)
-		}
-	}
-	return modelUser.Id
-}
-
-func (d DbConn) seedTimeslots(personId int32) []model.Timeslot {
-	ctx := context.Background()
-	const TRAINER_ID = 1
+	const TRAINER_ID = "1"
 	var timeslots []model.Timeslot
 	timeNow := time.Now()
 
 	for range 7 {
-		timeslots = append(timeslots, *model.BuildTimeslot("some name", timeNow, timeNow.Add(1*time.Hour), nil, TRAINER_ID, &personId))
+		timeslots = append(timeslots, *model.BuildTimeslot("some name", timeNow, timeNow.Add(1*time.Hour), nil, TRAINER_ID, nil))
 		timeNow = timeNow.Add(24 * time.Hour)
 	}
 
