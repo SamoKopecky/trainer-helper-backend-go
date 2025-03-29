@@ -1,9 +1,7 @@
 services:
   backend:
-    environment:
-      APP_ENV: "dev"
-      APP_DB_HOST: "db"
-      APP_DB_PASSWORD: "alpharius"
+    env_file:
+      ./.env
     build:
       context: .
     ports:
@@ -19,19 +17,18 @@ services:
         /app/trainer-helper --debug
   db:
     image: postgres:17.2
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_DB: trainer_helper
-      POSTGRES_PASSWORD: alpharius
+    env_file:
+      ./.env
+    volumes:
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     ports:
       - '8080:8080'
-      - '9000:9000'
     command:
       - start-dev
+    volumes:
+      - /home/samo/git/trainer-helper-backend-go:/tmp/keycloak
+      - /home/samo/git/trainer-helper-backend-go/keycloak_data/:/opt/keycloak/data/h2

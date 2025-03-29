@@ -5,4 +5,7 @@ Dockerfile
 .gitignore
 .dockerignore
 Makefile
-
+docker-compose.yaml
+postgresql/
+keycloak/
+.env
