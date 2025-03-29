@@ -62,7 +62,7 @@ func trainerOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 }
 
-func jwtMiddleware(cfg config.Config) echo.MiddlewareFunc {
+func jwtMiddleware(cfg *config.Config) echo.MiddlewareFunc {
 	keyFunc := func(token *jwt.Token) (any, error) {
 		return getKey(cfg, token)
 	}
@@ -103,7 +103,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	e.GET("/-/ping", pong)
 
 	jg := e.Group("")
-	jg.Use(jwtMiddleware())
+	jg.Use(jwtMiddleware(appConfig))
 	jg.Use(claimContextMiddleware)
 	jg.GET("/timeslot", timeslot_handler.Get)
 	jg.GET("/exercise/:id", exercise_handler.Get)

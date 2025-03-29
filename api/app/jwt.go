@@ -11,7 +11,7 @@ import (
 	"github.com/lestrrat-go/jwx/jwk"
 )
 
-func getKey(cfg config.Config, token *jwt.Token) (any, error) {
+func getKey(cfg *config.Config, token *jwt.Token) (any, error) {
 	// TODO: Use cache
 	url := fmt.Sprintf("%s/realms/%s/protocol/openid-connect/certs", cfg.KeycloakBaseUrl, cfg.KeycloakRealm)
 	fmt.Println(url)
