@@ -5,6 +5,9 @@ on:
     branches:
       - ci # Trigger the workflow on push to the `main` branch
 
+env:
+  IMAGE_NAME: trainer-helper-backend
+
 jobs:
   build:
     runs-on: ubuntu-latest
