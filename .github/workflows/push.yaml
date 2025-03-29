@@ -3,7 +3,7 @@ name: Build and Push Go Docker Image to GitHub Container Registry
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the `main` branch
+      - ci # Trigger the workflow on push to the `main` branch
 
 jobs:
   build:
@@ -24,6 +24,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
 
       # Build the Docker image
       - name: Build Docker image
