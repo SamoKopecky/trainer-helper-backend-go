@@ -29,10 +29,10 @@ jobs:
       # Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/samokopecky/trainer-helper:latest .
+          docker build -t ghcr.io/trainer-helper-backend-go/trainer-helper:latest .
 
       # Push the Docker image to GitHub Container Registry
       - name: Push Docker image to GitHub Container Registry
         run: |
-          docker push ghcr.io/samokopecky/trainer-helper:latest
+          docker build -t ghcr.io/trainer-helper-backend-go/trainer-helper:latest .
 
