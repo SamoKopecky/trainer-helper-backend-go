@@ -62,9 +62,12 @@ func trainerOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 }
 
-func jwtMiddleware() echo.MiddlewareFunc {
+func jwtMiddleware(cfg config.Config) echo.MiddlewareFunc {
+	keyFunc := func(token *jwt.Token) (any, error) {
+		return getKey(cfg, token)
+	}
 	return echojwt.WithConfig(echojwt.Config{
-		KeyFunc:       getKey,
+		KeyFunc:       keyFunc,
 		SigningMethod: "RS256",
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
 			return new(api.JwtClaims)
