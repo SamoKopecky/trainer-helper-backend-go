@@ -34,5 +34,5 @@ jobs:
       # Push the Docker image to GitHub Container Registry
       - name: Push Docker image to GitHub Container Registry
         run: |
-          docker build -t ghcr.io/trainer-helper-backend-go/trainer-helper:latest .
+          docker push ghcr.io/trainer-helper-backend-go/trainer-helper:latest 
 
