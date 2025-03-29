@@ -98,7 +98,7 @@ func Post(c echo.Context) error {
 	}
 
 	// Create worksets
-	const workSetCount = 2
+	const workSetCount = 1
 	newWorkSets := make([]*model.WorkSet, workSetCount)
 	for i := range workSetCount {
 		newWorkSets[i] = model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
