@@ -9,10 +9,34 @@ import (
 type SetType string
 
 const (
-	Squat    SetType = "Squat"
-	Deadlift SetType = "Deadlift"
-	RDL      SetType = "RDL"
-	None     SetType = ""
+	// Main compound exercises
+	Squat      SetType = "Squat"
+	Deadlift   SetType = "Deadlift"
+	BenchPress SetType = "Bench Press"
+
+	// Variations and related exercises
+	RomanianDeadlift SetType = "RDL"
+	HorizontalRow    SetType = "Cable Horizontal Row"
+	HackSquat        SetType = "Hack Squat"
+	LegPress         SetType = "Leg Press"
+	CalfRaise        SetType = "Calf Raise"
+	RingMuscleUp     SetType = "Ring Muscle Up"
+	PullUp           SetType = "Pull Up"
+
+	// Machine and isolation exercises
+	MachineHipAbduction  SetType = "Machine Hip Abduction"
+	JeffersonCurl        SetType = "Jefferson Curl"
+	KettlebellSideBend   SetType = "Kettlebell Side Bend"
+	MachineChestPress    SetType = "Machine Chest Press"
+	Multipress           SetType = "Multipress"
+	Dips                 SetType = "Dips"
+	MachineShoulderPress SetType = "Machine Shoulder Press"
+	TricepsPushdown      SetType = "Triceps Pushdown"
+	BentArmLateralRaise  SetType = "Bent Arm Lateral Raise"
+	BenchCrunch          SetType = "Bench Crunch"
+
+	// General placeholder for unspecified exercises
+	None SetType = ""
 )
 
 type Exercise struct {
