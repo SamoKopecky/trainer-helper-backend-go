@@ -3,7 +3,7 @@ name: Build and Push Go Docker Image to GitHub Container Registry
 on:
   push:
     branches:
-      - ci 
+      - main
 
 env:
   REGISTRY: ghcr.io
