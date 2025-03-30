@@ -1,37 +1,21 @@
 services:
-  backend:
-    environment:
-      APP_ENV: "dev"
-      APP_DB_HOST: "db"
-      APP_DB_PASSWORD: "alpharius"
-    build:
-      context: .
-    ports:
-      - '2001:2001'
-    depends_on:
-      db:
-        condition: service_started
-    command:
-      - /bin/bash
-      - -c
-      - |
-        ./wait-for.sh -t 10 db:5432 -- echo "wait-for: Postgres DB is ready"
-        /app/trainer-helper --debug
   db:
     image: postgres:17.2
     environment:
-      POSTGRES_USER: root
+      POSTGRES_USER: trainer_helper
       POSTGRES_DB: trainer_helper
       POSTGRES_PASSWORD: alpharius
     ports:
       - 5432:5432
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4
+    ports:
+      - '8080:8080'
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-    ports:
-      - '8080:8080'
-      - '9000:9000'
     command:
       - start-dev
+    volumes:
+      - ./keycloak_export:/tmp/keycloak_export
+      - ./keycloak_data:/opt/keycloak/data/h2
