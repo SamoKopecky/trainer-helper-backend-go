@@ -1,34 +1,21 @@
 services:
-  backend:
-    env_file:
-      ./.env
-    build:
-      context: .
-    ports:
-      - '2001:2001'
-    depends_on:
-      db:
-        condition: service_started
-    command:
-      - /bin/bash
-      - -c
-      - |
-        ./wait-for.sh -t 10 db:5432 -- echo "wait-for: Postgres DB is ready"
-        /app/trainer-helper --debug
   db:
     image: postgres:17.2
-    env_file:
-      ./.env
-    volumes:
-      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: trainer_helper
+      POSTGRES_DB: trainer_helper
+      POSTGRES_PASSWORD: alpharius
     ports:
       - 5432:5432
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4
     ports:
       - '8080:8080'
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     command:
       - start-dev
     volumes:
-      - /home/samo/git/trainer-helper-backend-go:/tmp/keycloak
-      - /home/samo/git/trainer-helper-backend-go/keycloak_data/:/opt/keycloak/data/h2
+      - ./keycloak_export:/tmp/keycloak_export
+      - ./keycloak_data:/opt/keycloak/data/h2
