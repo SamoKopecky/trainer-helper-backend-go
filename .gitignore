@@ -1,4 +1,4 @@
 trainer-helper
 .env
 tmp
-keycloak_data/
+keycloak_data/*
