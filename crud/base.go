@@ -7,7 +7,7 @@ import (
 )
 
 type CRUDBase[T any] struct {
-	db *bun.DB
+	db bun.IDB
 }
 
 func (c CRUDBase[T]) Update(model *T) (err error) {

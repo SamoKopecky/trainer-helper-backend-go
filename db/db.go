@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"context"
@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"log"
 	"time"
-	"trainer-helper/config"
 	"trainer-helper/model"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
 
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
@@ -21,41 +20,33 @@ import (
 )
 
 type DbConn struct {
-	Conn   *bun.DB
-	Driver *sql.DB
-	Dsn    string
+	Conn      *bun.DB
+	Migration *migrate.Migrate
+	Dsn       string
 }
 
-func GetDbConn(config config.Config, debug bool) DbConn {
-	dsn := config.GetDSN()
+func GetDbConn(dsn string, debug bool, migrationPath string) DbConn {
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
+
+	m, err := migrate.New(migrationPath, dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
 	if debug {
 		db.AddQueryHook(bundebug.NewQueryHook(
 			bundebug.WithVerbose(true),
 		))
 	}
 	return DbConn{
-		Conn:   db,
-		Driver: sqldb,
-		Dsn:    dsn,
+		Conn:      db,
+		Dsn:       dsn,
+		Migration: m,
 	}
 }
 
 func (d DbConn) RunMigrations() {
-	driver, err := postgres.WithInstance(d.Driver, &postgres.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
-		d.Dsn, driver)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = m.Up()
+	err := d.Migration.Up()
 
 	if errors.Is(err, migrate.ErrNoChange) {
 		fmt.Println("No changes to apply, continuing...")
@@ -64,7 +55,18 @@ func (d DbConn) RunMigrations() {
 	} else {
 		log.Fatal(err)
 	}
+}
 
+func (d DbConn) DownMigrations() {
+	err := d.Migration.Down()
+
+	if errors.Is(err, migrate.ErrNoChange) {
+		fmt.Println("No changes to apply, continuing...")
+	} else if err == nil {
+		fmt.Println("Applying migrations...")
+	} else {
+		log.Fatal(err)
+	}
 }
 
 func (d DbConn) SeedDb() {

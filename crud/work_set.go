@@ -11,7 +11,7 @@ type WorkSet struct {
 	CRUDBase[model.WorkSet]
 }
 
-func NewWorkSet(db *bun.DB) WorkSet {
+func NewWorkSet(db bun.IDB) WorkSet {
 	return WorkSet{CRUDBase: CRUDBase[model.WorkSet]{db: db}}
 }
 
