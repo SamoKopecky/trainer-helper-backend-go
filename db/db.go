@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"context"
@@ -11,45 +11,73 @@ import (
 	"trainer-helper/model"
 
 	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/driver/sqliteshim"
 	"github.com/uptrace/bun/extra/bundebug"
+
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/uptrace/bun/dialect/sqlitedialect"
 )
 
 type DbConn struct {
 	Conn   *bun.DB
-	Driver *sql.DB
+	Driver *database.Driver
 	Dsn    string
+}
+
+func addVerboseHook(db *bun.DB) {
+	db.AddQueryHook(bundebug.NewQueryHook(
+		bundebug.WithVerbose(true),
+	))
 }
 
 func GetDbConn(config config.Config, debug bool) DbConn {
 	dsn := config.GetDSN()
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+	driver, err := postgres.WithInstance(sqldb, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
 	db := bun.NewDB(sqldb, pgdialect.New())
 	if debug {
-		db.AddQueryHook(bundebug.NewQueryHook(
-			bundebug.WithVerbose(true),
-		))
+		addVerboseHook(db)
 	}
 	return DbConn{
 		Conn:   db,
-		Driver: sqldb,
+		Driver: &driver,
 		Dsn:    dsn,
 	}
 }
 
-func (d DbConn) RunMigrations() {
-	driver, err := postgres.WithInstance(d.Driver, &postgres.Config{})
+func GetDbConnTest(verbose bool) DbConn {
+	sqldb, err := sql.Open(sqliteshim.ShimName, "file::memory:?cache=shared")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	db := bun.NewDB(sqldb, sqlitedialect.New())
+	driver, err := sqlite3.WithInstance(sqldb, &sqlite3.Config{})
+	if verbose {
+		addVerboseHook(db)
+	}
+
+	return DbConn{
+		Conn:   db,
+		Driver: &driver,
+		Dsn:    "",
+	}
+}
+
+func (d DbConn) RunMigrations() {
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
-		d.Dsn, driver)
+		"file://../migrations",
+		d.Dsn, *d.Driver)
 
 	if err != nil {
 		log.Fatal(err)

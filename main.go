@@ -4,6 +4,7 @@ import (
 	"flag"
 	"trainer-helper/api/app"
 	"trainer-helper/config"
+	"trainer-helper/db"
 )
 
 func main() {
@@ -12,7 +13,7 @@ func main() {
 	debug := flag.Bool("debug", false, "Show database queries")
 	flag.Parse()
 
-	dbConn := GetDbConn(cfg, *debug)
+	dbConn := db.GetDbConn(cfg, *debug)
 	dbConn.RunMigrations()
 	if *seed {
 		dbConn.SeedDb()
