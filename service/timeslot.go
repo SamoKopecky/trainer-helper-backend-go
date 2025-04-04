@@ -14,7 +14,7 @@ type Timeslot struct {
 	Fetcher fetcher.IAM
 }
 
-func (t Timeslot) GetById(timeslotId int32) (timeslot model.ApiTimeslot, err error) {
+func (t Timeslot) GetById(timeslotId int) (timeslot model.ApiTimeslot, err error) {
 	crudTimeslot, err := t.Crud.GetById(timeslotId)
 	if err != nil {
 		return

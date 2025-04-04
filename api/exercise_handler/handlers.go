@@ -19,7 +19,7 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 	params := exerciseGetParams{
-		Id: int32(paramId),
+		Id: int(paramId),
 	}
 
 	exercises, err := cc.ExerciseCrud.GetExerciseWorkSets(params.Id)
@@ -99,9 +99,9 @@ func Post(c echo.Context) error {
 
 	// Create worksets
 	const workSetCount = 1
-	newWorkSets := make([]*model.WorkSet, workSetCount)
+	newWorkSets := make([]model.WorkSet, workSetCount)
 	for i := range workSetCount {
-		newWorkSets[i] = model.BuildWorkSet(newExercise.Id, 0, (*int32)(nil), "-")
+		newWorkSets[i] = *model.BuildWorkSet(newExercise.Id, 0, (*int)(nil), "-")
 	}
 	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {

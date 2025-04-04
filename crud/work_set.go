@@ -15,7 +15,7 @@ func NewWorkSet(db bun.IDB) WorkSet {
 	return WorkSet{CRUDBase: CRUDBase[model.WorkSet]{db: db}}
 }
 
-func (ws WorkSet) InsertMany(work_sets *[]*model.WorkSet) error {
+func (ws WorkSet) InsertMany(work_sets *[]model.WorkSet) error {
 	if len(*work_sets) == 0 {
 		return nil
 	}
@@ -27,7 +27,7 @@ func (ws WorkSet) InsertMany(work_sets *[]*model.WorkSet) error {
 	return err
 }
 
-func (ws WorkSet) DeleteMany(ids []int32) (int32, error) {
+func (ws WorkSet) DeleteMany(ids []int) (int, error) {
 	var deletedModels []model.WorkSet
 	_, err := ws.db.NewDelete().
 		Model(&deletedModels).
@@ -35,5 +35,5 @@ func (ws WorkSet) DeleteMany(ids []int32) (int32, error) {
 		Where("id IN (?)", bun.In(ids)).
 		Exec(context.Background())
 
-	return int32(len(deletedModels)), err
+	return int(len(deletedModels)), err
 }

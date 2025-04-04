@@ -1,5 +1,5 @@
 package timeslot_revert_handler
 
 type timestlotRevertPutParams struct {
-	Id int32 `json:"id"`
+	Id int `json:"id"`
 }
