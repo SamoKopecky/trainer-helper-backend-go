@@ -15,7 +15,7 @@ func workSetFactory() *model.WorkSet {
 }
 
 func TestInsertMany(t *testing.T) {
-	db := testSetup(t)
+	db := testSetupDb(t)
 	crud := NewWorkSet(db)
 
 	// Arange
@@ -44,7 +44,7 @@ func TestInsertMany(t *testing.T) {
 }
 
 func TestDeleteMany(t *testing.T) {
-	db := testSetup(t)
+	db := testSetupDb(t)
 	crud := NewWorkSet(db)
 
 	// Arange
@@ -75,7 +75,6 @@ func TestDeleteMany(t *testing.T) {
 	var toAssert []model.WorkSet
 	for i := range workSets {
 		if !slices.Contains(toDelete, workSets[i].Id) {
-
 			workSets[i].Timestamp.SetZeroTimes()
 			toAssert = append(toAssert, workSets[i])
 		}

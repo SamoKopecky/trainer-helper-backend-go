@@ -7,7 +7,9 @@ import (
 	"testing"
 	"time"
 	"trainer-helper/db"
+	"trainer-helper/model"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/uptrace/bun"
 )
 
@@ -16,7 +18,7 @@ func randomInt() int {
 	return rand.Intn(100)
 }
 
-func testSetup(t *testing.T) *bun.Tx {
+func testSetupDb(t *testing.T) *bun.Tx {
 	db := db.GetDbConn("postgresql://trainer_helper:alpharius@localhost/trainer_helper?sslmode=disable", true, "file://../migrations")
 	db.DownMigrations()
 
@@ -31,4 +33,48 @@ func testSetup(t *testing.T) *bun.Tx {
 		db.Conn.Close()
 	})
 	return &tx
+}
+
+func TestInsert(t *testing.T) {
+	db := testSetupDb(t)
+	crud := NewWorkSet(db)
+	workSet := workSetFactory()
+
+	// Act
+	if err := crud.Insert(workSet); err != nil {
+		t.Fatalf("Failed to insert work sets: %v", err)
+	}
+
+	// Assert
+	var dbModels []model.WorkSet
+	if err := db.NewSelect().Model(&dbModels).Scan(context.TODO()); err != nil {
+		t.Fatalf("Failed to retrieve work sets: %v", err)
+	}
+	assert.Equal(t, 1, len(dbModels))
+	workSet.Timestamp.SetZeroTimes()
+	dbModels[0].Timestamp.SetZeroTimes()
+	assert.Equal(t, *workSet, dbModels[0])
+}
+
+func TestUpdate(t *testing.T) {
+	db := testSetupDb(t)
+	crud := NewWorkSet(db)
+	workSet := workSetFactory()
+	crud.Insert(workSet)
+
+	// Act
+	workSet.Intensity = "15Kg"
+	if err := crud.Update(workSet); err != nil {
+		t.Fatalf("Failed to update work sets: %v", err)
+	}
+
+	// Assert
+	var dbModels []model.WorkSet
+	if err := db.NewSelect().Model(&dbModels).Scan(context.TODO()); err != nil {
+		t.Fatalf("Failed to retrieve work sets: %v", err)
+	}
+	assert.Equal(t, 1, len(dbModels))
+	workSet.Timestamp.SetZeroTimes()
+	dbModels[0].Timestamp.SetZeroTimes()
+	assert.Equal(t, *workSet, dbModels[0])
 }
