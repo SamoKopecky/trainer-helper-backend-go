@@ -29,17 +29,22 @@ reset-db:
 	docker compose down
 	docker compose up db -d
 
+# Purge all keycloak configuration & data
 kc-purge:
 	rm ./keycloak_data/*
 
+# Import dev keycloak configuration & data
 kc-import:
 	./keycloak_export/manage_realms.sh import
 
+# Export current keycloak configuration & data to dev
 kc-export:
 	./keycloak_export/manage_realms.sh export
 
+
+# Run app in dev mode
 run:
-	APP_KC_ADMIN_CLIENT_SECRET="0F32CR8bzQAMgLCYAR6pa2HbksVViCMc" air -- --debug
+	APP_ENV="dev" APP_KC_ADMIN_CLIENT_SECRET="0F32CR8bzQAMgLCYAR6pa2HbksVViCMc" air -- --debug
 
 # Add a new migration
 add-migration:
