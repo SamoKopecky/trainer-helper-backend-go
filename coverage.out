@@ -1,0 +1,21 @@
+mode: set
+trainer-helper/crud/base.go:13.51,21.2 3 1
+trainer-helper/crud/base.go:23.45,30.2 2 1
+trainer-helper/crud/base.go:32.52,35.2 2 1
+trainer-helper/crud/exercise.go:14.39,16.2 1 1
+trainer-helper/crud/exercise.go:18.74,29.2 4 1
+trainer-helper/crud/exercise.go:31.81,38.2 2 1
+trainer-helper/crud/exercise.go:40.64,46.2 2 1
+trainer-helper/crud/timeslot.go:15.39,17.2 1 1
+trainer-helper/crud/timeslot.go:19.147,24.15 2 1
+trainer-helper/crud/timeslot.go:24.15,26.3 1 1
+trainer-helper/crud/timeslot.go:26.8,28.3 1 1
+trainer-helper/crud/timeslot.go:30.2,31.8 2 1
+trainer-helper/crud/timeslot.go:34.67,45.2 4 1
+trainer-helper/crud/timeslot.go:47.48,57.2 3 1
+trainer-helper/crud/timeslot.go:59.58,68.2 2 1
+trainer-helper/crud/work_set.go:14.37,16.2 1 1
+trainer-helper/crud/work_set.go:18.64,19.26 1 1
+trainer-helper/crud/work_set.go:19.26,21.3 1 1
+trainer-helper/crud/work_set.go:23.2,27.12 2 1
+trainer-helper/crud/work_set.go:30.54,39.2 3 1

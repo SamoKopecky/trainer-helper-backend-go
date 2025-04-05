@@ -3,18 +3,19 @@ package crud
 import (
 	"testing"
 	"trainer-helper/model"
+	"trainer-helper/utils"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func exerciseTimeslotId(timeslotId int) FactoryOption[model.Exercise] {
+func exerciseTimeslotId(timeslotId int) utils.FactoryOption[model.Exercise] {
 	return func(e *model.Exercise) {
 		e.TimeslotId = timeslotId
 	}
 }
 
-func exerciseFactory(options ...FactoryOption[model.Exercise]) *model.Exercise {
-	exercise := model.BuildExercise(randomInt(), randomInt(), "note", model.Squat)
+func exerciseFactory(options ...utils.FactoryOption[model.Exercise]) *model.Exercise {
+	exercise := model.BuildExercise(utils.RandomInt(), utils.RandomInt(), "note", model.Squat)
 	for _, option := range options {
 		option(exercise)
 	}

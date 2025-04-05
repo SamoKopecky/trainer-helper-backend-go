@@ -3,22 +3,13 @@ package crud
 import (
 	"context"
 	"database/sql"
-	"math/rand"
 	"testing"
-	"time"
 	"trainer-helper/db"
 	"trainer-helper/model"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/uptrace/bun"
 )
-
-type FactoryOption[T any] func(*T)
-
-func randomInt() int {
-	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(100)
-}
 
 func testSetupDb(t *testing.T) *bun.Tx {
 	db := db.GetDbConn("postgresql://trainer_helper:alpharius@localhost/trainer_helper?sslmode=disable", true, "file://../migrations")
