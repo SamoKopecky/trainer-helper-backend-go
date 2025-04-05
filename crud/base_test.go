@@ -3,6 +3,7 @@ package crud
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"testing"
 	"trainer-helper/config"
 	"trainer-helper/db"
@@ -14,6 +15,7 @@ import (
 
 func testSetupDb(t *testing.T) *bun.Tx {
 	config := config.GetConfig()
+	fmt.Printf("\n\n\n %s \n\n\n", config.GetDSN())
 	db := db.GetDbConn(config.GetDSN(), true, "file://../migrations")
 	db.DownMigrations()
 
