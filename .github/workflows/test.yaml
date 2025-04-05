@@ -15,7 +15,8 @@ jobs:
           POSTGRES_USER: trainer_helper
           POSTGRES_DB: trainer_helper
           POSTGRES_PASSWORD: alpharius
-
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -30,8 +31,16 @@ jobs:
         with:
           go-version: '1.24.0'
 
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
       - name: Install dependencies
-        run: go get .
+        run: go mod tidy && go mod download
 
       - name: Build
         run: go build -v ./...
