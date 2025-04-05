@@ -3,7 +3,9 @@ package crud
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"testing"
+	"trainer-helper/config"
 	"trainer-helper/db"
 	"trainer-helper/model"
 
@@ -12,7 +14,9 @@ import (
 )
 
 func testSetupDb(t *testing.T) *bun.Tx {
-	db := db.GetDbConn("postgresql://trainer_helper:alpharius@localhost/trainer_helper?sslmode=disable", true, "file://../migrations")
+	config := config.GetConfig()
+	fmt.Printf("\n\n\n %s \n\n\n", config.GetDSN())
+	db := db.GetDbConn(config.GetDSN(), true, "file://../migrations")
 	db.DownMigrations()
 
 	db.RunMigrations()
