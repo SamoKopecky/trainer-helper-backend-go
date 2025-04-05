@@ -17,7 +17,7 @@ CREATE TABLE timeslot (
     "end" timestamp without time zone NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    deleted_at timestamp without time zone 
+    deleted_at timestamp without time zone
 );
 
 CREATE TABLE work_set (
@@ -70,4 +70,3 @@ CREATE INDEX idx_group_id ON exercise USING btree (group_id);
 CREATE INDEX idx_start ON timeslot USING btree (start);
 CREATE INDEX idx_trainer_id ON timeslot USING btree (trainer_id);
 CREATE INDEX idx_trainee_id ON timeslot USING btree (trainee_id);
-

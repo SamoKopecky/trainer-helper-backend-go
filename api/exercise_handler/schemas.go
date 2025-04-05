@@ -10,10 +10,10 @@ type exerciseGetParams struct {
 }
 
 type exercisePutParams struct {
-	Id      int          `json:"id"`
-	GroupId *int         `json:"group_id"`
-	SetType *model.SetType `json:"set_type"`
-	Note    *string        `json:"note"`
+	Id      int                `json:"id"`
+	GroupId *int               `json:"group_id"`
+	SetType *model.SetTypeEnum `json:"set_type"`
+	Note    *string            `json:"note"`
 }
 
 type exerciseDeleteParams struct {
