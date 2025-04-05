@@ -22,6 +22,12 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h postgres -p 5432 -U trainer_helper; do
+            echo "$(date) - waiting for database to start"
+            sleep 2
+          done
       - uses: actions/checkout@v4
 
       - name: Setup Go
