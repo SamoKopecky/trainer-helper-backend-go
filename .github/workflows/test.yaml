@@ -5,15 +5,38 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      # Label used to access the service container
+      postgres:
+        image: postgres:17.2
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: trainer_helper
+          POSTGRES_DB: trainer_helper
+          POSTGRES_PASSWORD: alpharius
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21.x'
+          go-version: '1.24.0'
+
       - name: Install dependencies
         run: go get .
+
       - name: Build
         run: go build -v ./...
+
       - name: Test with the Go CLI
+        env:
+          APP_DB_HOST: postgres
         run: go test ./...

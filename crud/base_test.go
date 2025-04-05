@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"testing"
+	"trainer-helper/config"
 	"trainer-helper/db"
 	"trainer-helper/model"
 
@@ -12,7 +13,8 @@ import (
 )
 
 func testSetupDb(t *testing.T) *bun.Tx {
-	db := db.GetDbConn("postgresql://trainer_helper:alpharius@localhost/trainer_helper?sslmode=disable", true, "file://../migrations")
+	config := config.GetConfig()
+	db := db.GetDbConn(config.GetDSN(), true, "file://../migrations")
 	db.DownMigrations()
 
 	db.RunMigrations()
