@@ -47,8 +47,8 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *schemas.DbContext) 
 		return
 	}
 
-	newExercisesMap := make(map[int32]*model.Exercise)
-	var newWorkSets []*model.WorkSet
+	newExercisesMap := make(map[int]*model.Exercise)
+	var newWorkSets []model.WorkSet
 	for _, exercise := range copyExercises {
 		// Adjust new exercise
 		exercise.ToNew(param.TimeslotId)

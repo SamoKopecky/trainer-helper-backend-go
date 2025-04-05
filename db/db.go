@@ -95,13 +95,13 @@ func (d DbConn) seedTimeslots() []model.Timeslot {
 	return timeslots
 }
 
-func (d DbConn) seedExercises(timeslotId int32) []int32 {
+func (d DbConn) seedExercises(timeslotId int) []int {
 	ctx := context.Background()
 	exerciseTypes := []model.SetType{model.Squat, model.RomanianDeadlift}
-	exerciseIds := []int32{}
+	exerciseIds := []int{}
 
 	for i, eType := range exerciseTypes {
-		exercise := model.BuildExercise(timeslotId, int32(i), "some note", eType)
+		exercise := model.BuildExercise(timeslotId, int(i), "some note", eType)
 		_, err := d.Conn.NewInsert().Model(exercise).Exec(ctx)
 		if err != nil {
 			panic(err)
@@ -111,10 +111,10 @@ func (d DbConn) seedExercises(timeslotId int32) []int32 {
 	return exerciseIds
 }
 
-func (d DbConn) seedWorkSets(exerciseIds []int32) {
+func (d DbConn) seedWorkSets(exerciseIds []int) {
 	ctx := context.Background()
 	squatData := []struct {
-		reps     int32
+		reps     int
 		inensity string
 	}{
 		{reps: 4, inensity: "105Kg"},
@@ -123,7 +123,7 @@ func (d DbConn) seedWorkSets(exerciseIds []int32) {
 		{reps: 5, inensity: "95Kg"},
 	}
 	rdlData := []struct {
-		reps     int32
+		reps     int
 		inensity string
 	}{
 		{reps: 7, inensity: "100Kg"},

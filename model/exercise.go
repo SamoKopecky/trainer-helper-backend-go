@@ -43,17 +43,17 @@ type Exercise struct {
 	bun.BaseModel `bun:"table:exercise"`
 	IdModel
 
-	TimeslotId int32   `json:"timeslot_id"`
-	GroupId    int32   `json:"group_id"`
+	TimeslotId int     `json:"timeslot_id"`
+	GroupId    int     `json:"group_id"`
 	Note       *string `json:"note"`
 	SetType    SetType `json:"set_type"`
 	Timestamp
 
 	// Not used in DB model
-	WorkSets []*WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`
+	WorkSets []WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`
 }
 
-func BuildExercise(timeslotId, groupId int32, note string, setType SetType) *Exercise {
+func BuildExercise(timeslotId, groupId int, note string, setType SetType) *Exercise {
 	return &Exercise{
 		TimeslotId: timeslotId,
 		GroupId:    groupId,
@@ -74,7 +74,7 @@ func (e Exercise) SortWorkSets() {
 	})
 }
 
-func (e *Exercise) ToNew(timeslotId int32) {
+func (e *Exercise) ToNew(timeslotId int) {
 	e.Id = EmptyId
 	e.Timestamp = buildTimestamp()
 	e.TimeslotId = timeslotId

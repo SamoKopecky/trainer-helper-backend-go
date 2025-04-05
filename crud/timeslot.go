@@ -12,7 +12,7 @@ type Timeslot struct {
 	CRUDBase[model.Timeslot]
 }
 
-func NewTimeslot(db *bun.DB) Timeslot {
+func NewTimeslot(db bun.IDB) Timeslot {
 	return Timeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 
@@ -31,7 +31,7 @@ func (t Timeslot) GetByTimeRangeAndUserId(startDate, endDate time.Time, trainerI
 	return
 }
 
-func (t Timeslot) GetById(timeslotId int32) (model.Timeslot, error) {
+func (t Timeslot) GetById(timeslotId int) (model.Timeslot, error) {
 	ctx := context.Background()
 	var timeslot model.Timeslot
 
@@ -44,7 +44,7 @@ func (t Timeslot) GetById(timeslotId int32) (model.Timeslot, error) {
 
 }
 
-func (t Timeslot) Delete(timeslotId int32) error {
+func (t Timeslot) Delete(timeslotId int) error {
 	ctx := context.Background()
 
 	// Actually does soft delete
@@ -56,7 +56,7 @@ func (t Timeslot) Delete(timeslotId int32) error {
 	return err
 }
 
-func (t Timeslot) RevertSolfDelete(timeslotId int32) error {
+func (t Timeslot) RevertSolfDelete(timeslotId int) error {
 	_, err := t.db.NewUpdate().
 		Model((*model.Timeslot)(nil)).
 		Set("deleted_at = ?", nil).

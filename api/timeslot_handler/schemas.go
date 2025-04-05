@@ -18,11 +18,11 @@ type timeslotPostParams struct {
 }
 
 type timeslotDeleteParams struct {
-	Id int32 `json:"id"`
+	Id int `json:"id"`
 }
 
 type timeslotPutParams struct {
-	Id        int32      `json:"id"`
+	Id        int      `json:"id"`
 	TraineeId *string    `json:"trainee_id"`
 	Name      *string    `json:"name"`
 	Start     *time.Time `json:"start"`

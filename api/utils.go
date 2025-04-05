@@ -29,7 +29,7 @@ func DerefSetType(ptr *model.SetType) model.SetType {
 	return *ptr
 }
 
-func DerefInt(ptr *int32) int32 {
+func DerefInt(ptr *int) int {
 	if ptr == nil {
 		return 0
 	}

@@ -16,19 +16,24 @@ type Timestamp struct {
 	CreatedAt time.Time `json:"-"`
 }
 
+func (t *Timestamp) SetZeroTimes() {
+	t.UpdatedAt = time.Time{}
+	t.CreatedAt = time.Time{}
+}
+
 func buildTimestamp() Timestamp {
 	return Timestamp{
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 	}
 }
 
 func (t *Timestamp) BeforeAppendModel(ctx context.Context, query bun.Query) error {
 	switch query.(type) {
 	case *bun.InsertQuery:
-		t.CreatedAt = time.Now()
+		t.CreatedAt = time.Now().UTC()
 	case *bun.UpdateQuery:
-		t.UpdatedAt = time.Now()
+		t.UpdatedAt = time.Now().UTC()
 	}
 	return nil
 }
@@ -36,7 +41,7 @@ func (t *Timestamp) BeforeAppendModel(ctx context.Context, query bun.Query) erro
 type IdModel struct {
 	bun.BaseModel
 
-	Id int32 `bun:",pk,autoincrement" json:"id"`
+	Id int `bun:",pk,autoincrement" json:"id"`
 }
 
 func (im IdModel) IsEmpty() bool {

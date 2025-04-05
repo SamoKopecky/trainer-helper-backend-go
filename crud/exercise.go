@@ -11,11 +11,11 @@ type Exercise struct {
 	CRUDBase[model.Exercise]
 }
 
-func NewExercise(db *bun.DB) Exercise {
+func NewExercise(db bun.IDB) Exercise {
 	return Exercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
 }
 
-func (e Exercise) GetExerciseWorkSets(Id int32) ([]*model.Exercise, error) {
+func (e Exercise) GetExerciseWorkSets(Id int) ([]*model.Exercise, error) {
 	ctx := context.Background()
 	var res []*model.Exercise
 
@@ -28,7 +28,7 @@ func (e Exercise) GetExerciseWorkSets(Id int32) ([]*model.Exercise, error) {
 	return res, err
 }
 
-func (e Exercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) error {
+func (e Exercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int) error {
 	_, err := e.db.NewDelete().
 		Model((*model.Exercise)(nil)).
 		Where("timeslot_id = ?", timeslotId).
@@ -37,7 +37,7 @@ func (e Exercise) DeleteByExerciseAndTimeslot(timeslotId, exerciseId int32) erro
 	return err
 }
 
-func (e Exercise) DeleteByTimeslot(timeslotId int32) (err error) {
+func (e Exercise) DeleteByTimeslot(timeslotId int) (err error) {
 	_, err = e.db.NewDelete().
 		Model((*model.Exercise)(nil)).
 		Where("timeslot_id = ?", timeslotId).
