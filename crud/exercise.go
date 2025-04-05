@@ -11,7 +11,7 @@ type Exercise struct {
 	CRUDBase[model.Exercise]
 }
 
-func NewExercise(db *bun.DB) Exercise {
+func NewExercise(db bun.IDB) Exercise {
 	return Exercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
 }
 

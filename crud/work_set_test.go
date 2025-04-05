@@ -1,7 +1,6 @@
 package crud
 
 import (
-	"context"
 	"slices"
 	"testing"
 	"trainer-helper/model"
@@ -9,9 +8,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func workSetFactory() *model.WorkSet {
+func workSetExerciseId(exerciseId int) FactoryOption[model.WorkSet] {
+	return func(ws *model.WorkSet) {
+		ws.ExerciseId = exerciseId
+	}
+}
+func workSetFactory(options ...FactoryOption[model.WorkSet]) *model.WorkSet {
 	rpe := randomInt()
-	return model.BuildWorkSet(randomInt(), randomInt(), &rpe, "10Kg")
+	ws := model.BuildWorkSet(randomInt(), randomInt(), &rpe, "10Kg")
+	for _, option := range options {
+		option(ws)
+	}
+	return ws
 }
 
 func TestInsertMany(t *testing.T) {
@@ -29,9 +37,9 @@ func TestInsertMany(t *testing.T) {
 		t.Fatalf("Failed to insert work sets: %v", err)
 	}
 
-	// Asert
-	var dbModels []model.WorkSet
-	if err := db.NewSelect().Model(&dbModels).Scan(context.TODO()); err != nil {
+	// Assert
+	dbModels, err := crud.Get()
+	if err != nil {
 		t.Fatalf("Failed to retrieve work sets: %v", err)
 	}
 
@@ -66,8 +74,8 @@ func TestDeleteMany(t *testing.T) {
 
 	// Asert
 	assert.Equal(t, 1, deleted)
-	var dbModels []model.WorkSet
-	if err := db.NewSelect().Model(&dbModels).Scan(context.TODO()); err != nil {
+	dbModels, err := crud.Get()
+	if err != nil {
 		t.Fatalf("Failed to retrieve work sets: %v", err)
 	}
 	assert.Equal(t, 2, len(dbModels))

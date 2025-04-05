@@ -12,7 +12,7 @@ type Timeslot struct {
 	CRUDBase[model.Timeslot]
 }
 
-func NewTimeslot(db *bun.DB) Timeslot {
+func NewTimeslot(db bun.IDB) Timeslot {
 	return Timeslot{CRUDBase: CRUDBase[model.Timeslot]{db: db}}
 }
 

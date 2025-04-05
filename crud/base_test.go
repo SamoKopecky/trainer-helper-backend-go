@@ -13,6 +13,8 @@ import (
 	"github.com/uptrace/bun"
 )
 
+type FactoryOption[T any] func(*T)
+
 func randomInt() int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(100)
@@ -54,6 +56,33 @@ func TestInsert(t *testing.T) {
 	workSet.Timestamp.SetZeroTimes()
 	dbModels[0].Timestamp.SetZeroTimes()
 	assert.Equal(t, *workSet, dbModels[0])
+}
+
+func TestGet(t *testing.T) {
+	db := testSetupDb(t)
+	crud := NewWorkSet(db)
+	var workSets []model.WorkSet
+	for range 3 {
+		workSets = append(workSets, *workSetFactory())
+	}
+	if err := crud.InsertMany(&workSets); err != nil {
+		t.Fatalf("Failed to insert work sets: %v", err)
+	}
+
+	// Act
+	dbModels, err := crud.Get()
+	if err != nil {
+		t.Fatalf("Failed to get work sets: %v", err)
+	}
+
+	// Assert
+	assert.Equal(t, len(workSets), len(dbModels))
+	for i := range workSets {
+		workSets[i].Timestamp.SetZeroTimes()
+		dbModels[i].Timestamp.SetZeroTimes()
+	}
+	assert.Equal(t, workSets, dbModels)
+
 }
 
 func TestUpdate(t *testing.T) {

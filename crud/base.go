@@ -28,3 +28,8 @@ func (c CRUDBase[T]) Insert(model *T) error {
 
 	return err
 }
+
+func (c CRUDBase[T]) Get() (models []T, err error) {
+	err = c.db.NewSelect().Model(&models).Scan(context.TODO())
+	return
+}
