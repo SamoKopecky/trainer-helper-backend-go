@@ -1,4 +1,9 @@
-# trainer-helper-backend-go
+# Trainer Helper Backend
 
-Run with
+Backend for the Trainer Helper app written in go.
 
+See frontend repo [here](https://github.com/SamoKopecky/trainer-helper-frontend/).
+
+# Running
+
+Use `make` to run all useful commands.
