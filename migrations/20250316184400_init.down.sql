@@ -16,8 +16,6 @@ DROP TABLE IF EXISTS exercise;
 
 DROP TABLE IF EXISTS timeslot;
 
-DROP TABLE IF EXISTS person;
-
 DROP SEQUENCE IF EXISTS work_set_id_seq;
 
 DROP SEQUENCE IF EXISTS exercise_id_seq;

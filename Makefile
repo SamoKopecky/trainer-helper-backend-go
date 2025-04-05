@@ -1,6 +1,7 @@
 .PHONY: help
 
 TA ?= ""
+MSG ?= "replace_me"
 
 # Help
 help:
@@ -39,3 +40,7 @@ kc-export:
 
 run:
 	APP_KC_ADMIN_CLIENT_SECRET="0F32CR8bzQAMgLCYAR6pa2HbksVViCMc" air -- --debug
+
+# Add a new migration
+add-migration:
+	migrate create -dir migrations/ -ext sql $(MSG)

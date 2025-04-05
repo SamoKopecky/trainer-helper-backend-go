@@ -97,7 +97,7 @@ func (d DbConn) seedTimeslots() []model.Timeslot {
 
 func (d DbConn) seedExercises(timeslotId int) []int {
 	ctx := context.Background()
-	exerciseTypes := []model.SetType{model.Squat, model.RomanianDeadlift}
+	exerciseTypes := []model.SetTypeEnum{model.Squat, model.RomanianDeadlift}
 	exerciseIds := []int{}
 
 	for i, eType := range exerciseTypes {

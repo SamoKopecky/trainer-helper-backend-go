@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS set_type;
+
+DROP SEQUENCE IF EXISTS set_type_id_seq;
