@@ -24,12 +24,6 @@ jobs:
           - 5432:5432
 
     steps:
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          until pg_isready -h localhost -p 5432 -U trainer_helper; do
-            echo "$(date) - waiting for database to start"
-            sleep 2
-          done
       - uses: actions/checkout@v4
 
       - name: Setup Go
@@ -51,10 +45,5 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-      - name: Check PostgreSQL DNS Resolution
-        run: nslookup postgres
-
       - name: Test with the Go CLI
-        env:
-          APP_DB_HOST: postgres
         run: go test ./...
