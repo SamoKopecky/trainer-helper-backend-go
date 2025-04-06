@@ -20,3 +20,5 @@ CREATE SEQUENCE exercise_type_id_seq
 ALTER TABLE ONLY exercise_type ALTER COLUMN id SET DEFAULT nextval('exercise_type_id_seq'::regclass);
 
 ALTER TABLE ONLY exercise_type ADD CONSTRAINT exercise_type_key PRIMARY KEY (id);
+
+ALTER TABLE exercise RENAME COLUMN set_type TO exercise_type;

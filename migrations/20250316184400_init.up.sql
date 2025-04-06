@@ -2,7 +2,7 @@ CREATE TABLE exercise (
     id integer NOT NULL,
     timeslot_id integer NOT NULL,
     group_id integer NOT NULL,
-    exercise_type character varying NOT NULL,
+    set_type character varying NOT NULL,
     note character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
