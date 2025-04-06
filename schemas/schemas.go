@@ -17,7 +17,7 @@ type DbContext struct {
 	ExerciseCrud crud.Exercise
 	TimeslotCrud crud.Timeslot
 	WorkSetCrud  crud.WorkSet
-	SetTypeCrud  crud.SetType
+	ExerciseTypeCrud  crud.ExerciseType
 
 	IAMFetcher fetcher.IAM
 

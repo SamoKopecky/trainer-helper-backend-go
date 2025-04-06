@@ -12,7 +12,7 @@ type exerciseGetParams struct {
 type exercisePutParams struct {
 	Id      int                `json:"id"`
 	GroupId *int               `json:"group_id"`
-	SetType *model.SetTypeEnum `json:"set_type"`
+	ExerciseType *model.ExerciseTypeEnum `json:"exercise_type"`
 	Note    *string            `json:"note"`
 }
 
@@ -32,7 +32,7 @@ func (epp exercisePutParams) toModel() model.Exercise {
 			Id: epp.Id,
 		},
 		GroupId: api.DerefInt(epp.GroupId),
-		SetType: api.DerefSetType(epp.SetType),
+		ExerciseType: api.DerefExerciseType(epp.ExerciseType),
 		Note:    epp.Note,
 	}
 }

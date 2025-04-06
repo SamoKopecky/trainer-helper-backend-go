@@ -89,7 +89,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 				ExerciseCrud:    crud.NewExercise(db),
 				TimeslotCrud:    crudTimeslot,
 				WorkSetCrud:     crud.NewWorkSet(db),
-				SetTypeCrud:     crud.NewSetType(db),
+				ExerciseTypeCrud:     crud.NewExerciseType(db),
 				IAMFetcher:      iam,
 				TimeslotService: service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
 				PersonService:   service.Person{Fetcher: iam},

@@ -6,37 +6,37 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type SetTypeEnum string
+type ExerciseTypeEnum string
 
 const (
 	// Main compound exercises
-	Squat      SetTypeEnum = "Squat"
-	Deadlift   SetTypeEnum = "Deadlift"
-	BenchPress SetTypeEnum = "Bench Press"
+	Squat      ExerciseTypeEnum = "Squat"
+	Deadlift   ExerciseTypeEnum = "Deadlift"
+	BenchPress ExerciseTypeEnum = "Bench Press"
 
 	// Variations and related exercises
-	RomanianDeadlift SetTypeEnum = "RDL"
-	HorizontalRow    SetTypeEnum = "Cable Horizontal Row"
-	HackSquat        SetTypeEnum = "Hack Squat"
-	LegPress         SetTypeEnum = "Leg Press"
-	CalfRaise        SetTypeEnum = "Calf Raise"
-	RingMuscleUp     SetTypeEnum = "Ring Muscle Up"
-	PullUp           SetTypeEnum = "Pull Up"
+	RomanianDeadlift ExerciseTypeEnum = "RDL"
+	HorizontalRow    ExerciseTypeEnum = "Cable Horizontal Row"
+	HackSquat        ExerciseTypeEnum = "Hack Squat"
+	LegPress         ExerciseTypeEnum = "Leg Press"
+	CalfRaise        ExerciseTypeEnum = "Calf Raise"
+	RingMuscleUp     ExerciseTypeEnum = "Ring Muscle Up"
+	PullUp           ExerciseTypeEnum = "Pull Up"
 
 	// Machine and isolation exercises
-	MachineHipAbduction  SetTypeEnum = "Machine Hip Abduction"
-	JeffersonCurl        SetTypeEnum = "Jefferson Curl"
-	KettlebellSideBend   SetTypeEnum = "Kettlebell Side Bend"
-	MachineChestPress    SetTypeEnum = "Machine Chest Press"
-	Multipress           SetTypeEnum = "Multipress"
-	Dips                 SetTypeEnum = "Dips"
-	MachineShoulderPress SetTypeEnum = "Machine Shoulder Press"
-	TricepsPushdown      SetTypeEnum = "Triceps Pushdown"
-	BentArmLateralRaise  SetTypeEnum = "Bent Arm Lateral Raise"
-	BenchCrunch          SetTypeEnum = "Bench Crunch"
+	MachineHipAbduction  ExerciseTypeEnum = "Machine Hip Abduction"
+	JeffersonCurl        ExerciseTypeEnum = "Jefferson Curl"
+	KettlebellSideBend   ExerciseTypeEnum = "Kettlebell Side Bend"
+	MachineChestPress    ExerciseTypeEnum = "Machine Chest Press"
+	Multipress           ExerciseTypeEnum = "Multipress"
+	Dips                 ExerciseTypeEnum = "Dips"
+	MachineShoulderPress ExerciseTypeEnum = "Machine Shoulder Press"
+	TricepsPushdown      ExerciseTypeEnum = "Triceps Pushdown"
+	BentArmLateralRaise  ExerciseTypeEnum = "Bent Arm Lateral Raise"
+	BenchCrunch          ExerciseTypeEnum = "Bench Crunch"
 
 	// General placeholder for unspecified exercises
-	None SetTypeEnum = ""
+	None ExerciseTypeEnum = ""
 )
 
 type Exercise struct {
@@ -46,19 +46,19 @@ type Exercise struct {
 	TimeslotId int         `json:"timeslot_id"`
 	GroupId    int         `json:"group_id"`
 	Note       *string     `json:"note"`
-	SetType    SetTypeEnum `json:"set_type"`
+	ExerciseType    ExerciseTypeEnum `json:"exercise_type"`
 	Timestamp
 
 	// Not used in DB model
 	WorkSets []WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`
 }
 
-func BuildExercise(timeslotId, groupId int, note string, setType SetTypeEnum) *Exercise {
+func BuildExercise(timeslotId, groupId int, note string, ExerciseType ExerciseTypeEnum) *Exercise {
 	return &Exercise{
 		TimeslotId: timeslotId,
 		GroupId:    groupId,
 		Note:       &note,
-		SetType:    setType,
+		ExerciseType:    ExerciseType,
 		Timestamp:  buildTimestamp(),
 	}
 }

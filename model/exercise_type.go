@@ -4,8 +4,8 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type SetType struct {
-	bun.BaseModel `bun:"table:set_type"`
+type ExerciseType struct {
+	bun.BaseModel `bun:"table:exercise_type"`
 	IdModel
 
 	UserId       string  `json:"user_id"`
@@ -16,8 +16,8 @@ type SetType struct {
 	Timestamp
 }
 
-func BuildSetType(userId, name string, note, mediaType, mediaAddress *string) *SetType {
-	return &SetType{
+func BuildExerciseType(userId, name string, note, mediaType, mediaAddress *string) *ExerciseType {
+	return &ExerciseType{
 		UserId:       userId,
 		Name:         name,
 		Note:         note,

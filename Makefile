@@ -11,12 +11,14 @@ help:
 pgcli:
 	pgcli "postgresql://trainer_helper:alpharius@localhost/trainer_helper"
 
-up-db:
-	docker compose up db -d
+# Start services in the backgound
+up-d:
+	docker compose up -d
 
 up:
 	docker compose up
 
+# Stop and delete all docker containers
 down:
 	docker compose down
 

@@ -6,10 +6,10 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type SetType struct {
-	CRUDBase[model.SetType]
+type ExerciseType struct {
+	CRUDBase[model.ExerciseType]
 }
 
-func NewSetType(db bun.IDB) SetType {
-	return SetType{CRUDBase: CRUDBase[model.SetType]{db: db}}
+func NewExerciseType(db bun.IDB) ExerciseType {
+	return ExerciseType{CRUDBase: CRUDBase[model.ExerciseType]{db: db}}
 }

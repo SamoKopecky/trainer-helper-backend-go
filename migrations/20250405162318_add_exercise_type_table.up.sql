@@ -1,4 +1,4 @@
-CREATE TABLE set_type (
+CREATE TABLE exercise_type (
   id integer NOT NULL,
   user_id character varying NOT NULL,
   name character varying NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE set_type (
   updated_at timestamp without time zone NOT NULL
 );
 
-CREATE SEQUENCE set_type_id_seq
+CREATE SEQUENCE exercise_type_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -17,6 +17,6 @@ CREATE SEQUENCE set_type_id_seq
     NO MAXVALUE
     CACHE 1;
 
-ALTER TABLE ONLY set_type ALTER COLUMN id SET DEFAULT nextval('set_type_id_seq'::regclass);
+ALTER TABLE ONLY exercise_type ALTER COLUMN id SET DEFAULT nextval('exercise_type_id_seq'::regclass);
 
-ALTER TABLE ONLY set_type ADD CONSTRAINT set_type_key PRIMARY KEY (id);
+ALTER TABLE ONLY exercise_type ADD CONSTRAINT exercise_type_key PRIMARY KEY (id);

@@ -22,7 +22,7 @@ func DerefString(ptr *string) string {
 	return *ptr
 }
 
-func DerefSetType(ptr *model.SetTypeEnum) model.SetTypeEnum {
+func DerefExerciseType(ptr *model.ExerciseTypeEnum) model.ExerciseTypeEnum {
 	if ptr == nil {
 		return model.None
 	}
