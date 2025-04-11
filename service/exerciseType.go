@@ -16,13 +16,16 @@ type ExerciseType struct {
 
 func (et ExerciseType) DuplicateDefault(userId string) (newExerciseTypes []model.ExerciseType, err error) {
 	newExerciseTypes, err = et.Store.GetByUserId(uuid.Nil.String())
-	// TODO: change user ids
 	if err != nil {
 		return
 	}
 	if len(newExerciseTypes) == 0 {
 		err = ErrNoInitialExercises
 		return
+	}
+
+	for i := range newExerciseTypes {
+		newExerciseTypes[i].UserId = userId
 	}
 
 	err = et.Store.InsertMany(&newExerciseTypes)

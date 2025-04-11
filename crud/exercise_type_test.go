@@ -3,23 +3,10 @@ package crud
 import (
 	"testing"
 	"trainer-helper/model"
-	"trainer-helper/utils"
+	"trainer-helper/testutil"
 
 	"github.com/stretchr/testify/require"
 )
-
-func exerciseTypeUserId(userId string) utils.FactoryOption[model.ExerciseType] {
-	return func(et *model.ExerciseType) {
-		et.UserId = userId
-	}
-}
-func exerciseTypeFactory(options ...utils.FactoryOption[model.ExerciseType]) *model.ExerciseType {
-	exerciseType := model.BuildExerciseType(utils.RandomUUID(), "name", nil, nil, nil)
-	for _, option := range options {
-		option(exerciseType)
-	}
-	return exerciseType
-}
 
 func TestGetByUserId(t *testing.T) {
 	db := testSetupDb(t)
@@ -27,7 +14,7 @@ func TestGetByUserId(t *testing.T) {
 	var exerciseTypes []model.ExerciseType
 	userIds := []string{"1", "2"}
 	for i := range 2 {
-		exerciseType := exerciseTypeFactory(exerciseTypeUserId(userIds[i]))
+		exerciseType := testutil.ExerciseTypeFactory(t, testutil.ExerciseTypeUserId(t, userIds[i]))
 		crud.Insert(exerciseType)
 		exerciseTypes = append(exerciseTypes, *exerciseType)
 	}
