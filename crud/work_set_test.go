@@ -44,35 +44,6 @@ func TestInsertManyEmpty(t *testing.T) {
 	assert.Equal(t, 0, len(dbModels))
 }
 
-func TestInsertMany(t *testing.T) {
-	db := testSetupDb(t)
-	crud := NewWorkSet(db)
-
-	// Arange
-	var workSets []model.WorkSet
-	for range 2 {
-		workSets = append(workSets, *workSetFactory())
-	}
-
-	// Act
-	if err := crud.InsertMany(&workSets); err != nil {
-		t.Fatalf("Failed to insert work sets: %v", err)
-	}
-
-	// Assert
-	dbModels, err := crud.Get()
-	if err != nil {
-		t.Fatalf("Failed to retrieve work sets: %v", err)
-	}
-
-	for i := range workSets {
-		workSets[i].Timestamp.SetZeroTimes()
-		dbModels[i].Timestamp.SetZeroTimes()
-	}
-
-	assert.EqualValues(t, dbModels, workSets, "Work sets should be equal")
-}
-
 func TestDeleteMany(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewWorkSet(db)

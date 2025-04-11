@@ -145,5 +145,3 @@ func (d DbConn) seedWorkSets(exerciseIds []int) {
 		}
 	}
 }
-
-func (d DbConn) seedExerciseTypes()

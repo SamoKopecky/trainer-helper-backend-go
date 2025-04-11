@@ -4,13 +4,13 @@ import (
 	"log"
 	"time"
 	"trainer-helper/api"
-	"trainer-helper/crud"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
+	"trainer-helper/store"
 )
 
 type Timeslot struct {
-	Crud    crud.Timeslot
+	Crud    store.Timeslot
 	Fetcher fetcher.IAM
 }
 
