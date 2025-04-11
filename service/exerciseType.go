@@ -26,6 +26,7 @@ func (et ExerciseType) DuplicateDefault(userId string) (newExerciseTypes []model
 
 	for i := range newExerciseTypes {
 		newExerciseTypes[i].UserId = userId
+		newExerciseTypes[i].Id = 0
 	}
 
 	err = et.Store.InsertMany(&newExerciseTypes)

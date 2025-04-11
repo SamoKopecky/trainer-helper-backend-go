@@ -13,7 +13,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Squat',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -22,7 +22,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Deadlift',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -31,7 +31,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Bench Press',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -40,7 +40,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'RDL',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -49,7 +49,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Cable Horizontal Row',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -58,7 +58,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Hack Squat',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -67,7 +67,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Leg Press',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -76,7 +76,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Calf Raise',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -85,7 +85,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Ring Muscle Up',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -94,7 +94,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Pull Up',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -103,7 +103,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Machine Hip Abduction',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -112,7 +112,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Jefferson Curl',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -121,7 +121,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Kettlebell Side Bend',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -130,7 +130,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Machine Chest Press',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -139,7 +139,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Multipress',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -148,7 +148,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Dips',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -157,7 +157,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Machine Shoulder Press',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -166,7 +166,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Triceps Pushdown',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -175,7 +175,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Bent Arm Lateral Raise',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -184,7 +184,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     'Bench Crunch',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()
@@ -193,7 +193,7 @@ VALUES
     '00000000-0000-0000-0000-000000000000',
     '',
     NULL,
-    NULL,
+    'YOUTUBE',
     NULL,
     NOW (),
     NOW ()

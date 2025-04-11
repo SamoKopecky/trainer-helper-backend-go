@@ -15,8 +15,10 @@ func TestDuplicateDefault(t *testing.T) {
 	m := store.NewMockExerciseType(t)
 	service := ExerciseType{Store: m}
 	mockModels := []model.ExerciseType{*testutil.ExerciseTypeFactory(t)}
+	mockModels[0].Id = 1
 	assertModels := slices.Clone(mockModels)
 	assertModels[0].UserId = "123"
+	assertModels[0].Id = 0
 	m.EXPECT().GetByUserId("00000000-0000-0000-0000-000000000000").Return(mockModels, nil).Once()
 	m.EXPECT().InsertMany(&assertModels).Return(nil).Once()
 
