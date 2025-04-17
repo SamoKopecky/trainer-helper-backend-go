@@ -2,5 +2,9 @@ DROP TABLE IF EXISTS exercise_type;
 
 DROP SEQUENCE IF EXISTS exercise_type_id_seq;
 
+-- TODO: Check if this works and revert nullable
 ALTER TABLE exercise
-RENAME COLUMN exercise_type TO set_type;
+ALTER COLUMN exercise_type_id TYPE character varying;
+
+ALTER TABLE exercise
+RENAME COLUMN exercise_type_id TO set_type;

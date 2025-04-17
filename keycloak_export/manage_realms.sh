@@ -18,7 +18,7 @@ if [ "$action" = "import" ]; then
 			--name keycloak_export \
 			-v ./keycloak_data:/opt/keycloak/data/h2 \
 			-v ./keycloak_export:/tmp/keycloak-export \
-			quay.io/keycloak/keycloak:latest \
+			quay.io/keycloak/keycloak:26.1.4 \
 			import --file "/tmp/keycloak-export/export_$realm.json" \
 			--verbose \
 			--override true

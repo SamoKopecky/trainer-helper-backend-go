@@ -15,7 +15,8 @@ func exerciseTimeslotId(timeslotId int) utils.FactoryOption[model.Exercise] {
 }
 
 func exerciseFactory(options ...utils.FactoryOption[model.Exercise]) *model.Exercise {
-	exercise := model.BuildExercise(utils.RandomInt(), utils.RandomInt(), "note", model.Squat)
+	note := "note"
+	exercise := model.BuildExercise(utils.RandomInt(), utils.RandomInt(), &note, nil)
 	for _, option := range options {
 		option(exercise)
 	}

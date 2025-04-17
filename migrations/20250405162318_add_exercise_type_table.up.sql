@@ -21,4 +21,7 @@ ALTER TABLE ONLY exercise_type ALTER COLUMN id SET DEFAULT nextval('exercise_typ
 
 ALTER TABLE ONLY exercise_type ADD CONSTRAINT exercise_type_key PRIMARY KEY (id);
 
-ALTER TABLE exercise RENAME COLUMN set_type TO exercise_type;
+ALTER TABLE exercise RENAME COLUMN set_type TO exercise_type_id;
+
+ALTER TABLE exercise ALTER COLUMN exercise_type_id TYPE integer USING (NULLIF(exercise_type_id, '')::integer);
+ALTER TABLE exercise ALTER COLUMN exercise_type_id DROP NOT NULL;
