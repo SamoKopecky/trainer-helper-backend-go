@@ -9,9 +9,9 @@ import (
 	exercise_duplicate_handler "trainer-helper/api/exercise_handler/duplicate_handler"
 	"trainer-helper/api/exercise_type_handler"
 	exercise_type_duplicate_handler "trainer-helper/api/exercise_type_handler/duplicate_handler"
-	"trainer-helper/api/person_handler"
 	"trainer-helper/api/timeslot_handler"
 	timeslot_revert_handler "trainer-helper/api/timeslot_handler/revert_handler"
+	"trainer-helper/api/user_handler"
 	"trainer-helper/api/work_set_handler"
 	"trainer-helper/config"
 	"trainer-helper/crud"
@@ -95,7 +95,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 				ExerciseTypeCrud:    crudExerciseType,
 				IAMFetcher:          iam,
 				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
-				PersonService:       service.Person{Fetcher: iam},
+				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
 			}
 
@@ -118,7 +118,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.PUT("/exercise/count", exercise_count_handler.Put)
 	jg.DELETE("/exercise/count", exercise_count_handler.Delete)
 	jg.PUT("/workset", work_set_handler.Put)
-	jg.GET("/person", person_handler.Get)
+	jg.GET("/user", user_handler.Get)
 
 	to := jg.Group("")
 	to.Use(trainerOnlyMiddleware)

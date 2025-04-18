@@ -5,11 +5,11 @@ import (
 	"trainer-helper/fetcher"
 )
 
-type Person struct {
+type User struct {
 	Fetcher fetcher.IAM
 }
 
-func (p Person) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err error) {
+func (p User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err error) {
 	role, isTrainer := claims.AppTraineeRole()
 	if isTrainer {
 		users, err = p.Fetcher.GetUsersByRole(role)

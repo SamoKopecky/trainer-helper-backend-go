@@ -22,7 +22,7 @@ type DbContext struct {
 	IAMFetcher fetcher.IAM
 
 	TimeslotService     service.Timeslot
-	PersonService       service.Person
+	UserService         service.User
 	ExerciseTypeService service.ExerciseType
 
 	Claims *api.JwtClaims

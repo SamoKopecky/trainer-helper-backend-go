@@ -31,8 +31,8 @@ func (ku KeycloakUser) FullName() string {
 	return fmt.Sprintf("%s %s", ku.FirstName, ku.LastName)
 }
 
-func (ku KeycloakUser) ToPersonModel() model.Person {
-	return model.Person{
+func (ku KeycloakUser) ToUserModel() model.User {
+	return model.User{
 		Id:    ku.Id,
 		Name:  ku.FullName(),
 		Email: ku.Email,

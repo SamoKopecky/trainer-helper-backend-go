@@ -188,15 +188,6 @@ VALUES
     NULL,
     NOW (),
     NOW ()
-  ),
-  (
-    '00000000-0000-0000-0000-000000000000',
-    '',
-    NULL,
-    'YOUTUBE',
-    NULL,
-    NOW (),
-    NOW ()
   );
 
 -- Corresponds to the 'None' entry with an empty string name

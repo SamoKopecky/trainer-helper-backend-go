@@ -1,4 +1,4 @@
-package person_handler
+package user_handler
 
 import (
 	"net/http"
@@ -11,13 +11,13 @@ import (
 func Get(c echo.Context) (err error) {
 	cc := c.(*schemas.DbContext)
 
-	users, err := cc.PersonService.GetUsers(cc.Claims)
+	users, err := cc.UserService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}
-	models := make([]model.Person, len(users))
+	models := make([]model.User, len(users))
 	for i, user := range users {
-		models[i] = user.ToPersonModel()
+		models[i] = user.ToUserModel()
 	}
 
 	return cc.JSON(http.StatusOK, models)
