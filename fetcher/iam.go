@@ -18,6 +18,7 @@ import (
 )
 
 // TODO: Add status code to error
+// TODO: Properly log api errors, create dynamic errors that can be read in logs
 var ErrUserNotCreated = errors.New("iam: user not created due to invalid status code")
 var ErrUserAlreadyExists = errors.New("iam: user already exists")
 var ErrUserActionTriggerFailed = errors.New("iam: user trigger failed because of unknown status code")
@@ -69,11 +70,11 @@ func (i IAM) fromBaseUrl(endpoint string) string {
 	return fmt.Sprintf("%s/%s", i.AppConfig.KeycloakBaseUrl, endpoint)
 }
 
-func (i IAM) userUrl() string {
+func (i IAM) UserUrl() string {
 	return i.fromBaseUrl(fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm))
 }
 
-func (i IAM) roleUrl(role string) string {
+func (i IAM) RoleUrl(role string) string {
 	return i.fromBaseUrl(fmt.Sprintf("admin/realms/%s/roles/%s", i.AppConfig.KeycloakRealm, role))
 }
 
@@ -96,7 +97,7 @@ func (i IAM) authedRequest(method, url string, body *bytes.Buffer) (*http.Respon
 func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 	var user KeycloakUser
 
-	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/%s", i.userUrl(), userId), nil)
+	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/%s", i.UserUrl(), userId), nil)
 	if err != nil {
 		return user, err
 	}
@@ -104,8 +105,33 @@ func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 	return responseData[KeycloakUser](resp)
 }
 
+func (i IAM) GetUserLocationByEmail(email string) (UserLocation, error) {
+	baseUrl := fmt.Sprintf("%s", i.UserUrl())
+	queryParams := map[string]string{"email": email, "exact": "true"}
+	resp, err := i.authedRequest(
+		http.MethodGet,
+		utils.AddQueryParam(baseUrl, queryParams),
+		nil)
+
+	if err != nil {
+		return "", err
+	}
+
+	users, err := responseData[[]KeycloakUser](resp)
+	if err != nil {
+		return "", err
+	}
+
+	// TODO: Properly check len
+	user := users[0]
+
+	userLocation := UserLocation(
+		fmt.Sprintf("%s/%s", i.UserUrl(), user.Id))
+	return userLocation, nil
+}
+
 func (i IAM) GetUsersByRole(role string) ([]KeycloakUser, error) {
-	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/users", i.roleUrl(role)), nil)
+	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/users", i.RoleUrl(role)), nil)
 
 	if err != nil {
 		return nil, err
@@ -123,7 +149,7 @@ func (i IAM) CreateUser(email, username string) (userLocation UserLocation, err 
 		RequiredActions: newRequiredActions,
 	}
 	buf := createParamsBuf(newUser)
-	resp, err := i.authedRequest(http.MethodPost, i.userUrl(), &buf)
+	resp, err := i.authedRequest(http.MethodPost, i.UserUrl(), &buf)
 	if err != nil {
 		return
 	}
@@ -152,10 +178,9 @@ func (i IAM) InvokeUserUpdate(userLocation UserLocation) error {
 	return nil
 }
 
-func (i IAM) AddUserRoles(userLocation UserLocation, kcRole KeycloakRole) error {
-	// TODO: Properly log api errors, create dynamic errors that can be read in logs
+func (i IAM) editUserRoles(method string, userLocation UserLocation, kcRole KeycloakRole) error {
 	buf := createParamsBuf([]KeycloakRole{kcRole})
-	resp, err := i.authedRequest(http.MethodPost, fmt.Sprintf("%s/role-mappings/realm", userLocation), &buf)
+	resp, err := i.authedRequest(method, fmt.Sprintf("%s/role-mappings/realm", userLocation), &buf)
 	if err != nil {
 		return err
 	}
@@ -167,8 +192,16 @@ func (i IAM) AddUserRoles(userLocation UserLocation, kcRole KeycloakRole) error 
 	return nil
 }
 
+func (i IAM) AddUserRoles(userLocation UserLocation, kcRole KeycloakRole) error {
+	return i.editUserRoles(http.MethodPost, userLocation, kcRole)
+}
+
+func (i IAM) RemoveUserRoles(userLocation UserLocation, kcRole KeycloakRole) error {
+	return i.editUserRoles(http.MethodDelete, userLocation, kcRole)
+}
+
 func (i IAM) GetRole(roleName string) (KeycloakRole, error) {
-	resp, err := i.authedRequest(http.MethodGet, i.roleUrl(roleName), nil)
+	resp, err := i.authedRequest(http.MethodGet, i.RoleUrl(roleName), nil)
 	if err != nil {
 		return KeycloakRole{}, err
 	}
