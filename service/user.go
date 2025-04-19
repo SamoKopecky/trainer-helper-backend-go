@@ -27,15 +27,24 @@ func (u User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err
 	return
 }
 
-func (u User) RegisterUser(email, username string) error {
-	userIdUrl, err := u.Fetcher.CreateUser(email, username)
+func (u User) RegisterUser(email, username, traineeRole string) (userId string, err error) {
+	userLocation, err := u.Fetcher.CreateUser(email, username)
 	if err != nil {
-		return err
+		return
 	}
-	err = u.Fetcher.InvokeUserUpdate(userIdUrl)
+	err = u.Fetcher.InvokeUserUpdate(userLocation)
 	if err != nil {
-		return err
+		return
 	}
 
-	return nil
+	kcRole, err := u.Fetcher.GetRole(traineeRole)
+	if err != nil {
+		return
+	}
+	err = u.Fetcher.AddUserRoles(userLocation, kcRole)
+	if err != nil {
+		return
+	}
+
+	return userLocation.UserId(), nil
 }

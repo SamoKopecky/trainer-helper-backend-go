@@ -35,9 +35,12 @@ func (ku KeycloakUser) Nickname() *string {
 }
 
 func (ku KeycloakUser) FullName() string {
-	return fmt.Sprintf("%s %s",
-		utils.UpperFirstChar(ku.FirstName),
-		utils.UpperFirstChar(ku.LastName))
+	if ku.FirstName != nil && ku.LastName != nil {
+		return fmt.Sprintf("%s %s",
+			utils.UpperFirstChar(*ku.FirstName),
+			utils.UpperFirstChar(*ku.LastName))
+	}
+	return ""
 }
 
 func (ku KeycloakUser) ToUserModel() model.User {
@@ -111,7 +114,7 @@ func (i IAM) GetUsersByRole(role string) ([]KeycloakUser, error) {
 	return responseData[[]KeycloakUser](resp)
 }
 
-func (i IAM) CreateUser(email, username string) (userId string, err error) {
+func (i IAM) CreateUser(email, username string) (userLocation UserLocation, err error) {
 	newUser := NewKeycloakUser{
 		Email:           email,
 		Username:        username,
@@ -131,11 +134,11 @@ func (i IAM) CreateUser(email, username string) (userId string, err error) {
 		return "", ErrUserNotCreated
 	}
 
-	userId = resp.Header.Get("Location")
+	userLocation = UserLocation(resp.Header.Get("Location"))
 	return
 }
 
-func (i IAM) InvokeUserUpdate(userLocation string) error {
+func (i IAM) InvokeUserUpdate(userLocation UserLocation) error {
 	buf := createParamsBuf(newRequiredActions)
 
 	resp, err := i.authedRequest(http.MethodPut, fmt.Sprintf("%s/execute-actions-email", userLocation), &buf)
@@ -143,11 +146,34 @@ func (i IAM) InvokeUserUpdate(userLocation string) error {
 		return err
 	}
 
-	fmt.Println(resp.StatusCode)
 	if resp.StatusCode != http.StatusNoContent {
 		return ErrUserActionTriggerFailed
 	}
 	return nil
+}
+
+func (i IAM) AddUserRoles(userLocation UserLocation, kcRole KeycloakRole) error {
+	// TODO: Properly log api errors, create dynamic errors that can be read in logs
+	buf := createParamsBuf([]KeycloakRole{kcRole})
+	resp, err := i.authedRequest(http.MethodPost, fmt.Sprintf("%s/role-mappings/realm", userLocation), &buf)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		return err
+	}
+
+	return nil
+}
+
+func (i IAM) GetRole(roleName string) (KeycloakRole, error) {
+	resp, err := i.authedRequest(http.MethodGet, i.roleUrl(roleName), nil)
+	if err != nil {
+		return KeycloakRole{}, err
+	}
+
+	return responseData[KeycloakRole](resp)
 }
 
 func responseData[T any](response *http.Response) (data T, err error) {

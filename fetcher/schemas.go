@@ -6,10 +6,10 @@ type KeycloakAttributes struct {
 
 type KeycloakUser struct {
 	Id         string             `json:"id"`
-	FirstName  string             `json:"firstName"`
-	LastName   string             `json:"lastName"`
 	Email      string             `json:"email"`
 	Attributes KeycloakAttributes `json:"attributes"`
+	FirstName  *string            `json:"firstName"`
+	LastName   *string            `json:"lastName"`
 }
 
 type NewKeycloakUser struct {
@@ -19,3 +19,10 @@ type NewKeycloakUser struct {
 	EmailVerified   bool     `json:"emailVerified"`
 	RequiredActions []string `json:"requiredActions"`
 }
+
+type KeycloakRole struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type UserLocation string
