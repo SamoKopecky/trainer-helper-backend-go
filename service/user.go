@@ -9,15 +9,15 @@ type User struct {
 	Fetcher fetcher.IAM
 }
 
-func (p User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err error) {
+func (u User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err error) {
 	role, isTrainer := claims.AppTraineeRole()
 	if isTrainer {
-		users, err = p.Fetcher.GetUsersByRole(role)
+		users, err = u.Fetcher.GetUsersByRole(role)
 		if err != nil {
 			return
 		}
 	} else {
-		user, err := p.Fetcher.GetUserById(claims.Subject)
+		user, err := u.Fetcher.GetUserById(claims.Subject)
 		if err != nil {
 			return nil, err
 		}
@@ -25,4 +25,17 @@ func (p User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err
 		return users, nil
 	}
 	return
+}
+
+func (u User) RegisterUser(email, username string) error {
+	userIdUrl, err := u.Fetcher.CreateUser(email, username)
+	if err != nil {
+		return err
+	}
+	err = u.Fetcher.InvokeUserUpdate(userIdUrl)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
