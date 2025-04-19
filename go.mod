@@ -28,6 +28,7 @@ require (
 	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rakyll/gotest v0.0.6 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -53,7 +54,7 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/net v0.37.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	mellium.im/sasl v0.3.2 // indirect
