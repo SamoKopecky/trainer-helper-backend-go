@@ -8,3 +8,8 @@ type userPostRequest struct {
 type userDeleteRequest struct {
 	Id string `json:"id"`
 }
+
+type userPutRequest struct {
+	Id       string `json:"id"`
+	Nickname string `json:"nickname"`
+}

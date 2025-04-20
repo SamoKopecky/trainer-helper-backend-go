@@ -133,6 +133,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	to.POST("/exerciseType/duplicate", exercise_type_duplicate_handler.Post)
 	to.POST("/user", user_handler.Post)
 	to.DELETE("/user", user_handler.Delete)
+	to.PUT("/user", user_handler.Put)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }

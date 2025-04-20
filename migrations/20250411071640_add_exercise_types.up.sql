@@ -189,5 +189,3 @@ VALUES
     NOW (),
     NOW ()
   );
-
--- Corresponds to the 'None' entry with an empty string name

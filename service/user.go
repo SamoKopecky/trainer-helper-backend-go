@@ -71,3 +71,18 @@ func (u User) UnregisterUser(userId, traineeRole string) error {
 	}
 	return nil
 }
+
+func (u User) UpdateNickname(userId, nickname string) error {
+	user, err := u.Fetcher.GetUserById(userId)
+	if err != nil {
+		return err
+	}
+	user.Attributes = fetcher.KeycloakAttributes{Nickname: []string{nickname}}
+
+	err = u.Fetcher.UpdateUser(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

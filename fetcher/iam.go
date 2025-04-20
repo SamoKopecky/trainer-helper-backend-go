@@ -20,6 +20,7 @@ import (
 // TODO: Add status code to error
 // TODO: Properly log api errors, create dynamic errors that can be read in logs
 var ErrUserNotCreated = errors.New("iam: user not created due to invalid status code")
+var ErrUserNotUpdated = errors.New("iam: user not updated due to invalid status code")
 var ErrUserAlreadyExists = errors.New("iam: user already exists")
 var ErrUserActionTriggerFailed = errors.New("iam: user trigger failed because of unknown status code")
 
@@ -89,6 +90,10 @@ func (i IAM) userUrl() string {
 	return i.fromBaseUrl(fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm))
 }
 
+func (i IAM) userIdUrl(userId string) string {
+	return fmt.Sprintf("%s/%s", i.userUrl(), userId)
+}
+
 func (i IAM) roleUrl(role string) string {
 	return i.fromBaseUrl(fmt.Sprintf("admin/realms/%s/roles/%s", i.AppConfig.KeycloakRealm, role))
 }
@@ -117,7 +122,7 @@ func (i IAM) GetUserLocation(userId string) UserLocation {
 func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 	var user KeycloakUser
 
-	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/%s", i.userUrl(), userId), nil)
+	resp, err := i.authedRequest(http.MethodGet, i.userIdUrl(userId), nil)
 	if err != nil {
 		return user, err
 	}
@@ -211,6 +216,22 @@ func (i IAM) GetRole(roleName string) (KeycloakRole, error) {
 	}
 
 	return responseData[KeycloakRole](resp)
+}
+
+func (i IAM) UpdateUser(user KeycloakUser) error {
+	buf := createParamsBuf(user)
+
+	resp, err := i.authedRequest(http.MethodPut, i.userIdUrl(user.Id), &buf)
+	if err != nil {
+		return err
+	}
+
+	// TODO: return status code
+	if resp.StatusCode != http.StatusNoContent {
+		return ErrUserNotUpdated
+	}
+
+	return nil
 }
 
 func responseData[T any](response *http.Response) (data T, err error) {

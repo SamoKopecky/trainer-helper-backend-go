@@ -56,7 +56,22 @@ func Delete(c echo.Context) (err error) {
 
 	err = cc.UserService.UnregisterUser(params.Id, traineeRole)
 	if err != nil {
-		return err
+		return
+	}
+	return cc.NoContent(http.StatusOK)
+}
+
+func Put(c echo.Context) (err error) {
+	cc := c.(*schemas.DbContext)
+
+	params, err := api.BindParams[userPutRequest](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	err = cc.UserService.UpdateNickname(params.Id, params.Nickname)
+	if err != nil {
+		return
 	}
 	return cc.NoContent(http.StatusOK)
 }
