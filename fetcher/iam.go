@@ -35,20 +35,21 @@ func (ku KeycloakUser) Nickname() *string {
 	}
 }
 
-func (ku KeycloakUser) FullName() string {
+func (ku KeycloakUser) FullName() *string {
 	if ku.FirstName != nil && ku.LastName != nil {
-		return fmt.Sprintf("%s %s",
+		name := fmt.Sprintf("%s %s",
 			utils.UpperFirstChar(*ku.FirstName),
 			utils.UpperFirstChar(*ku.LastName))
+		return &name
 	}
-	return ""
+	return nil
 }
 
 func (ku KeycloakUser) ToUserModel() model.User {
 	return model.User{
 		Id:       ku.Id,
-		Name:     ku.FullName(),
 		Email:    ku.Email,
+		Name:     ku.FullName(),
 		Nickname: ku.Nickname(),
 	}
 }
@@ -70,11 +71,25 @@ func (i IAM) fromBaseUrl(endpoint string) string {
 	return fmt.Sprintf("%s/%s", i.AppConfig.KeycloakBaseUrl, endpoint)
 }
 
-func (i IAM) UserUrl() string {
+func (i IAM) editUserRoles(method string, userLocation UserLocation, kcRole KeycloakRole) error {
+	buf := createParamsBuf([]KeycloakRole{kcRole})
+	resp, err := i.authedRequest(method, fmt.Sprintf("%s/role-mappings/realm", userLocation), &buf)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		return err
+	}
+
+	return nil
+}
+
+func (i IAM) userUrl() string {
 	return i.fromBaseUrl(fmt.Sprintf("admin/realms/%s/users", i.AppConfig.KeycloakRealm))
 }
 
-func (i IAM) RoleUrl(role string) string {
+func (i IAM) roleUrl(role string) string {
 	return i.fromBaseUrl(fmt.Sprintf("admin/realms/%s/roles/%s", i.AppConfig.KeycloakRealm, role))
 }
 
@@ -97,7 +112,7 @@ func (i IAM) authedRequest(method, url string, body *bytes.Buffer) (*http.Respon
 func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 	var user KeycloakUser
 
-	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/%s", i.UserUrl(), userId), nil)
+	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/%s", i.userUrl(), userId), nil)
 	if err != nil {
 		return user, err
 	}
@@ -106,7 +121,7 @@ func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 }
 
 func (i IAM) GetUserLocationByEmail(email string) (UserLocation, error) {
-	baseUrl := fmt.Sprintf("%s", i.UserUrl())
+	baseUrl := fmt.Sprintf("%s", i.userUrl())
 	queryParams := map[string]string{"email": email, "exact": "true"}
 	resp, err := i.authedRequest(
 		http.MethodGet,
@@ -126,12 +141,12 @@ func (i IAM) GetUserLocationByEmail(email string) (UserLocation, error) {
 	user := users[0]
 
 	userLocation := UserLocation(
-		fmt.Sprintf("%s/%s", i.UserUrl(), user.Id))
+		fmt.Sprintf("%s/%s", i.userUrl(), user.Id))
 	return userLocation, nil
 }
 
 func (i IAM) GetUsersByRole(role string) ([]KeycloakUser, error) {
-	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/users", i.RoleUrl(role)), nil)
+	resp, err := i.authedRequest(http.MethodGet, fmt.Sprintf("%s/users", i.roleUrl(role)), nil)
 
 	if err != nil {
 		return nil, err
@@ -149,7 +164,7 @@ func (i IAM) CreateUser(email, username string) (userLocation UserLocation, err 
 		RequiredActions: newRequiredActions,
 	}
 	buf := createParamsBuf(newUser)
-	resp, err := i.authedRequest(http.MethodPost, i.UserUrl(), &buf)
+	resp, err := i.authedRequest(http.MethodPost, i.userUrl(), &buf)
 	if err != nil {
 		return
 	}
@@ -178,20 +193,6 @@ func (i IAM) InvokeUserUpdate(userLocation UserLocation) error {
 	return nil
 }
 
-func (i IAM) editUserRoles(method string, userLocation UserLocation, kcRole KeycloakRole) error {
-	buf := createParamsBuf([]KeycloakRole{kcRole})
-	resp, err := i.authedRequest(method, fmt.Sprintf("%s/role-mappings/realm", userLocation), &buf)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		return err
-	}
-
-	return nil
-}
-
 func (i IAM) AddUserRoles(userLocation UserLocation, kcRole KeycloakRole) error {
 	return i.editUserRoles(http.MethodPost, userLocation, kcRole)
 }
@@ -201,7 +202,7 @@ func (i IAM) RemoveUserRoles(userLocation UserLocation, kcRole KeycloakRole) err
 }
 
 func (i IAM) GetRole(roleName string) (KeycloakRole, error) {
-	resp, err := i.authedRequest(http.MethodGet, i.RoleUrl(roleName), nil)
+	resp, err := i.authedRequest(http.MethodGet, i.roleUrl(roleName), nil)
 	if err != nil {
 		return KeycloakRole{}, err
 	}

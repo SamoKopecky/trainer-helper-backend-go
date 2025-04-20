@@ -28,8 +28,7 @@ func (t Timeslot) GetById(timeslotId int) (timeslot model.ApiTimeslot, err error
 	if err != nil {
 		log.Fatal(err)
 	}
-	fullName := user.FullName()
-	timeslot.UserName = &fullName
+	timeslot.UserName = user.FullName()
 	timeslot.UserNickname = user.Nickname()
 	return
 }
@@ -57,8 +56,7 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 
 		if apiTimeslot.TraineeId != nil {
 			if user, ok := iamUserMap[*timeslot.TraineeId]; ok {
-				fullName := user.FullName()
-				apiTimeslot.UserName = &fullName
+				apiTimeslot.UserName = user.FullName()
 				apiTimeslot.UserNickname = user.Nickname()
 			}
 		}

@@ -3,7 +3,6 @@ package user_handler
 import (
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/fetcher"
 	"trainer-helper/model"
 	"trainer-helper/schemas"
 
@@ -35,9 +34,6 @@ func Post(c echo.Context) (err error) {
 	}
 
 	userId, err := cc.UserService.RegisterUser(params.Email, params.Username, traineeRole)
-	if err == fetcher.ErrUserAlreadyExists {
-		return cc.NoContent(http.StatusConflict)
-	}
 	if err != nil {
 		return err
 	}
@@ -46,3 +42,7 @@ func Post(c echo.Context) (err error) {
 		UserId string `json:"user_id"`
 	}{UserId: userId})
 }
+
+// func Put(c echo.Context) (err error) {
+//
+// }

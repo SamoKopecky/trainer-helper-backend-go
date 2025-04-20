@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"trainer-helper/api"
 	"trainer-helper/fetcher"
 )
@@ -46,7 +45,6 @@ func (u User) RegisterUser(email, username, traineeRole string) (userId string, 
 		return
 	}
 
-	fmt.Println(userLocation)
 	kcRole, err := u.Fetcher.GetRole(traineeRole)
 	if err != nil {
 		return
