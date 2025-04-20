@@ -5,7 +5,8 @@ DROP SEQUENCE IF EXISTS exercise_type_id_seq;
 -- TODO: Check if this works and revert nullable
 UPDATE exercise
 SET
-  exercise_type = null
+  exercise_type_id = null;
+
 ALTER TABLE exercise
 ALTER COLUMN exercise_type_id TYPE character varying;
 
