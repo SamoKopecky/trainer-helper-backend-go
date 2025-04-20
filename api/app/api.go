@@ -119,6 +119,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.DELETE("/exercise/count", exercise_count_handler.Delete)
 	jg.PUT("/workset", work_set_handler.Put)
 	jg.GET("/user", user_handler.Get)
+	jg.GET("/exerciseType", exercise_type_handler.Get)
 
 	to := jg.Group("")
 	to.Use(trainerOnlyMiddleware)
@@ -127,7 +128,6 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	to.PUT("/timeslot", timeslot_handler.Put)
 	to.PUT("/timeslot/revert", timeslot_revert_handler.Put)
 	to.POST("/exercise/duplicate", exercise_duplicate_handler.Post)
-	to.GET("/exerciseType", exercise_type_handler.Get)
 	to.POST("/exerciseType", exercise_type_handler.Post)
 	to.PUT("/exerciseType", exercise_type_handler.Put)
 	to.POST("/exerciseType/duplicate", exercise_type_duplicate_handler.Post)
