@@ -23,5 +23,6 @@ ALTER TABLE ONLY exercise_type ADD CONSTRAINT exercise_type_key PRIMARY KEY (id)
 
 ALTER TABLE exercise RENAME COLUMN set_type TO exercise_type_id;
 
-ALTER TABLE exercise ALTER COLUMN exercise_type_id TYPE integer USING (NULLIF(exercise_type_id, '')::integer);
 ALTER TABLE exercise ALTER COLUMN exercise_type_id DROP NOT NULL;
+UPDATE exercise SET exercise_type_id=null;
+ALTER TABLE exercise ALTER COLUMN exercise_type_id TYPE integer USING (NULLIF(exercise_type_id, '')::integer);
