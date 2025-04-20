@@ -9,6 +9,7 @@ import (
 	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
+	"slices"
 )
 
 func Get(c echo.Context) (err error) {
@@ -19,11 +20,17 @@ func Get(c echo.Context) (err error) {
 		return err
 	}
 	models := make([]model.User, len(users))
+	var index int
 	for i, user := range users {
+		if user.Id == cc.Claims.Subject {
+			index = i
+			continue
+		}
 		models[i] = user.ToUserModel()
 	}
 
-	return cc.JSON(http.StatusOK, models)
+	// Delete trainer user
+	return cc.JSON(http.StatusOK, slices.Delete(models, index, index+1))
 }
 
 func Post(c echo.Context) (err error) {
