@@ -28,7 +28,7 @@ func (u User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err
 	return
 }
 
-func (u User) RegisterUser(email, username, traineeRole string) (userId string, err error) {
+func (u User) RegisterUser(email, username, traineeRole, trainerId string) (userId string, err error) {
 	userLocation, err := u.Fetcher.CreateUser(email, username)
 	if errors.Is(err, fetcher.ErrUserAlreadyExists) {
 		// If use is already created, get user id by email
@@ -55,6 +55,11 @@ func (u User) RegisterUser(email, username, traineeRole string) (userId string, 
 		return
 	}
 
+	err = u.UpdateTrainerId(userLocation.UserId(), trainerId)
+	if err != nil {
+		return
+	}
+
 	return userLocation.UserId(), nil
 }
 
@@ -72,14 +77,42 @@ func (u User) UnregisterUser(userId, traineeRole string) error {
 	return nil
 }
 
-func (u User) UpdateNickname(userId, nickname string) error {
+func (u User) updateAttributes(userId string, attributes fetcher.KeycloakAttributes) error {
 	user, err := u.Fetcher.GetUserById(userId)
 	if err != nil {
 		return err
 	}
-	user.Attributes = fetcher.KeycloakAttributes{Nickname: []string{nickname}}
+
+	if len(attributes.Nickname) > 0 {
+		user.Attributes.Nickname = attributes.Nickname
+	}
+	if len(attributes.TrainerId) > 0 {
+		user.Attributes.TrainerId = attributes.TrainerId
+	}
 
 	err = u.Fetcher.UpdateUser(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u User) UpdateNickname(userId, nickname string) error {
+	attributes := fetcher.KeycloakAttributes{Nickname: []string{nickname}}
+	err := u.updateAttributes(userId, attributes)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u User) UpdateTrainerId(userId, trainerId string) error {
+	attributes := fetcher.KeycloakAttributes{TrainerId: []string{trainerId}}
+	err := u.updateAttributes(userId, attributes)
+
 	if err != nil {
 		return err
 	}

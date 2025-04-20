@@ -35,7 +35,7 @@ func Post(c echo.Context) (err error) {
 		return cc.BadRequest(err)
 	}
 
-	userId, err := cc.UserService.RegisterUser(params.Email, params.Username, traineeRole)
+	userId, err := cc.UserService.RegisterUser(params.Email, params.Username, traineeRole, cc.Claims.Subject)
 	if err != nil {
 		return err
 	}

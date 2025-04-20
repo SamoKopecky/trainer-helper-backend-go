@@ -1,7 +1,8 @@
 package fetcher
 
 type KeycloakAttributes struct {
-	Nickname []string `json:"nickname"`
+	Nickname  []string `json:"nickname"`
+	TrainerId []string `json:"trainerId"`
 }
 
 type KeycloakUser struct {
