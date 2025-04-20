@@ -57,3 +57,17 @@ func (u User) RegisterUser(email, username, traineeRole string) (userId string, 
 
 	return userLocation.UserId(), nil
 }
+
+func (u User) UnregisterUser(userId, traineeRole string) error {
+	userLocation := u.Fetcher.GetUserLocation(userId)
+	kcRole, err := u.Fetcher.GetRole(traineeRole)
+	if err != nil {
+		return err
+	}
+
+	err = u.Fetcher.RemoveUserRoles(userLocation, kcRole)
+	if err != nil {
+		return err
+	}
+	return nil
+}

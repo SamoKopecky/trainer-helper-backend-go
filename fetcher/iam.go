@@ -109,6 +109,11 @@ func (i IAM) authedRequest(method, url string, body *bytes.Buffer) (*http.Respon
 	return client.Do(request)
 }
 
+func (i IAM) GetUserLocation(userId string) UserLocation {
+	return UserLocation(
+		fmt.Sprintf("%s/%s", i.userUrl(), userId))
+}
+
 func (i IAM) GetUserById(userId string) (KeycloakUser, error) {
 	var user KeycloakUser
 
@@ -139,9 +144,7 @@ func (i IAM) GetUserLocationByEmail(email string) (UserLocation, error) {
 
 	// TODO: Properly check len
 	user := users[0]
-
-	userLocation := UserLocation(
-		fmt.Sprintf("%s/%s", i.userUrl(), user.Id))
+	userLocation := i.GetUserLocation(user.Id)
 	return userLocation, nil
 }
 

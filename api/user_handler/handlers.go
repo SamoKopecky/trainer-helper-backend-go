@@ -1,5 +1,7 @@
 package user_handler
 
+// TODO: Convert struct requests for ids to path params
+
 import (
 	"net/http"
 	"trainer-helper/api"
@@ -43,6 +45,18 @@ func Post(c echo.Context) (err error) {
 	}{UserId: userId})
 }
 
-// func Put(c echo.Context) (err error) {
-//
-// }
+func Delete(c echo.Context) (err error) {
+	cc := c.(*schemas.DbContext)
+
+	params, err := api.BindParams[userDeleteRequest](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+	traineeRole, _ := cc.Claims.AppTraineeRole()
+
+	err = cc.UserService.UnregisterUser(params.Id, traineeRole)
+	if err != nil {
+		return err
+	}
+	return cc.NoContent(http.StatusOK)
+}
