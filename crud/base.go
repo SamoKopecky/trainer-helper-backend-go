@@ -33,3 +33,15 @@ func (c CRUDBase[T]) Get() (models []T, err error) {
 	err = c.db.NewSelect().Model(&models).Scan(context.TODO())
 	return
 }
+
+func (c CRUDBase[T]) InsertMany(models *[]T) error {
+	if len(*models) == 0 {
+		return nil
+	}
+
+	_, err := c.db.NewInsert().
+		Model(models).
+		Exec(context.Background())
+
+	return err
+}

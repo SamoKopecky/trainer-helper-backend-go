@@ -32,5 +32,6 @@ func BuildTimeslot(name string, start, end time.Time, deletedAt *time.Time, trai
 
 type ApiTimeslot struct {
 	Timeslot
-	UserName *string `json:"person_name"`
+	UserName     *string `json:"user_name"`
+	UserNickname *string `json:"user_nickname"`
 }

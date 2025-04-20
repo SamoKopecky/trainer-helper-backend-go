@@ -18,7 +18,7 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	users, err := cc.PersonService.GetUsers(cc.Claims)
+	users, err := cc.UserService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}

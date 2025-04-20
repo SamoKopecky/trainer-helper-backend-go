@@ -4,13 +4,13 @@ import (
 	"log"
 	"time"
 	"trainer-helper/api"
-	"trainer-helper/crud"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
+	"trainer-helper/store"
 )
 
 type Timeslot struct {
-	Crud    crud.Timeslot
+	Crud    store.Timeslot
 	Fetcher fetcher.IAM
 }
 
@@ -24,12 +24,12 @@ func (t Timeslot) GetById(timeslotId int) (timeslot model.ApiTimeslot, err error
 		return
 	}
 
-	iamTimeslot, err := t.Fetcher.GetUserById(*crudTimeslot.TraineeId)
+	user, err := t.Fetcher.GetUserById(*crudTimeslot.TraineeId)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fullName := iamTimeslot.FullName()
-	timeslot.UserName = &fullName
+	timeslot.UserName = user.FullName()
+	timeslot.UserNickname = user.Nickname()
 	return
 }
 
@@ -56,8 +56,8 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 
 		if apiTimeslot.TraineeId != nil {
 			if user, ok := iamUserMap[*timeslot.TraineeId]; ok {
-				fullName := user.FullName()
-				apiTimeslot.UserName = &fullName
+				apiTimeslot.UserName = user.FullName()
+				apiTimeslot.UserNickname = user.Nickname()
 			}
 		}
 

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/crud"
 	"trainer-helper/fetcher"
 	"trainer-helper/service"
+	"trainer-helper/store"
 
 	"github.com/labstack/echo/v4"
 )
@@ -14,14 +14,16 @@ import (
 type DbContext struct {
 	echo.Context
 
-	ExerciseCrud crud.Exercise
-	TimeslotCrud crud.Timeslot
-	WorkSetCrud  crud.WorkSet
+	ExerciseCrud     store.Exercise
+	TimeslotCrud     store.Timeslot
+	WorkSetCrud      store.WorkSet
+	ExerciseTypeCrud store.ExerciseType
 
 	IAMFetcher fetcher.IAM
 
-	TimeslotService service.Timeslot
-	PersonService   service.Person
+	TimeslotService     service.Timeslot
+	UserService         service.User
+	ExerciseTypeService service.ExerciseType
 
 	Claims *api.JwtClaims
 }

@@ -2,7 +2,6 @@ package api
 
 import (
 	"time"
-	"trainer-helper/model"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,13 +17,6 @@ func BindParams[T any](c echo.Context) (*T, error) {
 func DerefString(ptr *string) string {
 	if ptr == nil {
 		return ""
-	}
-	return *ptr
-}
-
-func DerefSetType(ptr *model.SetType) model.SetType {
-	if ptr == nil {
-		return model.None
 	}
 	return *ptr
 }

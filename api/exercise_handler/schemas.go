@@ -10,10 +10,10 @@ type exerciseGetParams struct {
 }
 
 type exercisePutParams struct {
-	Id      int          `json:"id"`
-	GroupId *int         `json:"group_id"`
-	SetType *model.SetType `json:"set_type"`
-	Note    *string        `json:"note"`
+	Id             int     `json:"id"`
+	GroupId        *int    `json:"group_id"`
+	ExerciseTypeId *int    `json:"exercise_type_id"`
+	Note           *string `json:"note"`
 }
 
 type exerciseDeleteParams struct {
@@ -31,8 +31,8 @@ func (epp exercisePutParams) toModel() model.Exercise {
 		IdModel: model.IdModel{
 			Id: epp.Id,
 		},
-		GroupId: api.DerefInt(epp.GroupId),
-		SetType: api.DerefSetType(epp.SetType),
-		Note:    epp.Note,
+		GroupId:        api.DerefInt(epp.GroupId),
+		ExerciseTypeId: epp.ExerciseTypeId,
+		Note:           epp.Note,
 	}
 }

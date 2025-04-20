@@ -15,18 +15,6 @@ func NewWorkSet(db bun.IDB) WorkSet {
 	return WorkSet{CRUDBase: CRUDBase[model.WorkSet]{db: db}}
 }
 
-func (ws WorkSet) InsertMany(work_sets *[]model.WorkSet) error {
-	if len(*work_sets) == 0 {
-		return nil
-	}
-
-	_, err := ws.db.NewInsert().
-		Model(work_sets).
-		Exec(context.Background())
-
-	return err
-}
-
 func (ws WorkSet) DeleteMany(ids []int) (int, error) {
 	var deletedModels []model.WorkSet
 	_, err := ws.db.NewDelete().
