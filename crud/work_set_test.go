@@ -86,3 +86,42 @@ func TestDeleteMany(t *testing.T) {
 
 	assert.EqualValues(t, toAssert, dbModels, "Work sets should be equal")
 }
+
+func TestUpdateMany(t *testing.T) {
+	db := testSetupDb(t)
+	crud := NewWorkSet(db)
+
+	// Arange
+	var workSets []model.WorkSet
+	for range 3 {
+		workSets = append(workSets, *workSetFactory())
+	}
+	if err := crud.InsertMany(&workSets); err != nil {
+		t.Fatalf("Failed to insert work sets: %v", err)
+	}
+	for i := range workSets {
+		workSets[i].Intensity = "new kg"
+		// Change exercise id to check if it gets updated
+		workSets[i].ExerciseId += 1
+	}
+
+	// Act
+	if err := crud.UpdateMany(workSets); err != nil {
+		t.Fatalf("Failed to update work sets: %v", err)
+	}
+
+	// Asert
+	dbModels, err := crud.Get()
+	if err != nil {
+		t.Fatalf("Failed to retrieve work sets: %v", err)
+	}
+	assert.Equal(t, 3, len(dbModels))
+
+	for i := range workSets {
+		workSets[i].Timestamp.SetZeroTimes()
+		workSets[i].ExerciseId -= 1
+		dbModels[i].Timestamp.SetZeroTimes()
+	}
+
+	assert.EqualValues(t, workSets, dbModels, "Work sets should be equal")
+}

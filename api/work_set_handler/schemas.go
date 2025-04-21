@@ -6,10 +6,10 @@ import (
 )
 
 type workSetPutRequest struct {
-	Id       int   `json:"id"`
-	Reps     *int  `json:"reps"`
+	Id       int     `json:"id"`
+	Reps     *int    `json:"reps"`
 	Inensity *string `json:"intensity"`
-	Rpe      *int  `json:"rpe"`
+	Rpe      *int    `json:"rpe"`
 }
 
 func (wspr workSetPutRequest) toModel() model.WorkSet {

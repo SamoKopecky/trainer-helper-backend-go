@@ -30,6 +30,12 @@ func Get(c echo.Context) error {
 		exercises = []*model.Exercise{}
 	}
 
+	for i := range exercises {
+		if len(exercises[i].WorkSets) == 0 {
+			exercises[i].WorkSets = []model.WorkSet{}
+		}
+	}
+
 	sort.Slice(exercises, func(i, j int) bool {
 		if exercises[i].GroupId == exercises[j].GroupId {
 			return exercises[i].Id < exercises[j].Id
