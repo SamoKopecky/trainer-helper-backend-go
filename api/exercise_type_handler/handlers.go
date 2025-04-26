@@ -42,7 +42,7 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	newModel := model.BuildExerciseType(cc.Claims.Subject, params.Name, params.Note, params.MediaAddress, params.MediaType)
+	newModel := model.BuildExerciseType(cc.Claims.Subject, params.Name, params.Note, params.YoutubeLink, params.FilePath, params.MediaType)
 	err = cc.ExerciseTypeCrud.Insert(newModel)
 	if err != nil {
 		return err

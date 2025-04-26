@@ -9,17 +9,19 @@ type exericseTypeGetParams struct {
 }
 
 type exerciseTypePostParams struct {
-	Name         string           `json:"name"`
-	Note         *string          `json:"note"`
-	MediaType    *model.MediaType `json:"media_type"`
-	MediaAddress *string          `json:"media_address"`
+	Name        string           `json:"name"`
+	Note        *string          `json:"note"`
+	MediaType   *model.MediaType `json:"media_type"`
+	YoutubeLink *string          `json:"youtube_link"`
+	FilePath    *string          `json:"file_path"`
 }
 
 type exerciseTypePutPrams struct {
-	Id           int              `json:"id"`
-	Note         *string          `json:"note"`
-	MediaType    *model.MediaType `json:"media_type"`
-	MediaAddress *string          `json:"media_address"`
+	Id          int              `json:"id"`
+	Note        *string          `json:"note"`
+	MediaType   *model.MediaType `json:"media_type"`
+	YoutubeLink *string          `json:"youtube_link"`
+	FilePath    *string          `json:"file_path"`
 }
 
 func (etpp exerciseTypePutPrams) toModel() model.ExerciseType {
@@ -27,8 +29,9 @@ func (etpp exerciseTypePutPrams) toModel() model.ExerciseType {
 		IdModel: model.IdModel{
 			Id: etpp.Id,
 		},
-		Note:         etpp.Note,
-		MediaType:    etpp.MediaType,
-		MediaAddress: etpp.MediaAddress,
+		Note:        etpp.Note,
+		MediaType:   etpp.MediaType,
+		YoutubeLink: etpp.YoutubeLink,
+		FilePath:    etpp.FilePath,
 	}
 }

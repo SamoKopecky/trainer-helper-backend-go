@@ -14,7 +14,7 @@ func ExerciseTypeUserId(t *testing.T, userId string) utils.FactoryOption[model.E
 }
 func ExerciseTypeFactory(t *testing.T, options ...utils.FactoryOption[model.ExerciseType]) *model.ExerciseType {
 	t.Helper()
-	exerciseType := model.BuildExerciseType(utils.RandomUUID(), "name", nil, nil, nil)
+	exerciseType := model.BuildExerciseType(utils.RandomUUID(), "name", nil, nil, nil, nil)
 	for _, option := range options {
 		option(exerciseType)
 	}

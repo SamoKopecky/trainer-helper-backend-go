@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/api/exercise_handler"
@@ -61,7 +62,29 @@ func trainerOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		return next(c)
 	}
+}
 
+func localhostOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		addr := c.Request().RemoteAddr
+		host, _, err := net.SplitHostPort(addr)
+		if err != nil {
+			return c.NoContent(http.StatusForbidden)
+		}
+
+		ip := net.ParseIP(host)
+		if ip == nil {
+			c.Logger().Warnf("Cant parse ip", host)
+			return c.NoContent(http.StatusForbidden)
+		}
+
+		if !ip.IsLoopback() {
+			c.Logger().Warnf("Forbidden access to metrics from IP", ip)
+			return c.NoContent(http.StatusForbidden)
+		}
+
+		return next(c)
+	}
 }
 
 func jwtMiddleware(cfg *config.Config) echo.MiddlewareFunc {
@@ -106,6 +129,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	e.Use(middleware.Logger())
 
 	e.GET("/-/ping", pong)
+	e.GET("/-/metrics", pong, localhostOnlyMiddleware)
 
 	jg := e.Group("")
 	jg.Use(jwtMiddleware(appConfig))
