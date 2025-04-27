@@ -9,12 +9,12 @@ import (
 type Exercise struct {
 	bun.BaseModel `bun:"table:exercise"`
 	IdModel
+	Timestamp
 
 	TimeslotId     int     `json:"timeslot_id"`
 	GroupId        int     `json:"group_id"`
 	Note           *string `json:"note"`
 	ExerciseTypeId *int    `json:"exercise_type_id"`
-	Timestamp
 
 	// Not used in DB model
 	WorkSets []WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`

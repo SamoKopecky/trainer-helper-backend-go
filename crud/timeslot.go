@@ -55,14 +55,3 @@ func (t Timeslot) Delete(timeslotId int) error {
 
 	return err
 }
-
-func (t Timeslot) RevertSolfDelete(timeslotId int) error {
-	_, err := t.db.NewUpdate().
-		Model((*model.Timeslot)(nil)).
-		Set("deleted_at = ?", nil).
-		WhereAllWithDeleted().
-		Where("id = ?", timeslotId).
-		Exec(context.Background())
-
-	return err
-}

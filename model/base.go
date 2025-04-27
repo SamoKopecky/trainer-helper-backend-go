@@ -12,8 +12,9 @@ const EmptyId = 0
 type Timestamp struct {
 	bun.BaseModel
 
-	UpdatedAt time.Time `json:"-"`
-	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time  `json:"-"`
+	CreatedAt time.Time  `json:"-"`
+	DeletedAt *time.Time `json:"-" bun:",soft_delete,nullzero"`
 }
 
 func (t *Timestamp) SetZeroTimes() {
@@ -25,6 +26,7 @@ func buildTimestamp() Timestamp {
 	return Timestamp{
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
+		DeletedAt: nil,
 	}
 }
 

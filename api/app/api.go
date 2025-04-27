@@ -142,7 +142,6 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.PUT("/exercise/count", exercise_count_handler.Put)
 	jg.DELETE("/exercise/count", exercise_count_handler.Delete)
 	jg.PUT("/workset", work_set_handler.Put)
-	jg.PUT("/worksets", work_set_handler.PutMany)
 	jg.GET("/user", user_handler.Get)
 	jg.GET("/exerciseType", exercise_type_handler.Get)
 
