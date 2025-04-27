@@ -1,4 +1,4 @@
-package timeslot_revert_handler
+package timeslot
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Put(c echo.Context) error {
+func PutRevert(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 
 	params, err := api.BindParams[timestlotRevertPutParams](cc)

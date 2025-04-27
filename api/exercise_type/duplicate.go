@@ -1,4 +1,4 @@
-package exercise_type_duplicate_handler
+package exercise_type
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Post(c echo.Context) error {
+func PostDuplicate(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 
 	types, err := cc.ExerciseTypeService.DuplicateDefault(cc.Claims.Subject)

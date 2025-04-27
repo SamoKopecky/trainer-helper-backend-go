@@ -5,15 +5,11 @@ import (
 	"net"
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/api/exercise_handler"
-	exercise_count_handler "trainer-helper/api/exercise_handler/count_handler"
-	exercise_duplicate_handler "trainer-helper/api/exercise_handler/duplicate_handler"
-	"trainer-helper/api/exercise_type_handler"
-	exercise_type_duplicate_handler "trainer-helper/api/exercise_type_handler/duplicate_handler"
-	"trainer-helper/api/timeslot_handler"
-	timeslot_revert_handler "trainer-helper/api/timeslot_handler/revert_handler"
-	"trainer-helper/api/user_handler"
-	"trainer-helper/api/work_set_handler"
+	"trainer-helper/api/exercise"
+	"trainer-helper/api/exercise_type"
+	"trainer-helper/api/timeslot"
+	"trainer-helper/api/user"
+	"trainer-helper/api/work_set"
 	"trainer-helper/config"
 	"trainer-helper/crud"
 	"trainer-helper/fetcher"
@@ -134,30 +130,30 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg := e.Group("")
 	jg.Use(jwtMiddleware(appConfig))
 	jg.Use(claimContextMiddleware)
-	jg.GET("/timeslot", timeslot_handler.Get)
-	jg.GET("/exercise/:id", exercise_handler.Get)
-	jg.PUT("/exercise", exercise_handler.Put)
-	jg.DELETE("/exercise", exercise_handler.Delete)
-	jg.POST("/exercise", exercise_handler.Post)
-	jg.PUT("/exercise/count", exercise_count_handler.Put)
-	jg.DELETE("/exercise/count", exercise_count_handler.Delete)
-	jg.PUT("/workset", work_set_handler.Put)
-	jg.GET("/user", user_handler.Get)
-	jg.GET("/exerciseType", exercise_type_handler.Get)
+	jg.GET("/timeslot", timeslot.Get)
+	jg.GET("/exercise/:id", exercise.Get)
+	jg.PUT("/exercise", exercise.Put)
+	jg.DELETE("/exercise", exercise.Delete)
+	jg.POST("/exercise", exercise.Post)
+	jg.PUT("/exercise/count", exercise.PutCount)
+	jg.DELETE("/exercise/count", exercise.DeleteCount)
+	jg.PUT("/workset", work_set.Put)
+	jg.GET("/user", user.Get)
+	jg.GET("/exerciseType", exercise_type.Get)
 
 	to := jg.Group("")
 	to.Use(trainerOnlyMiddleware)
-	to.DELETE("/timeslot", timeslot_handler.Delete)
-	to.POST("/timeslot", timeslot_handler.Post)
-	to.PUT("/timeslot", timeslot_handler.Put)
-	to.PUT("/timeslot/revert", timeslot_revert_handler.Put)
-	to.POST("/exercise/duplicate", exercise_duplicate_handler.Post)
-	to.POST("/exerciseType", exercise_type_handler.Post)
-	to.PUT("/exerciseType", exercise_type_handler.Put)
-	to.POST("/exerciseType/duplicate", exercise_type_duplicate_handler.Post)
-	to.POST("/user", user_handler.Post)
-	to.DELETE("/user", user_handler.Delete)
-	to.PUT("/user", user_handler.Put)
+	to.DELETE("/timeslot", timeslot.Delete)
+	to.POST("/timeslot", timeslot.Post)
+	to.PUT("/timeslot", timeslot.Put)
+	to.PUT("/timeslot/revert", timeslot.PutRevert)
+	to.POST("/exercise/duplicate", exercise.PostDuplicate)
+	to.POST("/exerciseType", exercise_type.Post)
+	to.PUT("/exerciseType", exercise_type.Put)
+	to.POST("/exerciseType/duplicate", exercise_type.PostDuplicate)
+	to.POST("/user", user.Post)
+	to.DELETE("/user", user.Delete)
+	to.PUT("/user", user.Put)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }

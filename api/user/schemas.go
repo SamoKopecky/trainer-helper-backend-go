@@ -1,4 +1,4 @@
-package user_handler
+package user
 
 type userPostRequest struct {
 	Email    string `json:"email"`

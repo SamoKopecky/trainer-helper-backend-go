@@ -1,4 +1,4 @@
-package exercise_handler
+package exercise
 
 import (
 	"net/http"

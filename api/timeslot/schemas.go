@@ -1,4 +1,4 @@
-package timeslot_handler
+package timeslot
 
 import (
 	"time"
@@ -39,4 +39,8 @@ func (tpp timeslotPutParams) toModel() model.Timeslot {
 		Start:     api.DerefTime(tpp.Start),
 		End:       api.DerefTime(tpp.End),
 	}
+}
+
+type timestlotRevertPutParams struct {
+	Id int `json:"id"`
 }

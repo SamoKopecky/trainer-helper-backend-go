@@ -1,4 +1,4 @@
-package exercise_count_handler
+package exercise
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Put(c echo.Context) error {
+func PutCount(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseCountPostParams](cc)
 	if err != nil {
@@ -30,7 +30,7 @@ func Put(c echo.Context) error {
 	return cc.JSON(http.StatusOK, newWorkSets)
 }
 
-func Delete(c echo.Context) error {
+func DeleteCount(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseCountDeleteParams](cc)
 	if err != nil {

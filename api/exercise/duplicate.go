@@ -1,4 +1,4 @@
-package exercise_duplicate_handler
+package exercise
 
 import (
 	"maps"
@@ -11,16 +11,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Post(c echo.Context) error {
+func PostDuplicate(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 	params, err := api.BindParams[exerciseDuplicatePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
+	// TODO: Service
 	newTimeslot, err := updateTimeslot(params, cc)
 	if err != nil {
 		return err
 	}
+	// TODO: Service
 	newExercises, err := updateExericses(params, cc)
 	if err != nil {
 		return err

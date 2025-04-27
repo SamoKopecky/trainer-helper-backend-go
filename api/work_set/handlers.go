@@ -1,4 +1,4 @@
-package work_set_handler
+package work_set
 
 import (
 	"net/http"
