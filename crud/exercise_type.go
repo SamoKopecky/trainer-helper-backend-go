@@ -23,3 +23,7 @@ func (et ExerciseType) GetByUserId(userId string) (res []model.ExerciseType, err
 
 	return
 }
+
+func (et ExerciseType) Undelete(modelId int) error {
+	return ErrNotImplemented
+}

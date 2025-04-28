@@ -81,7 +81,7 @@ func Delete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.ExerciseCrud.DeleteByExerciseAndTimeslot(params.TimeslotId, params.ExerciseId)
+	err = cc.ExerciseCrud.DeleteByExercise(params.ExerciseId)
 	if err != nil {
 		return err
 	}

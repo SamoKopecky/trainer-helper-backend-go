@@ -133,7 +133,7 @@ func TestInsertMany(t *testing.T) {
 	assert.EqualValues(t, dbModels, workSets, "Work sets should be equal")
 }
 
-func TestRevertSofDelete(t *testing.T) {
+func TestUndeleteSoftDelete(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewTimeslot(db)
 	var timeslots []model.Timeslot

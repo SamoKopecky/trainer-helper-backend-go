@@ -41,6 +41,6 @@ func (tpp timeslotPutParams) toModel() model.Timeslot {
 	}
 }
 
-type timestlotRevertPutParams struct {
+type timestlotUndeletePostParams struct {
 	Id int `json:"id"`
 }

@@ -10,6 +10,7 @@ type Timeslot struct {
 	bun.BaseModel `bun:"table:timeslot"`
 	IdModel
 	Timestamp
+	DeletedTimestamp
 
 	TrainerId string    `json:"trainer_id"`
 	TraineeId *string   `json:"trainee_id"`

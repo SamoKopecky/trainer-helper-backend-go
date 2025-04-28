@@ -10,6 +10,7 @@ type Exercise struct {
 	bun.BaseModel `bun:"table:exercise"`
 	IdModel
 	Timestamp
+	DeletedTimestamp
 
 	TimeslotId     int     `json:"timeslot_id"`
 	GroupId        int     `json:"group_id"`

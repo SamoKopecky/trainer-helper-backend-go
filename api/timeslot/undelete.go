@@ -8,10 +8,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func PutRevert(c echo.Context) error {
+func PostUndelete(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 
-	params, err := api.BindParams[timestlotRevertPutParams](cc)
+	params, err := api.BindParams[timestlotUndeletePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}

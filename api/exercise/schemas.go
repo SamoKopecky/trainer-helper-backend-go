@@ -17,7 +17,6 @@ type exercisePutParams struct {
 }
 
 type exerciseDeleteParams struct {
-	TimeslotId int `json:"timeslot_id"`
 	ExerciseId int `json:"exercise_id"`
 }
 
@@ -49,4 +48,8 @@ func (epp exercisePutParams) toModel() model.Exercise {
 		ExerciseTypeId: epp.ExerciseTypeId,
 		Note:           epp.Note,
 	}
+}
+
+type exerciseUndeletePostParams struct {
+	Id int `json:"id"`
 }
