@@ -1,4 +1,4 @@
-package timeslot_handler
+package timeslot
 
 import (
 	"time"
@@ -22,12 +22,11 @@ type timeslotDeleteParams struct {
 }
 
 type timeslotPutParams struct {
-	Id        int      `json:"id"`
+	Id        int        `json:"id"`
 	TraineeId *string    `json:"trainee_id"`
 	Name      *string    `json:"name"`
 	Start     *time.Time `json:"start"`
 	End       *time.Time `json:"end"`
-	DeletedAt *time.Time `json:"deleted_at"`
 }
 
 func (tpp timeslotPutParams) toModel() model.Timeslot {
@@ -39,6 +38,9 @@ func (tpp timeslotPutParams) toModel() model.Timeslot {
 		Name:      api.DerefString(tpp.Name),
 		Start:     api.DerefTime(tpp.Start),
 		End:       api.DerefTime(tpp.End),
-		DeletedAt: tpp.DeletedAt,
 	}
+}
+
+type timestlotUndeletePostParams struct {
+	Id int `json:"id"`
 }

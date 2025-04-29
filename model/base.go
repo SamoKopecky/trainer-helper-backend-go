@@ -9,6 +9,10 @@ import (
 
 const EmptyId = 0
 
+type DeletedTimestamp struct {
+	DeletedAt *time.Time `json:"-" bun:",soft_delete,nullzero"`
+}
+
 type Timestamp struct {
 	bun.BaseModel
 

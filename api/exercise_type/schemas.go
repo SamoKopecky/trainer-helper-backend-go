@@ -1,4 +1,4 @@
-package exercise_type_handler
+package exercise_type
 
 import (
 	"trainer-helper/model"

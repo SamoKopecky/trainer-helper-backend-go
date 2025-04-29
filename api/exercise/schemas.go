@@ -1,4 +1,4 @@
-package exercise_handler
+package exercise
 
 import (
 	"trainer-helper/api"
@@ -17,8 +17,21 @@ type exercisePutParams struct {
 }
 
 type exerciseDeleteParams struct {
-	TimeslotId int `json:"timeslot_id"`
 	ExerciseId int `json:"exercise_id"`
+}
+
+type exerciseDuplicatePostParams struct {
+	CopyTimeslotId int `json:"copy_timeslot_id"`
+	TimeslotId     int `json:"timeslot_id"`
+}
+
+type exerciseCountPostParams struct {
+	Count           int           `json:"count"`
+	WorkSetTemplate model.WorkSet `json:"work_set_template"`
+}
+
+type exerciseCountDeleteParams struct {
+	WorkSetIds []int `json:"work_set_ids"`
 }
 
 type exercisePostParams struct {
@@ -35,4 +48,8 @@ func (epp exercisePutParams) toModel() model.Exercise {
 		ExerciseTypeId: epp.ExerciseTypeId,
 		Note:           epp.Note,
 	}
+}
+
+type exerciseUndeletePostParams struct {
+	Id int `json:"id"`
 }

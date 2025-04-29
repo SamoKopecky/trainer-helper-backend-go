@@ -1,4 +1,4 @@
-package work_set_handler
+package work_set
 
 import (
 	"trainer-helper/api"
@@ -21,4 +21,8 @@ func (wspr workSetPutRequest) toModel() model.WorkSet {
 		Reps:      api.DerefInt(wspr.Reps),
 		Intensity: api.DerefString(wspr.Inensity),
 	}
+}
+
+type workSetUndeletePostParams struct {
+	Ids []int `json:"ids"`
 }

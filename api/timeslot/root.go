@@ -1,4 +1,4 @@
-package timeslot_handler
+package timeslot
 
 import (
 	"fmt"
@@ -51,7 +51,7 @@ func Post(c echo.Context) error {
 		humanTime(params.Start),
 		humanTime(params.End),
 		humanDate(params.Start))
-	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, nil, params.TrainerId, nil)
+	newTimeslot := model.BuildTimeslot(timeslotName, params.Start, params.End, params.TrainerId, nil)
 	err = cc.TimeslotCrud.Insert(newTimeslot)
 	if err != nil {
 		return err

@@ -14,6 +14,7 @@ const (
 type ExerciseType struct {
 	bun.BaseModel `bun:"table:exercise_type"`
 	IdModel
+	Timestamp
 
 	UserId      string     `json:"user_id"`
 	Name        string     `json:"name"`
@@ -21,7 +22,6 @@ type ExerciseType struct {
 	MediaType   *MediaType `json:"media_type"`
 	YoutubeLink *string    `json:"youtube_link"`
 	FilePath    *string    `json:"file_path"`
-	Timestamp
 }
 
 func BuildExerciseType(userId, name string, note, youtubeLink, filePath *string, mediaType *MediaType) *ExerciseType {

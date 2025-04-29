@@ -64,18 +64,16 @@ func TestDeleteByExerciseAndTimeslot(t *testing.T) {
 	// Arrange
 	db := testSetupDb(t)
 	crud := NewExercise(db)
-	timeslotIds := []int{1, 1, 2}
 	var insertedExercises []*model.Exercise
-	for _, id := range timeslotIds {
-		exercise := exerciseFactory(exerciseTimeslotId(id))
+	for range 3 {
+		exercise := exerciseFactory(exerciseTimeslotId(1))
 		crud.Insert(exercise)
 		insertedExercises = append(insertedExercises, exercise)
 	}
 	exerciseDeleteId := insertedExercises[0].Id
-	timeslotDeleteId := timeslotIds[0]
 
 	// Act
-	if err := crud.DeleteByExerciseAndTimeslot(timeslotDeleteId, exerciseDeleteId); err != nil {
+	if err := crud.DeleteByExercise(exerciseDeleteId); err != nil {
 		t.Fatalf("Failed to delete exercises: %v", err)
 	}
 
@@ -88,7 +86,7 @@ func TestDeleteByExerciseAndTimeslot(t *testing.T) {
 	var assertExercises []model.Exercise
 	for i := range len(insertedExercises) {
 		exercise := insertedExercises[i]
-		if exercise.Id == exerciseDeleteId && exercise.TimeslotId == timeslotDeleteId {
+		if exercise.Id == exerciseDeleteId {
 			continue
 		}
 		exercise.SetZeroTimes()

@@ -238,6 +238,51 @@ func (_c *MockExerciseType_InsertMany_Call) RunAndReturn(run func(models *[]mode
 	return _c
 }
 
+// Undelete provides a mock function for the type MockExerciseType
+func (_mock *MockExerciseType) Undelete(modelId int) error {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Undelete")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockExerciseType_Undelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Undelete'
+type MockExerciseType_Undelete_Call struct {
+	*mock.Call
+}
+
+// Undelete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockExerciseType_Expecter) Undelete(modelId interface{}) *MockExerciseType_Undelete_Call {
+	return &MockExerciseType_Undelete_Call{Call: _e.mock.On("Undelete", modelId)}
+}
+
+func (_c *MockExerciseType_Undelete_Call) Run(run func(modelId int)) *MockExerciseType_Undelete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockExerciseType_Undelete_Call) Return(err error) *MockExerciseType_Undelete_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockExerciseType_Undelete_Call) RunAndReturn(run func(modelId int) error) *MockExerciseType_Undelete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Update provides a mock function for the type MockExerciseType
 func (_mock *MockExerciseType) Update(model1 *model.ExerciseType) error {
 	ret := _mock.Called(model1)

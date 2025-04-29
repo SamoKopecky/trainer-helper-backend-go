@@ -236,6 +236,51 @@ func (_c *MockWorkSet_InsertMany_Call) RunAndReturn(run func(models *[]model.Wor
 	return _c
 }
 
+// Undelete provides a mock function for the type MockWorkSet
+func (_mock *MockWorkSet) Undelete(modelId int) error {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Undelete")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWorkSet_Undelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Undelete'
+type MockWorkSet_Undelete_Call struct {
+	*mock.Call
+}
+
+// Undelete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockWorkSet_Expecter) Undelete(modelId interface{}) *MockWorkSet_Undelete_Call {
+	return &MockWorkSet_Undelete_Call{Call: _e.mock.On("Undelete", modelId)}
+}
+
+func (_c *MockWorkSet_Undelete_Call) Run(run func(modelId int)) *MockWorkSet_Undelete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWorkSet_Undelete_Call) Return(err error) *MockWorkSet_Undelete_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWorkSet_Undelete_Call) RunAndReturn(run func(modelId int) error) *MockWorkSet_Undelete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Update provides a mock function for the type MockWorkSet
 func (_mock *MockWorkSet) Update(model1 *model.WorkSet) error {
 	ret := _mock.Called(model1)
@@ -277,6 +322,51 @@ func (_c *MockWorkSet_Update_Call) Return(err error) *MockWorkSet_Update_Call {
 }
 
 func (_c *MockWorkSet_Update_Call) RunAndReturn(run func(model1 *model.WorkSet) error) *MockWorkSet_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateMany provides a mock function for the type MockWorkSet
+func (_mock *MockWorkSet) UpdateMany(models []model.WorkSet) error {
+	ret := _mock.Called(models)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]model.WorkSet) error); ok {
+		r0 = returnFunc(models)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWorkSet_UpdateMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateMany'
+type MockWorkSet_UpdateMany_Call struct {
+	*mock.Call
+}
+
+// UpdateMany is a helper method to define mock.On call
+//   - models
+func (_e *MockWorkSet_Expecter) UpdateMany(models interface{}) *MockWorkSet_UpdateMany_Call {
+	return &MockWorkSet_UpdateMany_Call{Call: _e.mock.On("UpdateMany", models)}
+}
+
+func (_c *MockWorkSet_UpdateMany_Call) Run(run func(models []model.WorkSet)) *MockWorkSet_UpdateMany_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]model.WorkSet))
+	})
+	return _c
+}
+
+func (_c *MockWorkSet_UpdateMany_Call) Return(err error) *MockWorkSet_UpdateMany_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWorkSet_UpdateMany_Call) RunAndReturn(run func(models []model.WorkSet) error) *MockWorkSet_UpdateMany_Call {
 	_c.Call.Return(run)
 	return _c
 }

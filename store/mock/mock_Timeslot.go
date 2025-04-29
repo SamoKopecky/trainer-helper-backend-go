@@ -341,47 +341,47 @@ func (_c *MockTimeslot_InsertMany_Call) RunAndReturn(run func(models *[]model.Ti
 	return _c
 }
 
-// RevertSolfDelete provides a mock function for the type MockTimeslot
-func (_mock *MockTimeslot) RevertSolfDelete(timeslotId int) error {
-	ret := _mock.Called(timeslotId)
+// Undelete provides a mock function for the type MockTimeslot
+func (_mock *MockTimeslot) Undelete(modelId int) error {
+	ret := _mock.Called(modelId)
 
 	if len(ret) == 0 {
-		panic("no return value specified for RevertSolfDelete")
+		panic("no return value specified for Undelete")
 	}
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
-		r0 = returnFunc(timeslotId)
+		r0 = returnFunc(modelId)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockTimeslot_RevertSolfDelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RevertSolfDelete'
-type MockTimeslot_RevertSolfDelete_Call struct {
+// MockTimeslot_Undelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Undelete'
+type MockTimeslot_Undelete_Call struct {
 	*mock.Call
 }
 
-// RevertSolfDelete is a helper method to define mock.On call
-//   - timeslotId
-func (_e *MockTimeslot_Expecter) RevertSolfDelete(timeslotId interface{}) *MockTimeslot_RevertSolfDelete_Call {
-	return &MockTimeslot_RevertSolfDelete_Call{Call: _e.mock.On("RevertSolfDelete", timeslotId)}
+// Undelete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockTimeslot_Expecter) Undelete(modelId interface{}) *MockTimeslot_Undelete_Call {
+	return &MockTimeslot_Undelete_Call{Call: _e.mock.On("Undelete", modelId)}
 }
 
-func (_c *MockTimeslot_RevertSolfDelete_Call) Run(run func(timeslotId int)) *MockTimeslot_RevertSolfDelete_Call {
+func (_c *MockTimeslot_Undelete_Call) Run(run func(modelId int)) *MockTimeslot_Undelete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(int))
 	})
 	return _c
 }
 
-func (_c *MockTimeslot_RevertSolfDelete_Call) Return(err error) *MockTimeslot_RevertSolfDelete_Call {
+func (_c *MockTimeslot_Undelete_Call) Return(err error) *MockTimeslot_Undelete_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockTimeslot_RevertSolfDelete_Call) RunAndReturn(run func(timeslotId int) error) *MockTimeslot_RevertSolfDelete_Call {
+func (_c *MockTimeslot_Undelete_Call) RunAndReturn(run func(modelId int) error) *MockTimeslot_Undelete_Call {
 	_c.Call.Return(run)
 	return _c
 }

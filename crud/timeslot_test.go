@@ -25,7 +25,7 @@ func timeslotIds(trainerId, traineeId string) utils.FactoryOption[model.Timeslot
 }
 
 func timeslotFactory(options ...utils.FactoryOption[model.Timeslot]) *model.Timeslot {
-	timeslot := model.BuildTimeslot("name", time.Time{}, time.Time{}, nil, utils.RandomUUID(), nil)
+	timeslot := model.BuildTimeslot("name", time.Time{}, time.Time{}, utils.RandomUUID(), nil)
 	for _, option := range options {
 		option(timeslot)
 	}
@@ -138,40 +138,5 @@ func TestDelete(t *testing.T) {
 		dbModelsMap[model.Id] = model
 	}
 	require.NotNil(t, dbModelsMap[1].DeletedAt)
-	require.Nil(t, dbModelsMap[0].DeletedAt)
-}
-
-func TestRevertSofDelete(t *testing.T) {
-	db := testSetupDb(t)
-	crud := NewTimeslot(db)
-	var timeslots []model.Timeslot
-	for range 2 {
-		timeslot := timeslotFactory()
-		crud.Insert(timeslot)
-		timeslots = append(timeslots, *timeslot)
-	}
-	if err := crud.Delete(timeslots[0].Id); err != nil {
-		t.Fatalf("Failed to delete timeslot: %v", err)
-	}
-
-	// Act
-	if err := crud.RevertSolfDelete(timeslots[0].Id); err != nil {
-		t.Fatalf("Failed to revert soft delete timeslot: %v", err)
-	}
-
-	// Assert
-	var dbModels []model.Timeslot
-	// Can't use get here because of soft delete
-	if err := crud.db.NewSelect().Model(&dbModels).WhereAllWithDeleted().Scan(context.Background()); err != nil {
-		t.Fatalf("Failed to get timeslots: %v", err)
-	}
-	require.Equal(t, 2, len(dbModels), "number of db models is not correct")
-
-	dbModelsMap := make(map[int]model.Timeslot)
-	for _, model := range dbModels {
-		model.SetZeroTimes()
-		dbModelsMap[model.Id] = model
-	}
-	require.Nil(t, dbModelsMap[1].DeletedAt)
 	require.Nil(t, dbModelsMap[0].DeletedAt)
 }

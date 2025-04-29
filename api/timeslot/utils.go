@@ -1,4 +1,4 @@
-package timeslot_handler
+package timeslot
 
 import "time"
 

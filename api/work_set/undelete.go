@@ -1,4 +1,4 @@
-package timeslot_revert_handler
+package work_set
 
 import (
 	"net/http"
@@ -8,15 +8,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Put(c echo.Context) error {
+func PostUndelete(c echo.Context) error {
 	cc := c.(*schemas.DbContext)
 
-	params, err := api.BindParams[timestlotRevertPutParams](cc)
+	params, err := api.BindParams[workSetUndeletePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.TimeslotCrud.RevertSolfDelete(params.Id)
+	// TODO: Make batch undelete
+	for _, id := range params.Ids {
+		err = cc.WorkSetCrud.Undelete(id)
+	}
 	if err != nil {
 		return err
 	}

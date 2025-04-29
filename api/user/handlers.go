@@ -1,4 +1,4 @@
-package user_handler
+package user
 
 // TODO: Convert struct requests for ids to path params
 

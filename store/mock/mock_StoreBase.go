@@ -180,6 +180,51 @@ func (_c *MockStoreBase_InsertMany_Call[T]) RunAndReturn(run func(models *[]T) e
 	return _c
 }
 
+// Undelete provides a mock function for the type MockStoreBase
+func (_mock *MockStoreBase[T]) Undelete(modelId int) error {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Undelete")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockStoreBase_Undelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Undelete'
+type MockStoreBase_Undelete_Call[T any] struct {
+	*mock.Call
+}
+
+// Undelete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockStoreBase_Expecter[T]) Undelete(modelId interface{}) *MockStoreBase_Undelete_Call[T] {
+	return &MockStoreBase_Undelete_Call[T]{Call: _e.mock.On("Undelete", modelId)}
+}
+
+func (_c *MockStoreBase_Undelete_Call[T]) Run(run func(modelId int)) *MockStoreBase_Undelete_Call[T] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockStoreBase_Undelete_Call[T]) Return(err error) *MockStoreBase_Undelete_Call[T] {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockStoreBase_Undelete_Call[T]) RunAndReturn(run func(modelId int) error) *MockStoreBase_Undelete_Call[T] {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Update provides a mock function for the type MockStoreBase
 func (_mock *MockStoreBase[T]) Update(model *T) error {
 	ret := _mock.Called(model)
