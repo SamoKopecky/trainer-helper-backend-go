@@ -40,7 +40,3 @@ func (ws WorkSet) UpdateMany(models []model.WorkSet) error {
 		Exec(context.Background())
 	return err
 }
-
-func (ws WorkSet) Undelete(modelId int) error {
-	return ErrNotImplemented
-}

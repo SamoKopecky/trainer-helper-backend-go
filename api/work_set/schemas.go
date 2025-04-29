@@ -22,3 +22,7 @@ func (wspr workSetPutRequest) toModel() model.WorkSet {
 		Intensity: api.DerefString(wspr.Inensity),
 	}
 }
+
+type workSetUndeletePostParams struct {
+	Ids []int `json:"ids"`
+}
