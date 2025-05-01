@@ -18,12 +18,14 @@ type DbContext struct {
 	TimeslotCrud     store.Timeslot
 	WorkSetCrud      store.WorkSet
 	ExerciseTypeCrud store.ExerciseType
+	WeekCrud         store.Week
 
 	IAMFetcher fetcher.IAM
 
 	TimeslotService     service.Timeslot
 	UserService         service.User
 	ExerciseTypeService service.ExerciseType
+	WeekService         service.Week
 
 	Claims *schema.JwtClaims
 }

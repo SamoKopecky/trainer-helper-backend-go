@@ -9,6 +9,7 @@ import (
 	"trainer-helper/api/exercise_type"
 	"trainer-helper/api/timeslot"
 	"trainer-helper/api/user"
+	"trainer-helper/api/week"
 	"trainer-helper/api/work_set"
 	"trainer-helper/config"
 	"trainer-helper/crud"
@@ -103,6 +104,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 		return func(c echo.Context) error {
 			crudTimeslot := crud.NewTimeslot(db)
 			crudExerciseType := crud.NewExerciseType(db)
+			crudWeek := crud.NewWeek(db)
 			iam := fetcher.IAM{
 				AppConfig:  appConfig,
 				AuthConfig: fetcher.CreateAuthConfig(appConfig)}
@@ -112,10 +114,12 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 				TimeslotCrud:        crudTimeslot,
 				WorkSetCrud:         crud.NewWorkSet(db),
 				ExerciseTypeCrud:    crudExerciseType,
+				WeekCrud:            crudWeek,
 				IAMFetcher:          iam,
 				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
 				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
+				WeekService:         service.Week{Store: crudWeek},
 			}
 
 			return next(cc)
@@ -142,6 +146,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.GET("/exerciseType", exercise_type.Get)
 	jg.POST("/workset/undelete", work_set.PostUndelete)
 	jg.POST("/exercise/undelete", exercise.PostUndelete)
+	jg.GET("/week", week.Get)
 
 	to := jg.Group("")
 	to.Use(trainerOnlyMiddleware)
