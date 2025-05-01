@@ -1,0 +1,5 @@
+DROP INDEX IF EXISTS id_week_user_id;
+
+DROP TABLE IF EXISTS week;
+
+DROP SEQUENCE IF EXISTS week_id_seq;
