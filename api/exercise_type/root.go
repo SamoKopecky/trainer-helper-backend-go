@@ -5,13 +5,12 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	var exerciseTypes []model.ExerciseType
 
 	params, err := api.BindParams[exericseTypeGetParams](cc)
@@ -35,7 +34,7 @@ func Get(c echo.Context) error {
 }
 
 func Post(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[exerciseTypePostParams](cc)
 	if err != nil {
@@ -52,7 +51,7 @@ func Post(c echo.Context) error {
 }
 
 func Put(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[exerciseTypePutPrams](cc)
 	if err != nil {

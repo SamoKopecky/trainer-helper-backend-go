@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
+	"trainer-helper/schema"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[timeslotGetParams](cc)
 	if err != nil {
@@ -33,14 +33,14 @@ func Get(c echo.Context) error {
 	}
 
 	if apiTimeslots == nil {
-		apiTimeslots = []model.ApiTimeslot{}
+		apiTimeslots = []schema.Timeslot{}
 	}
 
 	return cc.JSON(http.StatusOK, apiTimeslots)
 }
 
 func Post(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[timeslotPostParams](cc)
 	if err != nil {
@@ -57,11 +57,11 @@ func Post(c echo.Context) error {
 		return err
 	}
 
-	return cc.JSON(http.StatusOK, model.ApiTimeslot{Timeslot: *newTimeslot})
+	return cc.JSON(http.StatusOK, schema.Timeslot{Timeslot: *newTimeslot})
 }
 
 func Delete(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[timeslotDeleteParams](cc)
 	if err != nil {
@@ -78,7 +78,7 @@ func Delete(c echo.Context) error {
 }
 
 func Put(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[timeslotPutParams](cc)
 	if err != nil {

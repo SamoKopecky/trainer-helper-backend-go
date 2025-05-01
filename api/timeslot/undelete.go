@@ -3,13 +3,12 @@ package timeslot
 import (
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func PostUndelete(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[timestlotUndeletePostParams](cc)
 	if err != nil {

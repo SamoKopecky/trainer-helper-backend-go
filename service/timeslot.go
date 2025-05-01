@@ -3,9 +3,9 @@ package service
 import (
 	"log"
 	"time"
-	"trainer-helper/api"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
+	"trainer-helper/schema"
 	"trainer-helper/store"
 )
 
@@ -14,12 +14,12 @@ type Timeslot struct {
 	Fetcher fetcher.IAM
 }
 
-func (t Timeslot) GetById(timeslotId int) (timeslot model.ApiTimeslot, err error) {
+func (t Timeslot) GetById(timeslotId int) (timeslot schema.Timeslot, err error) {
 	crudTimeslot, err := t.Crud.GetById(timeslotId)
 	if err != nil {
 		return
 	}
-	timeslot = model.ApiTimeslot{Timeslot: crudTimeslot}
+	timeslot = schema.Timeslot{Timeslot: crudTimeslot}
 	if crudTimeslot.TraineeId == nil {
 		return
 	}
@@ -33,7 +33,7 @@ func (t Timeslot) GetById(timeslotId int) (timeslot model.ApiTimeslot, err error
 	return
 }
 
-func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.KeycloakUser, claims *api.JwtClaims) ([]model.ApiTimeslot, error) {
+func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.KeycloakUser, claims *schema.JwtClaims) ([]schema.Timeslot, error) {
 	var err error
 	var timeslots []model.Timeslot
 
@@ -48,9 +48,9 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 		iamUserMap[user.Id] = user
 	}
 
-	apiTimeslots := make([]model.ApiTimeslot, len(timeslots))
+	apiTimeslots := make([]schema.Timeslot, len(timeslots))
 	for i, timeslot := range timeslots {
-		apiTimeslot := model.ApiTimeslot{
+		apiTimeslot := schema.Timeslot{
 			Timeslot: timeslot,
 		}
 

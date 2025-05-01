@@ -1,10 +1,10 @@
-package schemas
+package api
 
 import (
 	"fmt"
 	"net/http"
-	"trainer-helper/api"
 	"trainer-helper/fetcher"
+	"trainer-helper/schema"
 	"trainer-helper/service"
 	"trainer-helper/store"
 
@@ -25,7 +25,7 @@ type DbContext struct {
 	UserService         service.User
 	ExerciseTypeService service.ExerciseType
 
-	Claims *api.JwtClaims
+	Claims *schema.JwtClaims
 }
 
 func (c DbContext) BadRequest(err error) error {

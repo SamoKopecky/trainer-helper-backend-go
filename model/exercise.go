@@ -31,11 +31,6 @@ func BuildExercise(timeslotId, groupId int, note *string, exerciseTypeId *int) *
 	}
 }
 
-type TimeslotExercises struct {
-	Timeslot  ApiTimeslot `json:"timeslot"`
-	Exercises []*Exercise `json:"exercises"`
-}
-
 func (e Exercise) SortWorkSets() {
 	sort.Slice(e.WorkSets, func(i, j int) bool {
 		return e.WorkSets[i].Id < e.WorkSets[j].Id

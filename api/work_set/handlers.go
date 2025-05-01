@@ -4,13 +4,12 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Put(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[[]workSetPutRequest](cc)
 	if err != nil {

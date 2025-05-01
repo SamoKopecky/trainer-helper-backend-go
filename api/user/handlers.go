@@ -6,14 +6,13 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
 
 	"github.com/labstack/echo/v4"
 	"slices"
 )
 
 func Get(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	users, err := cc.UserService.GetUsers(cc.Claims)
 	if err != nil {
@@ -34,7 +33,7 @@ func Get(c echo.Context) (err error) {
 }
 
 func Post(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	traineeRole, _ := cc.Claims.AppTraineeRole()
 
 	params, err := api.BindParams[userPostRequest](cc)
@@ -53,7 +52,7 @@ func Post(c echo.Context) (err error) {
 }
 
 func Delete(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[userDeleteRequest](cc)
 	if err != nil {
@@ -69,7 +68,7 @@ func Delete(c echo.Context) (err error) {
 }
 
 func Put(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[userPutRequest](cc)
 	if err != nil {

@@ -6,13 +6,13 @@ import (
 	"slices"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
+	"trainer-helper/schema"
 
 	"github.com/labstack/echo/v4"
 )
 
 func PostDuplicate(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	params, err := api.BindParams[exerciseDuplicatePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -32,13 +32,13 @@ func PostDuplicate(c echo.Context) error {
 		newExercises = []*model.Exercise{}
 	}
 
-	return cc.JSON(http.StatusOK, model.TimeslotExercises{
+	return cc.JSON(http.StatusOK, schema.TimeslotExercises{
 		Exercises: newExercises,
 		Timeslot:  newTimeslot,
 	})
 }
 
-func updateExericses(param *exerciseDuplicatePostParams, cc *schemas.DbContext) (newExercises []*model.Exercise, err error) {
+func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
 	err = cc.ExerciseCrud.DeleteByTimeslot(param.TimeslotId)
 	if err != nil {
 		return
@@ -83,7 +83,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *schemas.DbContext) 
 	return
 }
 
-func updateTimeslot(params *exerciseDuplicatePostParams, cc *schemas.DbContext) (newApiTimeslot model.ApiTimeslot, err error) {
+func updateTimeslot(params *exerciseDuplicatePostParams, cc *api.DbContext) (newApiTimeslot schema.Timeslot, err error) {
 	copyTimeslot, err := cc.TimeslotCrud.GetById(params.CopyTimeslotId)
 	if err != nil {
 		return

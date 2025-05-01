@@ -13,7 +13,7 @@ import (
 	"trainer-helper/config"
 	"trainer-helper/crud"
 	"trainer-helper/fetcher"
-	"trainer-helper/schemas"
+	"trainer-helper/schema"
 	"trainer-helper/service"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -43,15 +43,15 @@ func logError(err error, c echo.Context) {
 
 func claimContextMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cc := c.(*schemas.DbContext)
-		cc.Claims = cc.Get("user").(*jwt.Token).Claims.(*api.JwtClaims)
+		cc := c.(*api.DbContext)
+		cc.Claims = cc.Get("user").(*jwt.Token).Claims.(*schema.JwtClaims)
 		return next(c)
 	}
 }
 
 func trainerOnlyMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cc := c.(*schemas.DbContext)
+		cc := c.(*api.DbContext)
 		if !cc.Claims.IsTrainer() {
 			return cc.NoContent(http.StatusForbidden)
 		}
@@ -91,7 +91,7 @@ func jwtMiddleware(cfg *config.Config) echo.MiddlewareFunc {
 		KeyFunc:       keyFunc,
 		SigningMethod: "RS256",
 		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return new(api.JwtClaims)
+			return new(schema.JwtClaims)
 		},
 	})
 }
@@ -107,7 +107,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 				AppConfig:  appConfig,
 				AuthConfig: fetcher.CreateAuthConfig(appConfig)}
 
-			cc := &schemas.DbContext{Context: c,
+			cc := &api.DbContext{Context: c,
 				ExerciseCrud:        crud.NewExercise(db),
 				TimeslotCrud:        crudTimeslot,
 				WorkSetCrud:         crud.NewWorkSet(db),

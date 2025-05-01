@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
+	"trainer-helper/schema"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	paramId, err := strconv.Atoi(cc.Param("id"))
 	if err != nil {
@@ -51,7 +51,7 @@ func Get(c echo.Context) error {
 		return err
 	}
 
-	return cc.JSON(http.StatusOK, model.TimeslotExercises{
+	return cc.JSON(http.StatusOK, schema.TimeslotExercises{
 		Timeslot:  apiTimeslot,
 		Exercises: exercises,
 	})
@@ -59,7 +59,7 @@ func Get(c echo.Context) error {
 }
 
 func Put(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	params, err := api.BindParams[exercisePutParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -75,7 +75,7 @@ func Put(c echo.Context) error {
 }
 
 func Delete(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	params, err := api.BindParams[exerciseDeleteParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
@@ -90,7 +90,7 @@ func Delete(c echo.Context) error {
 }
 
 func Post(c echo.Context) error {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	params, err := api.BindParams[exercisePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
