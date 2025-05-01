@@ -135,35 +135,38 @@ func TestInsertMany(t *testing.T) {
 
 func TestUndeleteSoftDelete(t *testing.T) {
 	db := testSetupDb(t)
-	crud := NewTimeslot(db)
-	var timeslots []model.Timeslot
-	for range 2 {
-		timeslot := timeslotFactory()
-		crud.Insert(timeslot)
-		timeslots = append(timeslots, *timeslot)
+	crud := NewWorkSet(db)
+	var worksets []model.WorkSet
+	deleteIds := make([]int, 3)
+	for range 3 {
+		work_set := workSetFactory()
+		crud.Insert(work_set)
+		worksets = append(worksets, *work_set)
+		deleteIds = append(deleteIds, work_set.Id)
 	}
-	if err := crud.Delete(timeslots[0].Id); err != nil {
+	_, err := crud.DeleteMany(deleteIds)
+	if err != nil {
 		t.Fatalf("Failed to delete timeslot: %v", err)
 	}
 
 	// Act
-	if err := crud.Undelete(timeslots[0].Id); err != nil {
+	if err := crud.UndeleteMany([]int{worksets[0].Id, worksets[1].Id}); err != nil {
 		t.Fatalf("Failed to revert soft delete timeslot: %v", err)
 	}
 
 	// Assert
-	var dbModels []model.Timeslot
+	var dbModels []model.WorkSet
 	// Can't use get here because of soft delete
 	if err := crud.db.NewSelect().Model(&dbModels).WhereAllWithDeleted().Scan(context.Background()); err != nil {
 		t.Fatalf("Failed to get timeslots: %v", err)
 	}
-	require.Equal(t, 2, len(dbModels), "number of db models is not correct")
+	require.Equal(t, 3, len(dbModels), "number of db models is not correct")
 
-	dbModelsMap := make(map[int]model.Timeslot)
+	dbModelsMap := make(map[int]model.WorkSet)
 	for _, model := range dbModels {
-		model.SetZeroTimes()
 		dbModelsMap[model.Id] = model
 	}
 	require.Nil(t, dbModelsMap[1].DeletedAt)
-	require.Nil(t, dbModelsMap[0].DeletedAt)
+	require.Nil(t, dbModelsMap[2].DeletedAt)
+	require.NotNil(t, dbModelsMap[3].DeletedAt)
 }

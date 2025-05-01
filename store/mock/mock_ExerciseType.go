@@ -238,47 +238,47 @@ func (_c *MockExerciseType_InsertMany_Call) RunAndReturn(run func(models *[]mode
 	return _c
 }
 
-// Undelete provides a mock function for the type MockExerciseType
-func (_mock *MockExerciseType) Undelete(modelId int) error {
-	ret := _mock.Called(modelId)
+// UndeleteMany provides a mock function for the type MockExerciseType
+func (_mock *MockExerciseType) UndeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Undelete")
+		panic("no return value specified for UndeleteMany")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
-		r0 = returnFunc(modelId)
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockExerciseType_Undelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Undelete'
-type MockExerciseType_Undelete_Call struct {
+// MockExerciseType_UndeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UndeleteMany'
+type MockExerciseType_UndeleteMany_Call struct {
 	*mock.Call
 }
 
-// Undelete is a helper method to define mock.On call
-//   - modelId
-func (_e *MockExerciseType_Expecter) Undelete(modelId interface{}) *MockExerciseType_Undelete_Call {
-	return &MockExerciseType_Undelete_Call{Call: _e.mock.On("Undelete", modelId)}
+// UndeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockExerciseType_Expecter) UndeleteMany(modelIds interface{}) *MockExerciseType_UndeleteMany_Call {
+	return &MockExerciseType_UndeleteMany_Call{Call: _e.mock.On("UndeleteMany", modelIds)}
 }
 
-func (_c *MockExerciseType_Undelete_Call) Run(run func(modelId int)) *MockExerciseType_Undelete_Call {
+func (_c *MockExerciseType_UndeleteMany_Call) Run(run func(modelIds []int)) *MockExerciseType_UndeleteMany_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int))
+		run(args[0].([]int))
 	})
 	return _c
 }
 
-func (_c *MockExerciseType_Undelete_Call) Return(err error) *MockExerciseType_Undelete_Call {
+func (_c *MockExerciseType_UndeleteMany_Call) Return(err error) *MockExerciseType_UndeleteMany_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockExerciseType_Undelete_Call) RunAndReturn(run func(modelId int) error) *MockExerciseType_Undelete_Call {
+func (_c *MockExerciseType_UndeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockExerciseType_UndeleteMany_Call {
 	_c.Call.Return(run)
 	return _c
 }

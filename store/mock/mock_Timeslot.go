@@ -341,47 +341,47 @@ func (_c *MockTimeslot_InsertMany_Call) RunAndReturn(run func(models *[]model.Ti
 	return _c
 }
 
-// Undelete provides a mock function for the type MockTimeslot
-func (_mock *MockTimeslot) Undelete(modelId int) error {
-	ret := _mock.Called(modelId)
+// UndeleteMany provides a mock function for the type MockTimeslot
+func (_mock *MockTimeslot) UndeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Undelete")
+		panic("no return value specified for UndeleteMany")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
-		r0 = returnFunc(modelId)
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockTimeslot_Undelete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Undelete'
-type MockTimeslot_Undelete_Call struct {
+// MockTimeslot_UndeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UndeleteMany'
+type MockTimeslot_UndeleteMany_Call struct {
 	*mock.Call
 }
 
-// Undelete is a helper method to define mock.On call
-//   - modelId
-func (_e *MockTimeslot_Expecter) Undelete(modelId interface{}) *MockTimeslot_Undelete_Call {
-	return &MockTimeslot_Undelete_Call{Call: _e.mock.On("Undelete", modelId)}
+// UndeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockTimeslot_Expecter) UndeleteMany(modelIds interface{}) *MockTimeslot_UndeleteMany_Call {
+	return &MockTimeslot_UndeleteMany_Call{Call: _e.mock.On("UndeleteMany", modelIds)}
 }
 
-func (_c *MockTimeslot_Undelete_Call) Run(run func(modelId int)) *MockTimeslot_Undelete_Call {
+func (_c *MockTimeslot_UndeleteMany_Call) Run(run func(modelIds []int)) *MockTimeslot_UndeleteMany_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int))
+		run(args[0].([]int))
 	})
 	return _c
 }
 
-func (_c *MockTimeslot_Undelete_Call) Return(err error) *MockTimeslot_Undelete_Call {
+func (_c *MockTimeslot_UndeleteMany_Call) Return(err error) *MockTimeslot_UndeleteMany_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockTimeslot_Undelete_Call) RunAndReturn(run func(modelId int) error) *MockTimeslot_Undelete_Call {
+func (_c *MockTimeslot_UndeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockTimeslot_UndeleteMany_Call {
 	_c.Call.Return(run)
 	return _c
 }

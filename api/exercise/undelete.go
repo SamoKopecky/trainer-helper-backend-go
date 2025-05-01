@@ -16,7 +16,7 @@ func PostUndelete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.ExerciseCrud.Undelete(params.Id)
+	err = cc.ExerciseCrud.UndeleteMany([]int{params.Id})
 	if err != nil {
 		return err
 	}

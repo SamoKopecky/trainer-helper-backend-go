@@ -16,10 +16,7 @@ func PostUndelete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	// TODO: Make batch undelete
-	for _, id := range params.Ids {
-		err = cc.WorkSetCrud.Undelete(id)
-	}
+	err = cc.WorkSetCrud.UndeleteMany(params.Ids)
 	if err != nil {
 		return err
 	}

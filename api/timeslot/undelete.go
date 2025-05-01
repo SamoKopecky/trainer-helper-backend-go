@@ -16,7 +16,7 @@ func PostUndelete(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	err = cc.TimeslotCrud.Undelete(params.Id)
+	err = cc.TimeslotCrud.UndeleteMany([]int{params.Id})
 	if err != nil {
 		return err
 	}
