@@ -168,3 +168,35 @@ func TestUndeleteSoftDelete(t *testing.T) {
 	require.Nil(t, dbModelsMap[2].DeletedAt)
 	require.NotNil(t, dbModelsMap[3].DeletedAt)
 }
+
+func TestDelete(t *testing.T) {
+	db := testSetupDb(t)
+	crud := NewTimeslot(db)
+	var timeslots []model.Timeslot
+	for range 2 {
+		timeslot := timeslotFactory()
+		crud.Insert(timeslot)
+		timeslots = append(timeslots, *timeslot)
+	}
+
+	// Act
+	if err := crud.Delete(timeslots[0].Id); err != nil {
+		t.Fatalf("Failed to delete timeslot: %v", err)
+	}
+
+	// Assert
+	var dbModels []model.Timeslot
+	// Can't use get here because of soft delete
+	if err := crud.db.NewSelect().Model(&dbModels).WhereAllWithDeleted().Scan(context.Background()); err != nil {
+		t.Fatalf("Failed to get timeslots: %v", err)
+	}
+	require.Equal(t, 2, len(dbModels), "number of db models is not correct")
+
+	dbModelsMap := make(map[int]model.Timeslot)
+	for _, model := range dbModels {
+		model.SetZeroTimes()
+		dbModelsMap[model.Id] = model
+	}
+	require.NotNil(t, dbModelsMap[1].DeletedAt)
+	require.Nil(t, dbModelsMap[0].DeletedAt)
+}
