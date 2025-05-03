@@ -6,10 +6,6 @@ import (
 	"trainer-helper/model"
 )
 
-type weekGetRequest struct {
-	UserId string `query:"user_id"`
-}
-
 type weekPostRequest struct {
 	BlockId   int       `json:"block_id"`
 	StartDate time.Time `json:"start_date"`

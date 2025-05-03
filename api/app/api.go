@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 	"trainer-helper/api"
+	"trainer-helper/api/block"
 	"trainer-helper/api/exercise"
 	"trainer-helper/api/exercise_type"
 	"trainer-helper/api/timeslot"
@@ -23,8 +24,9 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/uptrace/bun"
 
-	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "trainer-helper/docs"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func logError(err error, c echo.Context) {
@@ -105,7 +107,7 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			crudTimeslot := crud.NewTimeslot(db)
 			crudExerciseType := crud.NewExerciseType(db)
-			crudWeek := crud.NewWeek(db)
+			crudBlock := crud.NewBlock(db)
 			iam := fetcher.IAM{
 				AppConfig:  cfg,
 				AuthConfig: fetcher.CreateAuthConfig(cfg)}
@@ -115,12 +117,14 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 				TimeslotCrud:        crudTimeslot,
 				WorkSetCrud:         crud.NewWorkSet(db),
 				ExerciseTypeCrud:    crudExerciseType,
-				WeekCrud:            crudWeek,
+				BlockCrud:           crudBlock,
+				WeekCrud:            crud.NewWeek(db),
+				WeekDayCrud:         crud.NewWeekDay(db),
 				IAMFetcher:          iam,
 				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
 				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
-				WeekService:         service.Week{Store: crudWeek},
+				BlockService:        service.Block{Store: crudBlock},
 			}
 
 			return next(cc)
@@ -163,7 +167,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.PUT("/workset", work_set.Put)
 	jg.POST("/workset/undelete", work_set.PostUndelete)
 	jg.GET("/user", user.Get)
-	jg.GET("/week", week.Get)
+	jg.GET("/block", block.Get)
 
 	to := jg.Group("")
 	to.Use(trainerOnlyMiddleware)

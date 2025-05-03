@@ -25,7 +25,7 @@ down:
 # Run tests
 test:
 	docker compose up db -d
-	gotest -count=1 $(TA) ./...
+	gotest $(TA) ./...
 
 reset-db:
 	docker compose down
