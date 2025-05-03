@@ -15,9 +15,9 @@ func TestWeekGetBlocks(t *testing.T) {
 	service := Week{Store: m}
 
 	mockModels := []model.Week{
-		*testutil.WeekFactory(testutil.WeekUserId("1"), testutil.WeekBlockLabel(10)),
-		*testutil.WeekFactory(testutil.WeekUserId("1"), testutil.WeekBlockLabel(10)),
-		*testutil.WeekFactory(testutil.WeekUserId("1"), testutil.WeekBlockLabel(20)),
+		*testutil.WeekFactory(testutil.WeekUserId("1")),
+		*testutil.WeekFactory(testutil.WeekUserId("1")),
+		*testutil.WeekFactory(testutil.WeekUserId("1")),
 	}
 	m.EXPECT().GetByUserId("1").Return(mockModels, nil).Once()
 

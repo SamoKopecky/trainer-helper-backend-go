@@ -11,14 +11,14 @@ type Week struct {
 
 func (w Week) GetBlocks(userId string) (blocks schema.Blocks, err error) {
 	blocks = make(schema.Blocks)
-	weeks, err := w.Store.GetByUserId(userId)
+	// weeks, err := w.Store.GetByUserId(userId)
 	if err != nil {
 		return
 	}
 
-	for _, week := range weeks {
-		blocks[week.BlockLabel] = append(blocks[week.BlockLabel], week)
-	}
+	// for _, week := range weeks {
+	// 	blocks[week.] = append(blocks[week.BlockLabel], week)
+	// }
 
 	return
 }

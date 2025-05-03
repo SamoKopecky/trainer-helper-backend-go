@@ -11,14 +11,13 @@ type weekGetRequest struct {
 }
 
 type weekPostRequest struct {
-	UserId     string    `json:"user_id"`
-	StartDate  time.Time `json:"start_date"`
-	Label      int       `json:"label"`
-	BlockLabel int       `json:"block_label"`
+	BlockId   int       `json:"block_id"`
+	StartDate time.Time `json:"start_date"`
+	Label     int       `json:"label"`
 }
 
-func (wpr weekPostRequest) toModel() *model.Week {
-	return model.BuildWeek(wpr.UserId, wpr.StartDate, wpr.Label, wpr.BlockLabel, nil, nil, nil, nil, nil, nil, nil)
+func (wpr weekPostRequest) toModel(userId string) *model.Week {
+	return model.BuildWeek(wpr.BlockId, wpr.StartDate, wpr.Label, userId)
 }
 
 type weekDeleteRequest struct {
@@ -28,13 +27,6 @@ type weekDeleteRequest struct {
 type weekPutRequest struct {
 	Id        int        `json:"id"`
 	StartDate *time.Time `json:"start_date"`
-	Monday    *string    `json:"monday"`
-	Tuesday   *string    `json:"tuesday"`
-	Wednesday *string    `json:"wednesday"`
-	Thursday  *string    `json:"thursday"`
-	Friday    *string    `json:"friday"`
-	Saturday  *string    `json:"saturday"`
-	Sunday    *string    `json:"sunday"`
 }
 
 func (wpr weekPutRequest) toModel() *model.Week {
@@ -43,12 +35,5 @@ func (wpr weekPutRequest) toModel() *model.Week {
 			Id: wpr.Id,
 		},
 		StartDate: api.DerefTime(wpr.StartDate),
-		Monday:    wpr.Monday,
-		Tuesday:   wpr.Tuesday,
-		Wednesday: wpr.Wednesday,
-		Thursday:  wpr.Thursday,
-		Friday:    wpr.Friday,
-		Saturday:  wpr.Saturday,
-		Sunday:    wpr.Sunday,
 	}
 }

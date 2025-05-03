@@ -11,31 +11,20 @@ type Week struct {
 	IdModel
 	Timestamp
 
-	UserId     string    `json:"user_id"`
-	StartDate  time.Time `json:"start"`
-	Label      int       `json:"label"`
-	BlockLabel int       `json:"block_label"`
-	Monday     *string   `json:"monday"`
-	Tuesday    *string   `json:"tuesday"`
-	Wednesday  *string   `json:"wednesday"`
-	Thursday   *string   `json:"thursday"`
-	Friday     *string   `json:"friday"`
-	Saturday   *string   `json:"saturday"`
-	Sunday     *string   `json:"sunday"`
+	BlockId   int       `json:"block_id"`
+	UserId    string    `json:"user_id"`
+	StartDate time.Time `json:"start_date"`
+	Label     int       `json:"label"`
+
+	// Not used in DB model
+	WeekDays []WeekDay `bun:"rel:has-many,join:id=week_id" json:"week_days"`
 }
 
-func BuildWeek(userId string, startDate time.Time, label, blockLabel int, monday, tuesday, wednesday, thursday, friday, saturday, sunday *string) *Week {
+func BuildWeek(blockId int, startDate time.Time, label int, userId string) *Week {
 	return &Week{
-		UserId:     userId,
-		StartDate:  startDate,
-		Label:      label,
-		BlockLabel: blockLabel,
-		Monday:     monday,
-		Tuesday:    tuesday,
-		Wednesday:  wednesday,
-		Thursday:   thursday,
-		Friday:     friday,
-		Saturday:   saturday,
-		Sunday:     sunday,
+		BlockId:   blockId,
+		StartDate: startDate,
+		Label:     label,
+		UserId:    userId,
 	}
 }
