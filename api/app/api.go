@@ -22,6 +22,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/uptrace/bun"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
+	_ "trainer-helper/docs"
 )
 
 func logError(err error, c echo.Context) {
@@ -97,17 +100,15 @@ func jwtMiddleware(cfg *config.Config) echo.MiddlewareFunc {
 	})
 }
 
-func RunApi(db *bun.DB, appConfig *config.Config) {
-	e := echo.New()
-	e.HTTPErrorHandler = logError
-	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			crudTimeslot := crud.NewTimeslot(db)
 			crudExerciseType := crud.NewExerciseType(db)
 			crudWeek := crud.NewWeek(db)
 			iam := fetcher.IAM{
-				AppConfig:  appConfig,
-				AuthConfig: fetcher.CreateAuthConfig(appConfig)}
+				AppConfig:  cfg,
+				AuthConfig: fetcher.CreateAuthConfig(cfg)}
 
 			cc := &api.DbContext{Context: c,
 				ExerciseCrud:        crud.NewExercise(db),
@@ -124,12 +125,28 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 
 			return next(cc)
 		}
-	})
+
+	}
+}
+
+//	@title			Trainer Helper
+//	@version		0.0.1
+//	@description	Trainer helper application backend API
+
+//	@contact.name	SamuelKOpecky
+//	@contact.email	samo.kopecky@protonmail.com
+
+// @host		localhost:2001
+func RunApi(db *bun.DB, appConfig *config.Config) {
+	e := echo.New()
+	e.HTTPErrorHandler = logError
+	e.Use(contextMiddleware(db, appConfig))
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 
 	e.GET("/-/ping", pong)
 	e.GET("/-/metrics", pong, localhostOnlyMiddleware)
+	e.GET("/-/swagger/*", echoSwagger.WrapHandler)
 
 	jg := e.Group("")
 	jg.Use(jwtMiddleware(appConfig))
@@ -141,11 +158,11 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.POST("/exercise", exercise.Post)
 	jg.PUT("/exercise/count", exercise.PutCount)
 	jg.DELETE("/exercise/count", exercise.DeleteCount)
-	jg.PUT("/workset", work_set.Put)
-	jg.GET("/user", user.Get)
 	jg.GET("/exerciseType", exercise_type.Get)
-	jg.POST("/workset/undelete", work_set.PostUndelete)
 	jg.POST("/exercise/undelete", exercise.PostUndelete)
+	jg.PUT("/workset", work_set.Put)
+	jg.POST("/workset/undelete", work_set.PostUndelete)
+	jg.GET("/user", user.Get)
 	jg.GET("/week", week.Get)
 
 	to := jg.Group("")
@@ -161,10 +178,18 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	to.POST("/user", user.Post)
 	to.DELETE("/user", user.Delete)
 	to.PUT("/user", user.Put)
+	to.POST("/week", week.Post)
+	to.PUT("/week", week.Put)
+	to.DELETE("/week", week.Delete)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }
 
+// @Summary      Ping endpoint
+// @Description  Checks if the service is responsive.
+// @Produce      json
+// @Success      200  {string}  string  "pong"
+// @Router       /-/ping [get]
 func pong(c echo.Context) error {
 	return c.JSON(http.StatusOK, "pong")
 }

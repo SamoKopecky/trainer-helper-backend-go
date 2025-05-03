@@ -51,3 +51,7 @@ run:
 # Add a new migration
 add-migration:
 	migrate create -dir migrations/ -ext sql $(MSG)
+
+# Generate swagger docs
+swagger-docs:
+	swag init -g api/app/api.go
