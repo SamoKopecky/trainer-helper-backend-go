@@ -137,62 +137,6 @@ func (_c *MockWeek_Get_Call) RunAndReturn(run func() ([]model.Week, error)) *Moc
 	return _c
 }
 
-// GetByUserId provides a mock function for the type MockWeek
-func (_mock *MockWeek) GetByUserId(userId string) ([]model.Week, error) {
-	ret := _mock.Called(userId)
-
-	if len(ret) == 0 {
-		panic("no return value specified for GetByUserId")
-	}
-
-	var r0 []model.Week
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(string) ([]model.Week, error)); ok {
-		return returnFunc(userId)
-	}
-	if returnFunc, ok := ret.Get(0).(func(string) []model.Week); ok {
-		r0 = returnFunc(userId)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.Week)
-		}
-	}
-	if returnFunc, ok := ret.Get(1).(func(string) error); ok {
-		r1 = returnFunc(userId)
-	} else {
-		r1 = ret.Error(1)
-	}
-	return r0, r1
-}
-
-// MockWeek_GetByUserId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByUserId'
-type MockWeek_GetByUserId_Call struct {
-	*mock.Call
-}
-
-// GetByUserId is a helper method to define mock.On call
-//   - userId
-func (_e *MockWeek_Expecter) GetByUserId(userId interface{}) *MockWeek_GetByUserId_Call {
-	return &MockWeek_GetByUserId_Call{Call: _e.mock.On("GetByUserId", userId)}
-}
-
-func (_c *MockWeek_GetByUserId_Call) Run(run func(userId string)) *MockWeek_GetByUserId_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
-	})
-	return _c
-}
-
-func (_c *MockWeek_GetByUserId_Call) Return(weeks []model.Week, err error) *MockWeek_GetByUserId_Call {
-	_c.Call.Return(weeks, err)
-	return _c
-}
-
-func (_c *MockWeek_GetByUserId_Call) RunAndReturn(run func(userId string) ([]model.Week, error)) *MockWeek_GetByUserId_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
 // Insert provides a mock function for the type MockWeek
 func (_mock *MockWeek) Insert(model1 *model.Week) error {
 	ret := _mock.Called(model1)
