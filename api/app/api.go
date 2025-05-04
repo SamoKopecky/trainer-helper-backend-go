@@ -137,7 +137,7 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 //	@version		0.0.1
 //	@description	Trainer helper application backend API
 
-//	@contact.name	SamuelKOpecky
+//	@contact.name	SamuelKopecky
 //	@contact.email	samo.kopecky@protonmail.com
 
 // @host		localhost:2001
@@ -155,36 +155,49 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg := e.Group("")
 	jg.Use(jwtMiddleware(appConfig))
 	jg.Use(claimContextMiddleware)
-	jg.GET("/timeslot", timeslot.Get)
-	jg.GET("/exercise/:id", exercise.Get)
-	jg.PUT("/exercise", exercise.Put)
-	jg.DELETE("/exercise", exercise.Delete)
-	jg.POST("/exercise", exercise.Post)
-	jg.PUT("/exercise/count", exercise.PutCount)
-	jg.DELETE("/exercise/count", exercise.DeleteCount)
-	jg.GET("/exerciseType", exercise_type.Get)
-	jg.POST("/exercise/undelete", exercise.PostUndelete)
-	jg.PUT("/workset", work_set.Put)
-	jg.POST("/workset/undelete", work_set.PostUndelete)
-	jg.GET("/user", user.Get)
-	jg.GET("/block", block.Get)
 
-	to := jg.Group("")
-	to.Use(trainerOnlyMiddleware)
-	to.DELETE("/timeslot", timeslot.Delete)
-	to.POST("/timeslot", timeslot.Post)
-	to.PUT("/timeslot", timeslot.Put)
-	to.POST("/timeslot/undelete", timeslot.PostUndelete)
-	to.POST("/exercise/duplicate", exercise.PostDuplicate)
-	to.POST("/exerciseType", exercise_type.Post)
-	to.PUT("/exerciseType", exercise_type.Put)
-	to.POST("/exerciseType/duplicate", exercise_type.PostDuplicate)
-	to.POST("/user", user.Post)
-	to.DELETE("/user", user.Delete)
-	to.PUT("/user", user.Put)
-	to.POST("/week", week.Post)
-	to.PUT("/week", week.Put)
-	to.DELETE("/week", week.Delete)
+	timeslots := jg.Group("/timeslots")
+	timeslots.GET("", timeslot.Get)
+	timeslots.POST("", timeslot.Post, trainerOnlyMiddleware)
+	timeslots.DELETE("", timeslot.Delete, trainerOnlyMiddleware)
+	timeslots.PUT("", timeslot.Put, trainerOnlyMiddleware)
+	// TODO: Don't use action, use action field in request param
+	timeslots.POST("/undelete", timeslot.PostUndelete, trainerOnlyMiddleware)
+
+	exercises := jg.Group("/exercises")
+	// TODO: When to use :id param
+	exercises.GET("/:id", exercise.Get)
+	exercises.POST("", exercise.Post)
+	exercises.PUT("", exercise.Put)
+	exercises.DELETE("", exercise.Delete)
+	exercises.PUT("/count", exercise.PutCount)
+	exercises.DELETE("/count", exercise.DeleteCount)
+	exercises.POST("/undelete", exercise.PostUndelete)
+	exercises.POST("/duplicate", exercise.PostDuplicate, trainerOnlyMiddleware)
+
+	workSets := jg.Group("/work-sets")
+	workSets.PUT("", work_set.Put)
+	workSets.POST("/undelete", work_set.PostUndelete)
+
+	exerciseTypes := jg.Group("/exercise-types")
+	exerciseTypes.GET("", exercise_type.Get)
+	exerciseTypes.POST("", exercise_type.Post, trainerOnlyMiddleware)
+	exerciseTypes.PUT("", exercise_type.Put, trainerOnlyMiddleware)
+	exerciseTypes.POST("/duplicate", exercise_type.PostDuplicate, trainerOnlyMiddleware)
+
+	users := jg.Group("/users")
+	users.GET("", user.Get)
+	users.POST("", user.Post, trainerOnlyMiddleware)
+	users.DELETE("", user.Delete, trainerOnlyMiddleware)
+	users.PUT("", user.Put, trainerOnlyMiddleware)
+
+	blocks := jg.Group("/blocks")
+	blocks.GET("", block.Get)
+
+	weeks := jg.Group("/weeks")
+	weeks.POST("", week.Post, trainerOnlyMiddleware)
+	weeks.PUT("", week.Put, trainerOnlyMiddleware)
+	weeks.DELETE("", week.Delete, trainerOnlyMiddleware)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }
