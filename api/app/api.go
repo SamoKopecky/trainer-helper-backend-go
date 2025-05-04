@@ -159,7 +159,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	timeslots := jg.Group("/timeslots")
 	timeslots.GET("", timeslot.Get)
 	timeslots.POST("", timeslot.Post, trainerOnlyMiddleware)
-	timeslots.DELETE("", timeslot.Delete, trainerOnlyMiddleware)
+	timeslots.DELETE("/:id", timeslot.Delete, trainerOnlyMiddleware)
 	timeslots.PUT("", timeslot.Put, trainerOnlyMiddleware)
 	// TODO: Don't use action, use action field in request param
 	timeslots.POST("/undelete", timeslot.PostUndelete, trainerOnlyMiddleware)
@@ -197,7 +197,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	weeks := jg.Group("/weeks")
 	weeks.POST("", week.Post, trainerOnlyMiddleware)
 	weeks.PUT("", week.Put, trainerOnlyMiddleware)
-	weeks.DELETE("", week.Delete, trainerOnlyMiddleware)
+	weeks.DELETE("/:id", week.Delete, trainerOnlyMiddleware)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }
