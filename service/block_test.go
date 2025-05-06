@@ -5,6 +5,7 @@ import (
 	"trainer-helper/model"
 	store "trainer-helper/store/mock"
 	"trainer-helper/testutil"
+	"trainer-helper/utils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -15,29 +16,33 @@ func TestBlockGetBlocks(t *testing.T) {
 	service := Block{Store: m}
 
 	userId := "1"
-	blockWithWeeks := testutil.BlockFactory(testutil.BlockUserId(userId))
-	blockWithNoWeeks := testutil.BlockFactory(testutil.BlockUserId(userId))
+	blockWithWeeks := testutil.BlockFactory(testutil.BlockUserId(userId), testutil.BlockLabel(3))
+	blockWithNoWeeks := testutil.BlockFactory(testutil.BlockUserId(userId), testutil.BlockLabel(2))
 
-	for j := range 2 {
-		week := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(j+10))
-		if j == 0 {
-			for range 2 {
-				weekDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, 0))
-				week.WeekDays = append(week.WeekDays, *weekDay)
-			}
-		}
-		blockWithWeeks.Weeks = append(blockWithWeeks.Weeks, *week)
+	weekOne := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(30))
+	weekTwo := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(20))
+	for range 2 {
+		weekDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, 0))
+		weekOne.WeekDays = append(weekOne.WeekDays, *weekDay)
 	}
+	blockWithWeeks.Weeks = []model.Week{*weekOne, *weekTwo}
 
 	mockModels := []model.Block{*blockWithWeeks, *blockWithNoWeeks}
 	m.EXPECT().GetBlockWeeksByUserId("1").Return(mockModels, nil).Once()
 
 	// Act
 	actual, err := service.GetBlocks("1")
+	utils.PrettyPrint(actual)
 
 	// Assert
-	require.Nil(t, err)
-	assert.Equal(t, []model.WeekDay{}, actual[0].Weeks[1].WeekDays)
-	assert.Equal(t, []model.Week{}, actual[1].Weeks)
 
+	require.Nil(t, err)
+	assert.Equal(t, 2, actual[0].Label)
+	assert.Equal(t, 0, len(actual[0].Weeks))
+	assert.Equal(t, 3, actual[1].Label)
+	assert.Equal(t, 2, len(actual[1].Weeks))
+	assert.Equal(t, 20, actual[1].Weeks[0].Label)
+	assert.Equal(t, 0, len(actual[1].Weeks[0].WeekDays))
+	assert.Equal(t, 30, actual[1].Weeks[1].Label)
+	assert.Equal(t, 2, len(actual[1].Weeks[1].WeekDays))
 }

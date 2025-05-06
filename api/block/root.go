@@ -27,3 +27,25 @@ func Get(c echo.Context) error {
 
 	return cc.JSON(http.StatusOK, blocks)
 }
+
+func Post(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	params, err := api.BindParams[blockPostRequest](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	newBlock := params.toModel(cc.Claims.Subject)
+	err = cc.BlockCrud.Insert(newBlock)
+	if err != nil {
+		return err
+	}
+
+	return cc.JSON(http.StatusOK, newBlock)
+}
+
+func Delete(c echo.Context) error {
+	cc := c.(*api.DbContext)
+	return api.DeleteModel(cc, cc.BlockCrud)
+}

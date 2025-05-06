@@ -11,6 +11,12 @@ func BlockUserId(userId string) utils.FactoryOption[model.Block] {
 	}
 }
 
+func BlockLabel(label int) utils.FactoryOption[model.Block] {
+	return func(b *model.Block) {
+		b.Label = label
+	}
+}
+
 func BlockFactory(options ...utils.FactoryOption[model.Block]) *model.Block {
 	block := &model.Block{
 		UserId: "1",
