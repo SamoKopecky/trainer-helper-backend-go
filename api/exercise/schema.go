@@ -16,10 +16,6 @@ type exercisePutParams struct {
 	Note           *string `json:"note"`
 }
 
-type exerciseDeleteParams struct {
-	ExerciseId int `json:"exercise_id"`
-}
-
 type exerciseDuplicatePostParams struct {
 	CopyTimeslotId int `json:"copy_timeslot_id"`
 	TimeslotId     int `json:"timeslot_id"`

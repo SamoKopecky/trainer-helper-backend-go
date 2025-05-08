@@ -76,17 +76,7 @@ func Put(c echo.Context) error {
 
 func Delete(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	params, err := api.BindParams[exerciseDeleteParams](cc)
-	if err != nil {
-		return cc.BadRequest(err)
-	}
-
-	err = cc.ExerciseCrud.DeleteByExercise(params.ExerciseId)
-	if err != nil {
-		return err
-	}
-
-	return cc.NoContent(http.StatusOK)
+	return api.DeleteModel(cc, cc.ExerciseCrud)
 }
 
 func Post(c echo.Context) error {

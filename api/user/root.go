@@ -4,11 +4,13 @@ package user
 
 import (
 	"net/http"
+	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
 
-	"github.com/labstack/echo/v4"
 	"slices"
+
+	"github.com/labstack/echo/v4"
 )
 
 func Get(c echo.Context) (err error) {
@@ -54,13 +56,13 @@ func Post(c echo.Context) (err error) {
 func Delete(c echo.Context) (err error) {
 	cc := c.(*api.DbContext)
 
-	params, err := api.BindParams[userDeleteRequest](cc)
+	id := cc.Param("id")
 	if err != nil {
 		return cc.BadRequest(err)
 	}
 	traineeRole, _ := cc.Claims.AppTraineeRole()
 
-	err = cc.UserService.UnregisterUser(params.Id, traineeRole)
+	err = cc.UserService.UnregisterUser(id, traineeRole)
 	if err != nil {
 		return
 	}

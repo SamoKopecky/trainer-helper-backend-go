@@ -169,7 +169,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	exercises.GET("/:id", exercise.Get)
 	exercises.POST("", exercise.Post)
 	exercises.PUT("", exercise.Put)
-	exercises.DELETE("", exercise.Delete)
+	exercises.DELETE("/:id", exercise.Delete)
 	exercises.PUT("/count", exercise.PutCount)
 	exercises.DELETE("/count", exercise.DeleteCount)
 	exercises.POST("/undelete/:id", exercise.PostUndelete)
@@ -188,7 +188,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	users := jg.Group("/users")
 	users.GET("", user.Get)
 	users.POST("", user.Post, trainerOnlyMiddleware)
-	users.DELETE("", user.Delete, trainerOnlyMiddleware)
+	users.DELETE("/:id", user.Delete, trainerOnlyMiddleware)
 	users.PUT("", user.Put, trainerOnlyMiddleware)
 
 	blocks := jg.Group("/blocks")
