@@ -19,3 +19,17 @@ func DeleteModel[M any](cc *DbContext, crud store.StoreBase[M]) error {
 
 	return cc.NoContent(http.StatusOK)
 }
+
+func PostUndeleteModel[M any](cc *DbContext, crud store.StoreBase[M]) error {
+	id, err := strconv.Atoi(cc.Param("id"))
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	err = crud.UndeleteMany([]int{id})
+	if err != nil {
+		return err
+	}
+
+	return cc.NoContent(http.StatusOK)
+}

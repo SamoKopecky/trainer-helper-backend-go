@@ -162,7 +162,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	timeslots.DELETE("/:id", timeslot.Delete, trainerOnlyMiddleware)
 	timeslots.PUT("", timeslot.Put, trainerOnlyMiddleware)
 	// TODO: Don't use action, use action field in request param
-	timeslots.POST("/undelete", timeslot.PostUndelete, trainerOnlyMiddleware)
+	timeslots.POST("/undelete/:id", timeslot.PostUndelete, trainerOnlyMiddleware)
 
 	exercises := jg.Group("/exercises")
 	// TODO: When to use :id param
@@ -172,7 +172,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	exercises.DELETE("", exercise.Delete)
 	exercises.PUT("/count", exercise.PutCount)
 	exercises.DELETE("/count", exercise.DeleteCount)
-	exercises.POST("/undelete", exercise.PostUndelete)
+	exercises.POST("/undelete/:id", exercise.PostUndelete)
 	exercises.POST("/duplicate", exercise.PostDuplicate, trainerOnlyMiddleware)
 
 	workSets := jg.Group("/work-sets")
@@ -195,11 +195,13 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	blocks.GET("", block.Get)
 	blocks.POST("", block.Post, trainerOnlyMiddleware)
 	blocks.DELETE("/:id", block.Delete, trainerOnlyMiddleware)
+	blocks.POST("/undelete/:id", block.PostUndelete, trainerOnlyMiddleware)
 
 	weeks := jg.Group("/weeks")
 	weeks.POST("", week.Post, trainerOnlyMiddleware)
 	weeks.PUT("", week.Put, trainerOnlyMiddleware)
 	weeks.DELETE("/:id", week.Delete, trainerOnlyMiddleware)
+	weeks.POST("/undelete/:id", week.PostUndelete, trainerOnlyMiddleware)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }

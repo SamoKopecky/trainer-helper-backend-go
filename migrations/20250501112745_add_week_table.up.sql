@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS block (
     user_id character varying NOT NULL,
     label integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+	deleted_at timestamp without time zone
 );
 
 ALTER TABLE ONLY block
@@ -43,7 +44,8 @@ CREATE TABLE IF NOT EXISTS week (
     start_date timestamp without time zone NOT NULL,
     label integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+	deleted_at timestamp without time zone
 );
 
 ALTER TABLE ONLY week

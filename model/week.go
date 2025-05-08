@@ -10,6 +10,7 @@ type Week struct {
 	bun.BaseModel `bun:"table:week"`
 	IdModel
 	Timestamp
+	DeletedTimestamp
 
 	BlockId   int       `json:"block_id"`
 	UserId    string    `json:"user_id"`

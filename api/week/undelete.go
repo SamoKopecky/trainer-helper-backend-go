@@ -1,4 +1,4 @@
-package timeslot
+package week
 
 import (
 	"trainer-helper/api"
@@ -8,5 +8,5 @@ import (
 
 func PostUndelete(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	return api.PostUndeleteModel(cc, cc.TimeslotCrud)
+	return api.PostUndeleteModel(cc, cc.WeekCrud)
 }

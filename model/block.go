@@ -8,6 +8,7 @@ type Block struct {
 	bun.BaseModel `bun:"table:block"`
 	IdModel
 	Timestamp
+	DeletedTimestamp
 
 	UserId string `json:"user_id"`
 	Label  int    `json:"label"`
