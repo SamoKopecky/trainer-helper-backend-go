@@ -193,6 +193,8 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 
 	blocks := jg.Group("/blocks")
 	blocks.GET("", block.Get)
+	blocks.POST("", block.Post, trainerOnlyMiddleware)
+	blocks.DELETE("/:id", block.Delete, trainerOnlyMiddleware)
 
 	weeks := jg.Group("/weeks")
 	weeks.POST("", week.Post, trainerOnlyMiddleware)

@@ -36,7 +36,7 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	newBlock := params.toModel(cc.Claims.Subject)
+	newBlock := params.toModel()
 	err = cc.BlockCrud.Insert(newBlock)
 	if err != nil {
 		return err

@@ -7,11 +7,12 @@ type blockGetRequest struct {
 }
 
 type blockPostRequest struct {
-	Label int `json:"label"`
+	Label  int    `json:"label"`
+	UserId string `json:"user_id"`
 }
 
-func (bpr blockPostRequest) toModel(userId string) *model.Block {
-	return model.BuildBlock(userId, bpr.Label)
+func (bpr blockPostRequest) toModel() *model.Block {
+	return model.BuildBlock(bpr.UserId, bpr.Label)
 }
 
 type blockDeleteRequest struct {

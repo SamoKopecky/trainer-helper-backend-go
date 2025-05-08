@@ -15,7 +15,7 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	newWeek := params.toModel(cc.Claims.Subject)
+	newWeek := params.toModel()
 	err = cc.WeekCrud.Insert(newWeek)
 	if err != nil {
 		return err
