@@ -60,18 +60,7 @@ func Get(c echo.Context) error {
 
 func Put(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	params, err := api.BindParams[exercisePutParams](cc)
-	if err != nil {
-		return cc.BadRequest(err)
-	}
-
-	model := params.toModel()
-	err = cc.ExerciseCrud.Update(&model)
-	if err != nil {
-		return err
-	}
-
-	return cc.NoContent(http.StatusOK)
+	return api.PutModel[exercisePutParams](cc, cc.ExerciseCrud)
 }
 
 func Delete(c echo.Context) error {

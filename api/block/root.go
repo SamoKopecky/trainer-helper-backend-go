@@ -30,19 +30,7 @@ func Get(c echo.Context) error {
 
 func Post(c echo.Context) error {
 	cc := c.(*api.DbContext)
-
-	params, err := api.BindParams[blockPostRequest](cc)
-	if err != nil {
-		return cc.BadRequest(err)
-	}
-
-	newBlock := params.toModel()
-	err = cc.BlockCrud.Insert(newBlock)
-	if err != nil {
-		return err
-	}
-
-	return cc.JSON(http.StatusOK, newBlock)
+	return api.PostModel[blockPostRequest](cc, cc.BlockCrud)
 }
 
 func Delete(c echo.Context) error {

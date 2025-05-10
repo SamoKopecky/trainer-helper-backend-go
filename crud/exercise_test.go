@@ -73,7 +73,7 @@ func TestDeleteByExerciseAndTimeslot(t *testing.T) {
 	exerciseDeleteId := insertedExercises[0].Id
 
 	// Act
-	if err := crud.DeleteByExercise(exerciseDeleteId); err != nil {
+	if err := crud.Delete(exerciseDeleteId); err != nil {
 		t.Fatalf("Failed to delete exercises: %v", err)
 	}
 

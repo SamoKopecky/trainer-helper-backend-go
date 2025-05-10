@@ -1,4 +1,4 @@
-package week
+package weekday
 
 import (
 	"trainer-helper/api"
@@ -8,12 +8,12 @@ import (
 
 func Post(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	return api.PostModel[weekPostRequest](cc, cc.WeekCrud)
+	return api.PostModel[weekDayPostRequest](cc, cc.WeekDayCrud)
 }
 
 func Put(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	return api.PutModel[weekPutRequest](cc, cc.WeekCrud)
+	return api.PutModel[weekDayPutRequest](cc, cc.WeekDayCrud)
 
 }
 

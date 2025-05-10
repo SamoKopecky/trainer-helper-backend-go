@@ -18,12 +18,12 @@ func PostDuplicate(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 	// TODO: Service
-	newTimeslot, err := updateTimeslot(params, cc)
+	newTimeslot, err := updateTimeslot(&params, cc)
 	if err != nil {
 		return err
 	}
 	// TODO: Service
-	newExercises, err := updateExericses(params, cc)
+	newExercises, err := updateExericses(&params, cc)
 	if err != nil {
 		return err
 	}
@@ -38,6 +38,7 @@ func PostDuplicate(c echo.Context) error {
 	})
 }
 
+// TODO: Make service
 func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
 	err = cc.ExerciseCrud.DeleteByTimeslot(param.TimeslotId)
 	if err != nil {

@@ -11,8 +11,8 @@ type blockPostRequest struct {
 	UserId string `json:"user_id"`
 }
 
-func (bpr blockPostRequest) toModel() *model.Block {
-	return model.BuildBlock(bpr.UserId, bpr.Label)
+func (bpr blockPostRequest) ToModel() model.Block {
+	return *model.BuildBlock(bpr.UserId, bpr.Label)
 }
 
 type blockDeleteRequest struct {

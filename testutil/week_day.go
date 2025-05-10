@@ -18,7 +18,7 @@ func WeekDayFactory(options ...utils.FactoryOption[model.WeekDay]) *model.WeekDa
 	weekDay := &model.WeekDay{
 		UserId:  "1",
 		WeekId:  utils.RandomInt(),
-		DayDate: &now,
+		DayDate: now,
 		Name:    "name",
 	}
 

@@ -6,10 +6,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func BindParams[T any](c echo.Context) (*T, error) {
-	params := new(T)
-	if err := c.Bind(params); err != nil {
-		return nil, err
+func BindParams[T any](c echo.Context) (T, error) {
+	params := *new(T)
+	if err := c.Bind(&params); err != nil {
+		return params, err
 	}
 	return params, nil
 }

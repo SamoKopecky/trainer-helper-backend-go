@@ -52,17 +52,5 @@ func Post(c echo.Context) error {
 
 func Put(c echo.Context) error {
 	cc := c.(*api.DbContext)
-
-	params, err := api.BindParams[exerciseTypePutPrams](cc)
-	if err != nil {
-		return cc.BadRequest(err)
-	}
-
-	model := params.toModel()
-	err = cc.ExerciseTypeCrud.Update(&model)
-	if err != nil {
-		return err
-	}
-
-	return cc.NoContent(http.StatusOK)
+	return api.PutModel[exerciseTypePutPrams](cc, cc.ExerciseTypeCrud)
 }

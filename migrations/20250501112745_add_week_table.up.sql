@@ -71,9 +71,9 @@ CREATE SEQUENCE IF NOT EXISTS week_day_id_seq
 CREATE TABLE IF NOT EXISTS week_day (
     id integer NOT NULL DEFAULT nextval('week_day_id_seq'::regclass),
     user_id character varying NOT NULL,
-    week_id integer,
+    week_id integer NOT NULL,
     day_date date NOT NULL,
-    name character varying,
+    name character varying NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

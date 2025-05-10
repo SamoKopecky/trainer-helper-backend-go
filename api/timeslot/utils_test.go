@@ -31,7 +31,7 @@ func TestToModelNil(t *testing.T) {
 		Id:   1,
 		Name: nil,
 	}
-	got := params.toModel()
+	got := params.ToModel()
 	want := model.Timeslot{
 		IdModel: model.IdModel{
 			Id: 1,
@@ -50,7 +50,7 @@ func TestToModelNotNil(t *testing.T) {
 		Id:   1,
 		Name: &name,
 	}
-	got := params.toModel()
+	got := params.ToModel()
 	want := model.Timeslot{
 		IdModel: model.IdModel{
 			Id: 1,

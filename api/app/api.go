@@ -11,6 +11,7 @@ import (
 	"trainer-helper/api/timeslot"
 	"trainer-helper/api/user"
 	"trainer-helper/api/week"
+	weekday "trainer-helper/api/week_day"
 	"trainer-helper/api/work_set"
 	"trainer-helper/config"
 	"trainer-helper/crud"
@@ -202,6 +203,11 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	weeks.PUT("", week.Put, trainerOnlyMiddleware)
 	weeks.DELETE("/:id", week.Delete, trainerOnlyMiddleware)
 	weeks.POST("/undelete/:id", week.PostUndelete, trainerOnlyMiddleware)
+
+	week_days := jg.Group("/week-days")
+	week_days.POST("", weekday.Post, trainerOnlyMiddleware)
+	week_days.PUT("", weekday.Put, trainerOnlyMiddleware)
+	week_days.DELETE("/:id", weekday.Delete, trainerOnlyMiddleware)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }

@@ -1,6 +1,7 @@
 package timeslot
 
 import (
+	"fmt"
 	"time"
 	"trainer-helper/api"
 	"trainer-helper/model"
@@ -17,6 +18,14 @@ type timeslotPostParams struct {
 	End       time.Time `json:"end"`
 }
 
+func (tpp timeslotPostParams) ToModel() model.Timeslot {
+	timeslotName := fmt.Sprintf("from %s to %s on %s",
+		humanTime(tpp.Start),
+		humanTime(tpp.End),
+		humanDate(tpp.Start))
+	return *model.BuildTimeslot(timeslotName, tpp.Start, tpp.End, tpp.TrainerId, nil)
+}
+
 type timeslotDeleteParams struct {
 	Id int `json:"id"`
 }
@@ -29,7 +38,7 @@ type timeslotPutParams struct {
 	End       *time.Time `json:"end"`
 }
 
-func (tpp timeslotPutParams) toModel() model.Timeslot {
+func (tpp timeslotPutParams) ToModel() model.Timeslot {
 	return model.Timeslot{
 		IdModel: model.IdModel{
 			Id: tpp.Id,

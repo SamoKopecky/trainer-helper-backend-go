@@ -13,12 +13,8 @@ type weekPostRequest struct {
 	UserId    string    `json:"user_id"`
 }
 
-func (wpr weekPostRequest) toModel() *model.Week {
-	return model.BuildWeek(wpr.BlockId, wpr.StartDate, wpr.Label, wpr.UserId)
-}
-
-type weekDeleteRequest struct {
-	Id int `json:"id"`
+func (wpr weekPostRequest) ToModel() model.Week {
+	return *model.BuildWeek(wpr.BlockId, wpr.StartDate, wpr.Label, wpr.UserId)
 }
 
 type weekPutRequest struct {
@@ -26,8 +22,8 @@ type weekPutRequest struct {
 	StartDate *time.Time `json:"start_date"`
 }
 
-func (wpr weekPutRequest) toModel() *model.Week {
-	return &model.Week{
+func (wpr weekPutRequest) ToModel() model.Week {
+	return model.Week{
 		IdModel: model.IdModel{
 			Id: wpr.Id,
 		},

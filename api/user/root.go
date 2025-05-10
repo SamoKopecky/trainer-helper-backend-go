@@ -4,7 +4,6 @@ package user
 
 import (
 	"net/http"
-	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
 
@@ -57,9 +56,6 @@ func Delete(c echo.Context) (err error) {
 	cc := c.(*api.DbContext)
 
 	id := cc.Param("id")
-	if err != nil {
-		return cc.BadRequest(err)
-	}
 	traineeRole, _ := cc.Claims.AppTraineeRole()
 
 	err = cc.UserService.UnregisterUser(id, traineeRole)
