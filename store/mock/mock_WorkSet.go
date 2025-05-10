@@ -37,6 +37,51 @@ func (_m *MockWorkSet) EXPECT() *MockWorkSet_Expecter {
 	return &MockWorkSet_Expecter{mock: &_m.Mock}
 }
 
+// Delete provides a mock function for the type MockWorkSet
+func (_mock *MockWorkSet) Delete(modelId int) error {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Delete")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWorkSet_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockWorkSet_Delete_Call struct {
+	*mock.Call
+}
+
+// Delete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockWorkSet_Expecter) Delete(modelId interface{}) *MockWorkSet_Delete_Call {
+	return &MockWorkSet_Delete_Call{Call: _e.mock.On("Delete", modelId)}
+}
+
+func (_c *MockWorkSet_Delete_Call) Run(run func(modelId int)) *MockWorkSet_Delete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWorkSet_Delete_Call) Return(err error) *MockWorkSet_Delete_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWorkSet_Delete_Call) RunAndReturn(run func(modelId int) error) *MockWorkSet_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteMany provides a mock function for the type MockWorkSet
 func (_mock *MockWorkSet) DeleteMany(ids []int) (int, error) {
 	ret := _mock.Called(ids)

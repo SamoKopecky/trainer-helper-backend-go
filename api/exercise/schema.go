@@ -16,10 +16,6 @@ type exercisePutParams struct {
 	Note           *string `json:"note"`
 }
 
-type exerciseDeleteParams struct {
-	ExerciseId int `json:"exercise_id"`
-}
-
 type exerciseDuplicatePostParams struct {
 	CopyTimeslotId int `json:"copy_timeslot_id"`
 	TimeslotId     int `json:"timeslot_id"`
@@ -39,7 +35,7 @@ type exercisePostParams struct {
 	GroupId    int `json:"group_id"`
 }
 
-func (epp exercisePutParams) toModel() model.Exercise {
+func (epp exercisePutParams) ToModel() model.Exercise {
 	return model.Exercise{
 		IdModel: model.IdModel{
 			Id: epp.Id,

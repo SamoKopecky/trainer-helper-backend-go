@@ -35,6 +35,51 @@ func (_m *MockStoreBase[T]) EXPECT() *MockStoreBase_Expecter[T] {
 	return &MockStoreBase_Expecter[T]{mock: &_m.Mock}
 }
 
+// Delete provides a mock function for the type MockStoreBase
+func (_mock *MockStoreBase[T]) Delete(modelId int) error {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Delete")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockStoreBase_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockStoreBase_Delete_Call[T any] struct {
+	*mock.Call
+}
+
+// Delete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockStoreBase_Expecter[T]) Delete(modelId interface{}) *MockStoreBase_Delete_Call[T] {
+	return &MockStoreBase_Delete_Call[T]{Call: _e.mock.On("Delete", modelId)}
+}
+
+func (_c *MockStoreBase_Delete_Call[T]) Run(run func(modelId int)) *MockStoreBase_Delete_Call[T] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockStoreBase_Delete_Call[T]) Return(err error) *MockStoreBase_Delete_Call[T] {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockStoreBase_Delete_Call[T]) RunAndReturn(run func(modelId int) error) *MockStoreBase_Delete_Call[T] {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockStoreBase
 func (_mock *MockStoreBase[T]) Get() ([]T, error) {
 	ret := _mock.Called()

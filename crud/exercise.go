@@ -28,14 +28,6 @@ func (e Exercise) GetExerciseWorkSets(Id int) ([]*model.Exercise, error) {
 	return res, err
 }
 
-func (e Exercise) DeleteByExercise(exerciseId int) error {
-	_, err := e.db.NewDelete().
-		Model((*model.Exercise)(nil)).
-		Where("id = ?", exerciseId).
-		Exec(context.Background())
-	return err
-}
-
 func (e Exercise) DeleteByTimeslot(timeslotId int) (err error) {
 	_, err = e.db.NewDelete().
 		Model((*model.Exercise)(nil)).

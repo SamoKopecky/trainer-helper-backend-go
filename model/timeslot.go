@@ -29,9 +29,3 @@ func BuildTimeslot(name string, start, end time.Time, trainerId string, traineeI
 		Timestamp: buildTimestamp(),
 	}
 }
-
-type ApiTimeslot struct {
-	Timeslot
-	UserName     *string `json:"user_name"`
-	UserNickname *string `json:"user_nickname"`
-}

@@ -1,0 +1,21 @@
+host: localhost:2001
+info:
+  contact:
+    email: samo.kopecky@protonmail.com
+    name: SamuelKOpecky
+  description: Trainer helper application backend API
+  title: Trainer Helper
+  version: 0.0.1
+paths:
+  /-/ping:
+    get:
+      description: Checks if the service is responsive.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+      summary: Ping endpoint
+swagger: "2.0"

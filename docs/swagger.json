@@ -1,0 +1,32 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Trainer helper application backend API",
+        "title": "Trainer Helper",
+        "contact": {
+            "name": "SamuelKOpecky",
+            "email": "samo.kopecky@protonmail.com"
+        },
+        "version": "0.0.1"
+    },
+    "host": "localhost:2001",
+    "paths": {
+        "/-/ping": {
+            "get": {
+                "description": "Checks if the service is responsive.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Ping endpoint",
+                "responses": {
+                    "200": {
+                        "description": "pong",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

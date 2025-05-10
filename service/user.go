@@ -2,15 +2,15 @@ package service
 
 import (
 	"errors"
-	"trainer-helper/api"
 	"trainer-helper/fetcher"
+	"trainer-helper/schema"
 )
 
 type User struct {
 	Fetcher fetcher.IAM
 }
 
-func (u User) GetUsers(claims *api.JwtClaims) (users []fetcher.KeycloakUser, err error) {
+func (u User) GetUsers(claims *schema.JwtClaims) (users []fetcher.KeycloakUser, err error) {
 	role, isTrainer := claims.AppTraineeRole()
 	if isTrainer {
 		users, err = u.Fetcher.GetUsersByRole(role)

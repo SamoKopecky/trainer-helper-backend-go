@@ -24,7 +24,7 @@ type exerciseTypePutPrams struct {
 	FilePath    *string          `json:"file_path"`
 }
 
-func (etpp exerciseTypePutPrams) toModel() model.ExerciseType {
+func (etpp exerciseTypePutPrams) ToModel() model.ExerciseType {
 	return model.ExerciseType{
 		IdModel: model.IdModel{
 			Id: etpp.Id,

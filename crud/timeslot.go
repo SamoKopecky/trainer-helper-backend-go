@@ -43,15 +43,3 @@ func (t Timeslot) GetById(timeslotId int) (model.Timeslot, error) {
 	return timeslot, err
 
 }
-
-func (t Timeslot) Delete(timeslotId int) error {
-	ctx := context.Background()
-
-	// Actually does soft delete
-	_, err := t.db.NewDelete().
-		Model((*model.Timeslot)(nil)).
-		Where("id = ?", timeslotId).
-		Exec(ctx)
-
-	return err
-}

@@ -25,7 +25,7 @@ down:
 # Run tests
 test:
 	docker compose up db -d
-	gotest -count=1 $(TA) ./...
+	gotest $(TA) ./...
 
 reset-db:
 	docker compose down
@@ -51,3 +51,7 @@ run:
 # Add a new migration
 add-migration:
 	migrate create -dir migrations/ -ext sql $(MSG)
+
+# Generate swagger docs
+swagger-docs:
+	swag init -g api/app/api.go
