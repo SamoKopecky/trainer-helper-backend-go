@@ -2,6 +2,7 @@ package service
 
 import (
 	"testing"
+	"time"
 	"trainer-helper/model"
 	store "trainer-helper/store/mock"
 	"trainer-helper/testutil"
@@ -21,10 +22,19 @@ func TestBlockGetBlocks(t *testing.T) {
 
 	weekOne := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(30))
 	weekTwo := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(20))
-	for range 2 {
-		weekDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, 0))
-		weekOne.WeekDays = append(weekOne.WeekDays, *weekDay)
-	}
+
+	now := time.Now()
+	tommorow := now.Add(time.Hour * 24)
+	dayAfterTommorow := now.Add(time.Hour * 48)
+	weekOneDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, 0), testutil.WeekDayTime(tommorow))
+	weekOne.WeekDays = append(weekOne.WeekDays, *weekOneDay)
+
+	weekThreeDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, 0), testutil.WeekDayTime(dayAfterTommorow))
+	weekOne.WeekDays = append(weekOne.WeekDays, *weekThreeDay)
+
+	weekTwoDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, 0), testutil.WeekDayTime(now))
+	weekOne.WeekDays = append(weekOne.WeekDays, *weekTwoDay)
+
 	blockWithWeeks.Weeks = []model.Week{*weekOne, *weekTwo}
 
 	mockModels := []model.Block{*blockWithWeeks, *blockWithNoWeeks}
@@ -44,5 +54,8 @@ func TestBlockGetBlocks(t *testing.T) {
 	assert.Equal(t, 20, actual[1].Weeks[0].Label)
 	assert.Equal(t, 0, len(actual[1].Weeks[0].WeekDays))
 	assert.Equal(t, 30, actual[1].Weeks[1].Label)
-	assert.Equal(t, 2, len(actual[1].Weeks[1].WeekDays))
+	assert.Equal(t, 3, len(actual[1].Weeks[1].WeekDays))
+	assert.Equal(t, now, actual[1].Weeks[1].WeekDays[0].DayDate)
+	assert.Equal(t, tommorow, actual[1].Weeks[1].WeekDays[1].DayDate)
+	assert.Equal(t, dayAfterTommorow, actual[1].Weeks[1].WeekDays[2].DayDate)
 }

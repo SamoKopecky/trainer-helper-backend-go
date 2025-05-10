@@ -109,6 +109,8 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 			crudTimeslot := crud.NewTimeslot(db)
 			crudExerciseType := crud.NewExerciseType(db)
 			crudBlock := crud.NewBlock(db)
+			crudWeek := crud.NewWeek(db)
+			crudWeekDay := crud.NewWeekDay(db)
 			iam := fetcher.IAM{
 				AppConfig:  cfg,
 				AuthConfig: fetcher.CreateAuthConfig(cfg)}
@@ -119,13 +121,14 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 				WorkSetCrud:         crud.NewWorkSet(db),
 				ExerciseTypeCrud:    crudExerciseType,
 				BlockCrud:           crudBlock,
-				WeekCrud:            crud.NewWeek(db),
-				WeekDayCrud:         crud.NewWeekDay(db),
+				WeekCrud:            crudWeek,
+				WeekDayCrud:         crudWeekDay,
 				IAMFetcher:          iam,
 				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
 				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
 				BlockService:        service.Block{Store: crudBlock},
+				WeekService:         service.Week{WeekStore: crudWeek, WeekDayStore: crudWeekDay},
 			}
 
 			return next(cc)

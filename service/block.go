@@ -30,6 +30,16 @@ func (b Block) GetBlocks(userId string) (blocks []model.Block, err error) {
 			for j := range blocks[i].Weeks {
 				if len(blocks[i].Weeks[j].WeekDays) == 0 {
 					blocks[i].Weeks[j].WeekDays = []model.WeekDay{}
+				} else {
+					slices.SortFunc(blocks[i].Weeks[j].WeekDays, func(a, b model.WeekDay) int {
+						if a.DayDate.Before(b.DayDate) {
+							return -1
+						}
+						if a.DayDate.After(b.DayDate) {
+							return 1
+						}
+						return 0
+					})
 				}
 			}
 		}

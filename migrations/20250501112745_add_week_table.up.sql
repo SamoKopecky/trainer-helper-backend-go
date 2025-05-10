@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS week_day (
     user_id character varying NOT NULL,
     week_id integer NOT NULL,
     day_date date NOT NULL,
-    name character varying NOT NULL,
+    name character varying NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
