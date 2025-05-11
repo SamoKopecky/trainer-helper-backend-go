@@ -2,6 +2,7 @@ package api
 
 import (
 	"time"
+	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )
@@ -34,4 +35,11 @@ func DerefTime(ptr *time.Time) time.Time {
 		return time.Time{}
 	}
 	return *ptr
+}
+
+func DerefDate(ptr *utils.Date) time.Time {
+	if ptr == nil {
+		return time.Time{}
+	}
+	return (*ptr).Time
 }

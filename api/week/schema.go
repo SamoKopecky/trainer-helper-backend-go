@@ -1,9 +1,9 @@
 package week
 
 import (
-	"time"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/utils"
 )
 
 type weekPostRequest struct {
@@ -22,8 +22,8 @@ func (wpr weekPostRequest) ToModel() model.Week {
 }
 
 type weekPutRequest struct {
-	Id        int        `json:"id"`
-	StartDate *time.Time `json:"start_date"`
+	Id        int         `json:"id"`
+	StartDate *utils.Date `json:"start_date"`
 }
 
 func (wpr weekPutRequest) ToModel() model.Week {
@@ -31,6 +31,6 @@ func (wpr weekPutRequest) ToModel() model.Week {
 		IdModel: model.IdModel{
 			Id: wpr.Id,
 		},
-		StartDate: api.DerefTime(wpr.StartDate),
+		StartDate: api.DerefDate(wpr.StartDate),
 	}
 }
