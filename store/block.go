@@ -1,6 +1,8 @@
 package store
 
-import "trainer-helper/model"
+import (
+	"trainer-helper/model"
+)
 
 type Block interface {
 	StoreBase[model.Block]

@@ -10,6 +10,7 @@ type weekPostRequest struct {
 	BlockId int    `json:"block_id"`
 	Label   int    `json:"label"`
 	UserId  string `json:"user_id"`
+	IsFirst bool   `json:"is_first"`
 }
 
 func (wpr weekPostRequest) ToModel() model.Week {

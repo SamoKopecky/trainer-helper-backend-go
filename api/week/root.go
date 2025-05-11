@@ -15,7 +15,7 @@ func Post(c echo.Context) error {
 	}
 
 	newWeek := params.ToModel()
-	err = cc.WeekService.CreateWeek(&newWeek)
+	err = cc.WeekService.CreateWeek(&newWeek, params.IsFirst)
 	if err != nil {
 		return err
 	}

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestCreateWeek(t *testing.T) {
+func TestCreateWeek_NotFirst(t *testing.T) {
 	// Arrange
 	w := store.NewMockWeek(t)
 	wd := store.NewMockWeekDay(t)
@@ -30,7 +30,7 @@ func TestCreateWeek(t *testing.T) {
 
 	newWeek := model.BuildWeek(1, nextMonday, 1, "1")
 	// Act
-	if err := service.CreateWeek(newWeek); err != nil {
+	if err := service.CreateWeek(newWeek, false); err != nil {
 		t.Fatalf("Failed to create weeks: %v", err)
 	}
 
@@ -48,7 +48,7 @@ func TestCreateWeek(t *testing.T) {
 	assert.Equal(t, nextMonday.AddDate(0, 0, 13), newWeek.WeekDays[6].DayDate)
 }
 
-func TestCreateWeek__NoLastWeek(t *testing.T) {
+func TestCreateWeek__NoLastWeek__NotFirst(t *testing.T) {
 	// Arrange
 	w := store.NewMockWeek(t)
 	wd := store.NewMockWeekDay(t)
@@ -68,7 +68,7 @@ func TestCreateWeek__NoLastWeek(t *testing.T) {
 
 	newWeek := model.BuildWeek(1, time.Time{}, 1, "1")
 	// Act
-	if err := service.CreateWeek(newWeek); err != nil {
+	if err := service.CreateWeek(newWeek, false); err != nil {
 		t.Fatalf("Failed to create weeks: %v", err)
 	}
 
@@ -77,4 +77,41 @@ func TestCreateWeek__NoLastWeek(t *testing.T) {
 	wd.Mock.AssertNumberOfCalls(t, "InsertMany", 1)
 	// 7 to get to the next monday
 	assert.Equal(t, nextMonday.Day(), newWeek.StartDate.Day())
+}
+
+func TestCreateWeek__First(t *testing.T) {
+	// Arrange
+	w := store.NewMockWeek(t)
+	wd := store.NewMockWeekDay(t)
+	nextMonday := time.Date(2025, 05, 12, 0, 0, 0, 0, time.UTC)
+	service := Week{WeekStore: w, WeekDayStore: wd}
+	w.EXPECT().GetPreviousBlockId(mock.Anything).Return(nextMonday, nil)
+	w.EXPECT().Insert(mock.Anything).RunAndReturn(func(model1 *model.Week) error {
+		model1.IdModel = model.IdModel{
+			Id: 10,
+		}
+		return nil
+	})
+	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
+		return nil
+	})
+
+	newWeek := model.BuildWeek(1, nextMonday, 1, "1")
+	// Act
+	if err := service.CreateWeek(newWeek, true); err != nil {
+		t.Fatalf("Failed to create weeks: %v", err)
+	}
+
+	// Assert
+	w.Mock.AssertNumberOfCalls(t, "Insert", 1)
+	wd.Mock.AssertNumberOfCalls(t, "InsertMany", 1)
+	// +7 to get to the next monday
+	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.StartDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.WeekDays[0].DayDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 8), newWeek.WeekDays[1].DayDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 9), newWeek.WeekDays[2].DayDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 10), newWeek.WeekDays[3].DayDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 11), newWeek.WeekDays[4].DayDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 12), newWeek.WeekDays[5].DayDate)
+	assert.Equal(t, nextMonday.AddDate(0, 0, 13), newWeek.WeekDays[6].DayDate)
 }

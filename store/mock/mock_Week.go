@@ -192,6 +192,60 @@ func (_c *MockWeek_GetLastWeekDate_Call) RunAndReturn(run func(blockId int) (tim
 	return _c
 }
 
+// GetPreviousBlockId provides a mock function for the type MockWeek
+func (_mock *MockWeek) GetPreviousBlockId(userId string) (time.Time, error) {
+	ret := _mock.Called(userId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPreviousBlockId")
+	}
+
+	var r0 time.Time
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(string) (time.Time, error)); ok {
+		return returnFunc(userId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(string) time.Time); ok {
+		r0 = returnFunc(userId)
+	} else {
+		r0 = ret.Get(0).(time.Time)
+	}
+	if returnFunc, ok := ret.Get(1).(func(string) error); ok {
+		r1 = returnFunc(userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWeek_GetPreviousBlockId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPreviousBlockId'
+type MockWeek_GetPreviousBlockId_Call struct {
+	*mock.Call
+}
+
+// GetPreviousBlockId is a helper method to define mock.On call
+//   - userId
+func (_e *MockWeek_Expecter) GetPreviousBlockId(userId interface{}) *MockWeek_GetPreviousBlockId_Call {
+	return &MockWeek_GetPreviousBlockId_Call{Call: _e.mock.On("GetPreviousBlockId", userId)}
+}
+
+func (_c *MockWeek_GetPreviousBlockId_Call) Run(run func(userId string)) *MockWeek_GetPreviousBlockId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *MockWeek_GetPreviousBlockId_Call) Return(time1 time.Time, err error) *MockWeek_GetPreviousBlockId_Call {
+	_c.Call.Return(time1, err)
+	return _c
+}
+
+func (_c *MockWeek_GetPreviousBlockId_Call) RunAndReturn(run func(userId string) (time.Time, error)) *MockWeek_GetPreviousBlockId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Insert provides a mock function for the type MockWeek
 func (_mock *MockWeek) Insert(model1 *model.Week) error {
 	ret := _mock.Called(model1)

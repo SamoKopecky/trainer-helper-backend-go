@@ -8,4 +8,5 @@ import (
 type Week interface {
 	StoreBase[model.Week]
 	GetLastWeekDate(blockId int) (time.Time, error)
+	GetPreviousBlockId(userId string) (time.Time, error)
 }

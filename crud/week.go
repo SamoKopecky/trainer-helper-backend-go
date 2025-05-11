@@ -34,3 +34,21 @@ func (w Week) GetLastWeekDate(blockId int) (time.Time, error) {
 
 	return week.StartDate, err
 }
+
+func (w Week) GetPreviousBlockId(userId string) (time.Time, error) {
+	var week model.Week
+	err := w.db.NewSelect().
+		Model(&week).
+		ColumnExpr("week.start_date").
+		Join("JOIN block ON week.block_id = block.id").
+		Where("week.user_id = ?", userId).
+		Order("block.label DESC", "week.label DESC").
+		Limit(1).
+		Scan(context.Background())
+
+	if errors.Is(err, sql.ErrNoRows) {
+		return week.StartDate, nil
+	}
+
+	return week.StartDate, err
+}

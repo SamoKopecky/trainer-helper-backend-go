@@ -14,10 +14,15 @@ type Week struct {
 	WeekDayStore store.WeekDay
 }
 
-func (w Week) CreateWeek(newWeek *model.Week) (err error) {
-	lastDate, err := w.WeekStore.GetLastWeekDate(newWeek.BlockId)
+func (w Week) CreateWeek(newWeek *model.Week, isFirst bool) (err error) {
+	var lastDate time.Time
+	if isFirst {
+		lastDate, err = w.WeekStore.GetPreviousBlockId(newWeek.UserId)
+	} else {
+		lastDate, err = w.WeekStore.GetLastWeekDate(newWeek.BlockId)
+	}
 	if err != nil {
-		return
+		return err
 	}
 
 	if lastDate.IsZero() {
