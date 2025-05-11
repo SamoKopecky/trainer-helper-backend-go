@@ -6,35 +6,40 @@ import (
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schemas"
+
+	"slices"
 
 	"github.com/labstack/echo/v4"
-	"slices"
 )
 
 func Get(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
+	isTrainer := cc.Claims.IsTrainer()
 	users, err := cc.UserService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}
-	models := make([]model.User, len(users))
+	userModels := make([]model.User, len(users))
 	var index int
 	for i, user := range users {
-		if user.Id == cc.Claims.Subject {
+		if user.Id == cc.Claims.Subject && isTrainer {
 			index = i
 			continue
 		}
-		models[i] = user.ToUserModel()
+		userModels[i] = user.ToUserModel()
 	}
 
-	// Delete trainer user
-	return cc.JSON(http.StatusOK, slices.Delete(models, index, index+1))
+	if isTrainer {
+		// Delete trainer user
+		userModels = slices.Delete(userModels, index, index+1)
+	}
+
+	return cc.JSON(http.StatusOK, userModels)
 }
 
 func Post(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 	traineeRole, _ := cc.Claims.AppTraineeRole()
 
 	params, err := api.BindParams[userPostRequest](cc)
@@ -53,15 +58,12 @@ func Post(c echo.Context) (err error) {
 }
 
 func Delete(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
-	params, err := api.BindParams[userDeleteRequest](cc)
-	if err != nil {
-		return cc.BadRequest(err)
-	}
+	id := cc.Param("id")
 	traineeRole, _ := cc.Claims.AppTraineeRole()
 
-	err = cc.UserService.UnregisterUser(params.Id, traineeRole)
+	err = cc.UserService.UnregisterUser(id, traineeRole)
 	if err != nil {
 		return
 	}
@@ -69,7 +71,7 @@ func Delete(c echo.Context) (err error) {
 }
 
 func Put(c echo.Context) (err error) {
-	cc := c.(*schemas.DbContext)
+	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[userPutRequest](cc)
 	if err != nil {

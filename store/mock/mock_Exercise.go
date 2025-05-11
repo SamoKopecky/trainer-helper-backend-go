@@ -37,47 +37,47 @@ func (_m *MockExercise) EXPECT() *MockExercise_Expecter {
 	return &MockExercise_Expecter{mock: &_m.Mock}
 }
 
-// DeleteByExercise provides a mock function for the type MockExercise
-func (_mock *MockExercise) DeleteByExercise(exerciseId int) error {
-	ret := _mock.Called(exerciseId)
+// Delete provides a mock function for the type MockExercise
+func (_mock *MockExercise) Delete(modelId int) error {
+	ret := _mock.Called(modelId)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByExercise")
+		panic("no return value specified for Delete")
 	}
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
-		r0 = returnFunc(exerciseId)
+		r0 = returnFunc(modelId)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockExercise_DeleteByExercise_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByExercise'
-type MockExercise_DeleteByExercise_Call struct {
+// MockExercise_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockExercise_Delete_Call struct {
 	*mock.Call
 }
 
-// DeleteByExercise is a helper method to define mock.On call
-//   - exerciseId
-func (_e *MockExercise_Expecter) DeleteByExercise(exerciseId interface{}) *MockExercise_DeleteByExercise_Call {
-	return &MockExercise_DeleteByExercise_Call{Call: _e.mock.On("DeleteByExercise", exerciseId)}
+// Delete is a helper method to define mock.On call
+//   - modelId
+func (_e *MockExercise_Expecter) Delete(modelId interface{}) *MockExercise_Delete_Call {
+	return &MockExercise_Delete_Call{Call: _e.mock.On("Delete", modelId)}
 }
 
-func (_c *MockExercise_DeleteByExercise_Call) Run(run func(exerciseId int)) *MockExercise_DeleteByExercise_Call {
+func (_c *MockExercise_Delete_Call) Run(run func(modelId int)) *MockExercise_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(int))
 	})
 	return _c
 }
 
-func (_c *MockExercise_DeleteByExercise_Call) Return(err error) *MockExercise_DeleteByExercise_Call {
+func (_c *MockExercise_Delete_Call) Return(err error) *MockExercise_Delete_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockExercise_DeleteByExercise_Call) RunAndReturn(run func(exerciseId int) error) *MockExercise_DeleteByExercise_Call {
+func (_c *MockExercise_Delete_Call) RunAndReturn(run func(modelId int) error) *MockExercise_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }

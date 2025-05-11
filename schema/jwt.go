@@ -1,4 +1,4 @@
-package api
+package schema
 
 import (
 	"regexp"
@@ -14,6 +14,11 @@ const (
 	traineeRegex   = `.*` + traineePostfix + `.*`
 	rolesKey       = "roles"
 )
+
+type JwtClaims struct {
+	RealmAccess map[string][]string `json:"realm_access"`
+	jwt.RegisteredClaims
+}
 
 func (jcc JwtClaims) IsTrainer() bool {
 	if roles, ok := jcc.RealmAccess[rolesKey]; ok {
@@ -56,9 +61,4 @@ func (jcc JwtClaims) AppTraineeRole() (role string, isTrainer bool) {
 		return
 	}
 	return
-}
-
-type JwtClaims struct {
-	RealmAccess map[string][]string `json:"realm_access"`
-	jwt.RegisteredClaims
 }

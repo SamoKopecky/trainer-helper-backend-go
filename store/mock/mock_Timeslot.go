@@ -39,8 +39,8 @@ func (_m *MockTimeslot) EXPECT() *MockTimeslot_Expecter {
 }
 
 // Delete provides a mock function for the type MockTimeslot
-func (_mock *MockTimeslot) Delete(timeslotId int) error {
-	ret := _mock.Called(timeslotId)
+func (_mock *MockTimeslot) Delete(modelId int) error {
+	ret := _mock.Called(modelId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
@@ -48,7 +48,7 @@ func (_mock *MockTimeslot) Delete(timeslotId int) error {
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
-		r0 = returnFunc(timeslotId)
+		r0 = returnFunc(modelId)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -61,12 +61,12 @@ type MockTimeslot_Delete_Call struct {
 }
 
 // Delete is a helper method to define mock.On call
-//   - timeslotId
-func (_e *MockTimeslot_Expecter) Delete(timeslotId interface{}) *MockTimeslot_Delete_Call {
-	return &MockTimeslot_Delete_Call{Call: _e.mock.On("Delete", timeslotId)}
+//   - modelId
+func (_e *MockTimeslot_Expecter) Delete(modelId interface{}) *MockTimeslot_Delete_Call {
+	return &MockTimeslot_Delete_Call{Call: _e.mock.On("Delete", modelId)}
 }
 
-func (_c *MockTimeslot_Delete_Call) Run(run func(timeslotId int)) *MockTimeslot_Delete_Call {
+func (_c *MockTimeslot_Delete_Call) Run(run func(modelId int)) *MockTimeslot_Delete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(int))
 	})
@@ -78,7 +78,7 @@ func (_c *MockTimeslot_Delete_Call) Return(err error) *MockTimeslot_Delete_Call 
 	return _c
 }
 
-func (_c *MockTimeslot_Delete_Call) RunAndReturn(run func(timeslotId int) error) *MockTimeslot_Delete_Call {
+func (_c *MockTimeslot_Delete_Call) RunAndReturn(run func(modelId int) error) *MockTimeslot_Delete_Call {
 	_c.Call.Return(run)
 	return _c
 }

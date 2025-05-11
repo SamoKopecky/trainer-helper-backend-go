@@ -36,6 +36,7 @@ func (t *Timestamp) BeforeAppendModel(ctx context.Context, query bun.Query) erro
 	switch query.(type) {
 	case *bun.InsertQuery:
 		t.CreatedAt = time.Now().UTC()
+		t.UpdatedAt = time.Now().UTC()
 	case *bun.UpdateQuery:
 		t.UpdatedAt = time.Now().UTC()
 	}

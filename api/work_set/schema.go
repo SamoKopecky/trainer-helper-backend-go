@@ -12,7 +12,7 @@ type workSetPutRequest struct {
 	Rpe      *int    `json:"rpe"`
 }
 
-func (wspr workSetPutRequest) toModel() model.WorkSet {
+func (wspr workSetPutRequest) ToModel() model.WorkSet {
 	return model.WorkSet{
 		IdModel: model.IdModel{
 			Id: wspr.Id,
