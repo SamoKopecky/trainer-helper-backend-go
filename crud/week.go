@@ -40,7 +40,7 @@ func (w Week) GetPreviousBlockId(userId string) (time.Time, error) {
 	err := w.db.NewSelect().
 		Model(&week).
 		ColumnExpr("week.start_date").
-		Join("JOIN block ON week.block_id = block.id").
+		Join("JOIN block ON week.block_id = block.id and block.deleted_at IS NULL").
 		Where("week.user_id = ?", userId).
 		Order("block.label DESC", "week.label DESC").
 		Limit(1).
