@@ -15,22 +15,27 @@ import (
 func Get(c echo.Context) (err error) {
 	cc := c.(*api.DbContext)
 
+	isTrainer := cc.Claims.IsTrainer()
 	users, err := cc.UserService.GetUsers(cc.Claims)
 	if err != nil {
 		return err
 	}
-	models := make([]model.User, len(users))
+	userModels := make([]model.User, len(users))
 	var index int
 	for i, user := range users {
-		if user.Id == cc.Claims.Subject {
+		if user.Id == cc.Claims.Subject && isTrainer {
 			index = i
 			continue
 		}
-		models[i] = user.ToUserModel()
+		userModels[i] = user.ToUserModel()
 	}
 
-	// Delete trainer user
-	return cc.JSON(http.StatusOK, slices.Delete(models, index, index+1))
+	if isTrainer {
+		// Delete trainer user
+		userModels = slices.Delete(userModels, index, index+1)
+	}
+
+	return cc.JSON(http.StatusOK, userModels)
 }
 
 func Post(c echo.Context) (err error) {
