@@ -4,6 +4,7 @@ import (
 	"time"
 	"trainer-helper/model"
 	"trainer-helper/store"
+	"trainer-helper/utils"
 )
 
 const DaysInAWeek = 7
@@ -14,13 +15,23 @@ type Week struct {
 }
 
 func (w Week) CreateWeek(newWeek *model.Week) (err error) {
+	lastDate, err := w.WeekStore.GetLastWeekDate(newWeek.BlockId)
+	if err != nil {
+		return
+	}
+
+	if lastDate.IsZero() {
+		lastDate = time.Now()
+	}
+	newWeek.StartDate = utils.GetNextMonday(lastDate)
+
 	if err = w.WeekStore.Insert(newWeek); err != nil {
 		return
 	}
 
 	newWeek.WeekDays = make([]model.WeekDay, DaysInAWeek)
 	for i := range DaysInAWeek {
-		newDate := newWeek.StartDate.Add(time.Hour * 24 * time.Duration(i))
+		newDate := newWeek.StartDate.AddDate(0, 0, i)
 		newWeek.WeekDays[i] = *model.BuildWeekDay(newWeek.Id, newWeek.UserId, newDate, nil)
 	}
 

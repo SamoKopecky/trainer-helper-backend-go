@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS week (
     id integer NOT NULL DEFAULT nextval('week_id_seq'::regclass),
     user_id character varying NOT NULL,
     block_id integer NOT NULL,
-    start_date timestamp without time zone NOT NULL,
+    start_date date NOT NULL,
     label integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,

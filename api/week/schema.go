@@ -7,14 +7,17 @@ import (
 )
 
 type weekPostRequest struct {
-	BlockId   int       `json:"block_id"`
-	StartDate time.Time `json:"start_date"`
-	Label     int       `json:"label"`
-	UserId    string    `json:"user_id"`
+	BlockId int    `json:"block_id"`
+	Label   int    `json:"label"`
+	UserId  string `json:"user_id"`
 }
 
 func (wpr weekPostRequest) ToModel() model.Week {
-	return *model.BuildWeek(wpr.BlockId, wpr.StartDate, wpr.Label, wpr.UserId)
+	return model.Week{
+		BlockId: wpr.BlockId,
+		Label:   wpr.Label,
+		UserId:  wpr.UserId,
+	}
 }
 
 type weekPutRequest struct {

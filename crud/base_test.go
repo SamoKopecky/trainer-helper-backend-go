@@ -76,7 +76,6 @@ func TestGet(t *testing.T) {
 		dbModels[i].Timestamp.SetZeroTimes()
 	}
 	assert.Equal(t, workSets, dbModels)
-
 }
 
 func TestUpdate(t *testing.T) {

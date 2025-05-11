@@ -5,6 +5,7 @@
 package store
 
 import (
+	"time"
 	"trainer-helper/model"
 
 	mock "github.com/stretchr/testify/mock"
@@ -133,6 +134,60 @@ func (_c *MockWeek_Get_Call) Return(weeks []model.Week, err error) *MockWeek_Get
 }
 
 func (_c *MockWeek_Get_Call) RunAndReturn(run func() ([]model.Week, error)) *MockWeek_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetLastWeekDate provides a mock function for the type MockWeek
+func (_mock *MockWeek) GetLastWeekDate(blockId int) (time.Time, error) {
+	ret := _mock.Called(blockId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLastWeekDate")
+	}
+
+	var r0 time.Time
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(int) (time.Time, error)); ok {
+		return returnFunc(blockId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(int) time.Time); ok {
+		r0 = returnFunc(blockId)
+	} else {
+		r0 = ret.Get(0).(time.Time)
+	}
+	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
+		r1 = returnFunc(blockId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWeek_GetLastWeekDate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLastWeekDate'
+type MockWeek_GetLastWeekDate_Call struct {
+	*mock.Call
+}
+
+// GetLastWeekDate is a helper method to define mock.On call
+//   - blockId
+func (_e *MockWeek_Expecter) GetLastWeekDate(blockId interface{}) *MockWeek_GetLastWeekDate_Call {
+	return &MockWeek_GetLastWeekDate_Call{Call: _e.mock.On("GetLastWeekDate", blockId)}
+}
+
+func (_c *MockWeek_GetLastWeekDate_Call) Run(run func(blockId int)) *MockWeek_GetLastWeekDate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWeek_GetLastWeekDate_Call) Return(time1 time.Time, err error) *MockWeek_GetLastWeekDate_Call {
+	_c.Call.Return(time1, err)
+	return _c
+}
+
+func (_c *MockWeek_GetLastWeekDate_Call) RunAndReturn(run func(blockId int) (time.Time, error)) *MockWeek_GetLastWeekDate_Call {
 	_c.Call.Return(run)
 	return _c
 }
