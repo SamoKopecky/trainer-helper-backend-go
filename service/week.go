@@ -21,9 +21,12 @@ func (w Week) CreateWeek(newWeek *model.Week) (err error) {
 	}
 
 	if lastDate.IsZero() {
-		lastDate = time.Now()
+		// If no week exists, just get next monday
+		newWeek.StartDate = utils.GetNextMonday(time.Now())
+	} else {
+		// If some week already exists, add 7 days to get next monday
+		newWeek.StartDate = utils.GetNextMonday(lastDate).AddDate(0, 0, 7)
 	}
-	newWeek.StartDate = utils.GetNextMonday(lastDate)
 
 	if err = w.WeekStore.Insert(newWeek); err != nil {
 		return
