@@ -18,7 +18,7 @@ func NewBlock(db bun.IDB) Block {
 func (b Block) GetBlockWeeksByUserId(userId string) (blocks []model.Block, err error) {
 	err = b.db.NewSelect().
 		Model(&blocks).
-		Relation("Weeks.WeekDays").
+		Relation("Weeks").
 		Where("block.user_id = ?", userId).
 		Scan(context.Background())
 

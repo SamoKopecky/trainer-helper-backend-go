@@ -10,8 +10,7 @@ import (
 const DaysInAWeek = 7
 
 type Week struct {
-	WeekStore    store.Week
-	WeekDayStore store.WeekDay
+	WeekStore store.Week
 }
 
 func (w Week) CreateWeek(newWeek *model.Week, isFirst bool) (err error) {
@@ -36,16 +35,7 @@ func (w Week) CreateWeek(newWeek *model.Week, isFirst bool) (err error) {
 	if err = w.WeekStore.Insert(newWeek); err != nil {
 		return
 	}
-
-	newWeek.WeekDays = make([]model.WeekDay, DaysInAWeek)
-	for i := range DaysInAWeek {
-		newDate := newWeek.StartDate.AddDate(0, 0, i)
-		newWeek.WeekDays[i] = *model.BuildWeekDay(newWeek.Id, newWeek.UserId, newDate, nil)
-	}
-
-	if err = w.WeekDayStore.InsertMany(&newWeek.WeekDays); err != nil {
-		return
-	}
+	newWeek.WeekDays = []model.WeekDay{}
 
 	return nil
 

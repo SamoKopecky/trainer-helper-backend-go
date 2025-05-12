@@ -1,19 +1,23 @@
 package weekday
 
 import (
-	"time"
 	"trainer-helper/model"
+	"trainer-helper/utils"
 )
 
+type weekDayGetRequest struct {
+	WeekId int `query:"week_id"`
+}
+
 type weekDayPostRequest struct {
-	WeekId  int       `json:"week_id"`
-	UserId  string    `json:"user_id"`
-	DayDate time.Time `json:"day_date"`
-	Name    *string   `json:"name"`
+	WeekId  int        `json:"week_id"`
+	UserId  string     `json:"user_id"`
+	DayDate utils.Date `json:"day_date"`
+	Name    *string    `json:"name"`
 }
 
 func (wdpr weekDayPostRequest) ToModel() model.WeekDay {
-	return *model.BuildWeekDay(wdpr.WeekId, wdpr.UserId, wdpr.DayDate, wdpr.Name)
+	return *model.BuildWeekDay(wdpr.WeekId, wdpr.UserId, wdpr.DayDate.Time, wdpr.Name)
 
 }
 

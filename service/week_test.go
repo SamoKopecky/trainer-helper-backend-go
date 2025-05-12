@@ -14,17 +14,13 @@ import (
 func TestCreateWeek_NotFirst(t *testing.T) {
 	// Arrange
 	w := store.NewMockWeek(t)
-	wd := store.NewMockWeekDay(t)
 	nextMonday := time.Date(2025, 05, 12, 0, 0, 0, 0, time.UTC)
-	service := Week{WeekStore: w, WeekDayStore: wd}
+	service := Week{WeekStore: w}
 	w.EXPECT().GetLastWeekDate(mock.Anything).Return(nextMonday, nil)
 	w.EXPECT().Insert(mock.Anything).RunAndReturn(func(model1 *model.Week) error {
 		model1.IdModel = model.IdModel{
 			Id: 10,
 		}
-		return nil
-	})
-	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
 		return nil
 	})
 
@@ -36,33 +32,21 @@ func TestCreateWeek_NotFirst(t *testing.T) {
 
 	// Assert
 	w.Mock.AssertNumberOfCalls(t, "Insert", 1)
-	wd.Mock.AssertNumberOfCalls(t, "InsertMany", 1)
 	// +7 to get to the next monday
 	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.StartDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.WeekDays[0].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 8), newWeek.WeekDays[1].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 9), newWeek.WeekDays[2].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 10), newWeek.WeekDays[3].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 11), newWeek.WeekDays[4].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 12), newWeek.WeekDays[5].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 13), newWeek.WeekDays[6].DayDate)
 }
 
 func TestCreateWeek__NoLastWeek__NotFirst(t *testing.T) {
 	// Arrange
 	w := store.NewMockWeek(t)
-	wd := store.NewMockWeekDay(t)
 	nextMonday := utils.GetNextMonday(time.Now())
-	service := Week{WeekStore: w, WeekDayStore: wd}
+	service := Week{WeekStore: w}
 	// Rerturn 0 time
 	w.EXPECT().GetLastWeekDate(mock.Anything).Return(time.Time{}, nil)
 	w.EXPECT().Insert(mock.Anything).RunAndReturn(func(model1 *model.Week) error {
 		model1.IdModel = model.IdModel{
 			Id: 10,
 		}
-		return nil
-	})
-	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
 		return nil
 	})
 
@@ -74,7 +58,6 @@ func TestCreateWeek__NoLastWeek__NotFirst(t *testing.T) {
 
 	// Assert
 	w.Mock.AssertNumberOfCalls(t, "Insert", 1)
-	wd.Mock.AssertNumberOfCalls(t, "InsertMany", 1)
 	// 7 to get to the next monday
 	assert.Equal(t, nextMonday.Day(), newWeek.StartDate.Day())
 }
@@ -82,17 +65,13 @@ func TestCreateWeek__NoLastWeek__NotFirst(t *testing.T) {
 func TestCreateWeek__First(t *testing.T) {
 	// Arrange
 	w := store.NewMockWeek(t)
-	wd := store.NewMockWeekDay(t)
 	nextMonday := time.Date(2025, 05, 12, 0, 0, 0, 0, time.UTC)
-	service := Week{WeekStore: w, WeekDayStore: wd}
+	service := Week{WeekStore: w}
 	w.EXPECT().GetPreviousBlockId(mock.Anything).Return(nextMonday, nil)
 	w.EXPECT().Insert(mock.Anything).RunAndReturn(func(model1 *model.Week) error {
 		model1.IdModel = model.IdModel{
 			Id: 10,
 		}
-		return nil
-	})
-	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
 		return nil
 	})
 
@@ -104,14 +83,6 @@ func TestCreateWeek__First(t *testing.T) {
 
 	// Assert
 	w.Mock.AssertNumberOfCalls(t, "Insert", 1)
-	wd.Mock.AssertNumberOfCalls(t, "InsertMany", 1)
 	// +7 to get to the next monday
 	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.StartDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.WeekDays[0].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 8), newWeek.WeekDays[1].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 9), newWeek.WeekDays[2].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 10), newWeek.WeekDays[3].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 11), newWeek.WeekDays[4].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 12), newWeek.WeekDays[5].DayDate)
-	assert.Equal(t, nextMonday.AddDate(0, 0, 13), newWeek.WeekDays[6].DayDate)
 }
