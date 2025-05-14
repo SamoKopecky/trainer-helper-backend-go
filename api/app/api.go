@@ -110,7 +110,6 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 			crudExerciseType := crud.NewExerciseType(db)
 			crudBlock := crud.NewBlock(db)
 			crudWeek := crud.NewWeek(db)
-			crudWeekDay := crud.NewWeekDay(db)
 			iam := fetcher.IAM{
 				AppConfig:  cfg,
 				AuthConfig: fetcher.CreateAuthConfig(cfg)}
@@ -122,13 +121,13 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 				ExerciseTypeCrud:    crudExerciseType,
 				BlockCrud:           crudBlock,
 				WeekCrud:            crudWeek,
-				WeekDayCrud:         crudWeekDay,
+				WeekDayCrud:         crud.NewWeekDay(db),
 				IAMFetcher:          iam,
 				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
 				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
 				BlockService:        service.Block{Store: crudBlock},
-				WeekService:         service.Week{WeekStore: crudWeek, WeekDayStore: crudWeekDay},
+				WeekService:         service.Week{WeekStore: crudWeek},
 			}
 
 			return next(cc)
@@ -208,6 +207,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	weeks.POST("/undelete/:id", week.PostUndelete, trainerOnlyMiddleware)
 
 	week_days := jg.Group("/week-days")
+	week_days.GET("", weekday.Get)
 	week_days.POST("", weekday.Post, trainerOnlyMiddleware)
 	week_days.PUT("", weekday.Put, trainerOnlyMiddleware)
 	week_days.DELETE("/:id", weekday.Delete, trainerOnlyMiddleware)

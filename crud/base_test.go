@@ -15,7 +15,7 @@ import (
 
 func testSetupDb(t *testing.T) *bun.Tx {
 	config := config.GetConfig()
-	db := db.GetDbConn(config.GetDSN(), true, "file://../migrations")
+	db := db.GetDbConn(config.GetDSN(), false, "file://../migrations")
 	db.DownMigrations()
 
 	db.RunMigrations()

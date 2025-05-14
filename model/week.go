@@ -18,7 +18,7 @@ type Week struct {
 	Label     int       `json:"label"`
 
 	// Not used in DB model
-	WeekDays []WeekDay `bun:"rel:has-many,join:id=week_id" json:"week_days"`
+	WeekDays []WeekDay `bun:"rel:has-many,join:id=week_id" json:"-"`
 }
 
 func BuildWeek(blockId int, startDate time.Time, label int, userId string) *Week {

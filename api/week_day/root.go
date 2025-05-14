@@ -1,10 +1,32 @@
 package weekday
 
 import (
+	"net/http"
 	"trainer-helper/api"
+	"trainer-helper/model"
 
 	"github.com/labstack/echo/v4"
 )
+
+func Get(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	params, err := api.BindParams[weekDayGetRequest](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	weekDays, err := cc.WeekDayCrud.GetByWeekId(params.WeekId)
+	if err != nil {
+		return err
+	}
+
+	if weekDays == nil {
+		return cc.JSON(http.StatusOK, []model.Week{})
+	}
+
+	return cc.JSON(http.StatusOK, weekDays)
+}
 
 func Post(c echo.Context) error {
 	cc := c.(*api.DbContext)
