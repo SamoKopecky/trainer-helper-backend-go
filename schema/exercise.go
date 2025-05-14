@@ -2,7 +2,7 @@ package schema
 
 import "trainer-helper/model"
 
-type TimeslotExercises struct {
-	Timeslot  Timeslot          `json:"timeslot"`
+type WeekDayExercise struct {
+	WeekDay   WeekDay           `json:"week_day"`
 	Exercises []*model.Exercise `json:"exercises"`
 }

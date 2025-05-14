@@ -2,60 +2,26 @@ package exercise
 
 import (
 	"net/http"
-	"sort"
-	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schema"
 
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) error {
+func GetMany(c echo.Context) error {
 	cc := c.(*api.DbContext)
 
-	paramId, err := strconv.Atoi(cc.Param("id"))
+	params, err := api.BindParams[exerciseGetParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
-	params := exerciseGetParams{
-		Id: int(paramId),
-	}
 
-	exercises, err := cc.ExerciseCrud.GetExerciseWorkSets(params.Id)
-	if err != nil {
-		return err
-	}
-	if exercises == nil {
-		exercises = []*model.Exercise{}
-	}
-
-	for i := range exercises {
-		if len(exercises[i].WorkSets) == 0 {
-			exercises[i].WorkSets = []model.WorkSet{}
-		}
-	}
-
-	sort.Slice(exercises, func(i, j int) bool {
-		if exercises[i].GroupId == exercises[j].GroupId {
-			return exercises[i].Id < exercises[j].Id
-		}
-		return exercises[i].GroupId < exercises[j].GroupId
-	})
-	for _, exercise := range exercises {
-		exercise.SortWorkSets()
-	}
-
-	apiTimeslot, err := cc.TimeslotService.GetById(params.Id)
+	exercises, err := cc.ExerciseService.GetExerciseWorkSets(params.WeekDayIds)
 	if err != nil {
 		return err
 	}
 
-	return cc.JSON(http.StatusOK, schema.TimeslotExercises{
-		Timeslot:  apiTimeslot,
-		Exercises: exercises,
-	})
-
+	return cc.JSON(http.StatusOK, exercises)
 }
 
 func Put(c echo.Context) error {

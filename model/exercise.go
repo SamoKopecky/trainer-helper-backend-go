@@ -12,7 +12,7 @@ type Exercise struct {
 	Timestamp
 	DeletedTimestamp
 
-	TimeslotId     int     `json:"timeslot_id"`
+	WeekDayId      int     `json:"week_day_id"`
 	GroupId        int     `json:"group_id"`
 	Note           *string `json:"note"`
 	ExerciseTypeId *int    `json:"exercise_type_id"`
@@ -21,9 +21,9 @@ type Exercise struct {
 	WorkSets []WorkSet `bun:"rel:has-many,join:id=exercise_id" json:"work_sets"`
 }
 
-func BuildExercise(timeslotId, groupId int, note *string, exerciseTypeId *int) *Exercise {
+func BuildExercise(weekDayId, groupId int, note *string, exerciseTypeId *int) *Exercise {
 	return &Exercise{
-		TimeslotId:     timeslotId,
+		WeekDayId:      weekDayId,
 		GroupId:        groupId,
 		Note:           note,
 		ExerciseTypeId: exerciseTypeId,
@@ -32,13 +32,16 @@ func BuildExercise(timeslotId, groupId int, note *string, exerciseTypeId *int) *
 }
 
 func (e Exercise) SortWorkSets() {
+	if e.WorkSets == nil {
+		return
+	}
 	sort.Slice(e.WorkSets, func(i, j int) bool {
 		return e.WorkSets[i].Id < e.WorkSets[j].Id
 	})
 }
 
-func (e *Exercise) ToNew(timeslotId int) {
+func (e *Exercise) ToNew(weekDayId int) {
 	e.Id = EmptyId
 	e.Timestamp = buildTimestamp()
-	e.TimeslotId = timeslotId
+	e.WeekDayId = weekDayId
 }

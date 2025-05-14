@@ -32,15 +32,15 @@ func PostDuplicate(c echo.Context) error {
 		newExercises = []*model.Exercise{}
 	}
 
-	return cc.JSON(http.StatusOK, schema.TimeslotExercises{
+	return cc.JSON(http.StatusOK, schema.WeekDayExercise{
 		Exercises: newExercises,
-		Timeslot:  newTimeslot,
+		WeekDay:   newTimeslot,
 	})
 }
 
 // TODO: Make service
 func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
-	err = cc.ExerciseCrud.DeleteByTimeslot(param.TimeslotId)
+	err = cc.ExerciseCrud.DeleteByWeekDayId(param.TimeslotId)
 	if err != nil {
 		return
 	}

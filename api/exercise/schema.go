@@ -6,7 +6,7 @@ import (
 )
 
 type exerciseGetParams struct {
-	Id int
+	WeekDayIds []int `query:"week_day_ids"`
 }
 
 type exercisePutParams struct {

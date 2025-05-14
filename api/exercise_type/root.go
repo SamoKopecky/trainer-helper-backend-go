@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) error {
+func GetMany(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	var exerciseTypes []model.ExerciseType
 

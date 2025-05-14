@@ -15,23 +15,23 @@ func NewExercise(db bun.IDB) Exercise {
 	return Exercise{CRUDBase: CRUDBase[model.Exercise]{db: db}}
 }
 
-func (e Exercise) GetExerciseWorkSets(Id int) ([]*model.Exercise, error) {
+func (e Exercise) GetExerciseWorkSets(weekDayIds []int) ([]model.Exercise, error) {
 	ctx := context.Background()
-	var res []*model.Exercise
+	var res []model.Exercise
 
 	err := e.db.NewSelect().
 		Model(&res).
 		Relation("WorkSets").
-		Where("exercise.timeslot_id = ?", Id).
+		Where("exercise.week_day_id IN (?)", bun.In(weekDayIds)).
 		Scan(ctx)
 
 	return res, err
 }
 
-func (e Exercise) DeleteByTimeslot(timeslotId int) (err error) {
+func (e Exercise) DeleteByWeekDayId(weekDayId int) (err error) {
 	_, err = e.db.NewDelete().
 		Model((*model.Exercise)(nil)).
-		Where("timeslot_id = ?", timeslotId).
+		Where("week_day_id = ?", weekDayId).
 		Exec(context.Background())
 	return
 }
