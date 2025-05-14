@@ -164,6 +164,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.Use(claimContextMiddleware)
 
 	timeslots := jg.Group("/timeslots")
+	// FIXME:
 	// Get many + users + wd
 	// timeslots.GET("", timeslot.GetMany)
 	// Get one + user + wd + exexercises
@@ -175,7 +176,6 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	timeslots.POST("/undelete/:id", timeslot.PostUndelete, trainerOnlyMiddleware)
 
 	exercises := jg.Group("/exercises")
-	// Get many only ex, query params with work day ids
 	exercises.GET("", exercise.GetMany)
 	exercises.POST("", exercise.Post)
 	exercises.PUT("", exercise.Put)
