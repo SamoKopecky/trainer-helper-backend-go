@@ -1,7 +1,6 @@
 package service
 
 import (
-	"log"
 	"time"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
@@ -14,31 +13,12 @@ type Timeslot struct {
 	Fetcher fetcher.IAM
 }
 
-func (t Timeslot) GetById(timeslotId int) (timeslot schema.Timeslot, err error) {
-	crudTimeslot, err := t.Crud.GetById(timeslotId)
-	if err != nil {
-		return
-	}
-	timeslot = schema.Timeslot{Timeslot: crudTimeslot}
-	if crudTimeslot.TraineeId == nil {
-		return
-	}
-
-	user, err := t.Fetcher.GetUserById(*crudTimeslot.TraineeId)
-	if err != nil {
-		log.Fatal(err)
-	}
-	timeslot.UserName = user.FullName()
-	timeslot.UserNickname = user.Nickname()
-	return
-}
-
 func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.KeycloakUser, claims *schema.JwtClaims) ([]schema.Timeslot, error) {
 	var err error
-	var timeslots []model.Timeslot
+	var dbTimeslots []model.Timeslot
 
 	isTrainer := claims.IsTrainer()
-	timeslots, err = t.Crud.GetByTimeRangeAndUserId(start, end, claims.Subject, isTrainer)
+	dbTimeslots, err = t.Crud.GetByTimeRangeAndUserId(start, end, claims.Subject, isTrainer)
 	if err != nil {
 		return nil, err
 	}
@@ -48,22 +28,24 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 		iamUserMap[user.Id] = user
 	}
 
-	apiTimeslots := make([]schema.Timeslot, len(timeslots))
-	for i, timeslot := range timeslots {
-		apiTimeslot := schema.Timeslot{
-			Timeslot: timeslot,
+	timeslots := make([]schema.Timeslot, len(dbTimeslots))
+	for i, t := range dbTimeslots {
+		timeslot := schema.Timeslot{
+			Timeslot: t,
 		}
 
-		if apiTimeslot.TraineeId != nil {
-			if user, ok := iamUserMap[*timeslot.TraineeId]; ok {
-				apiTimeslot.UserName = user.FullName()
-				apiTimeslot.UserNickname = user.Nickname()
+		if timeslot.TraineeId != nil {
+			if user, ok := iamUserMap[*t.TraineeId]; ok {
+				userModel := user.ToUserModel()
+				timeslot.User = &userModel
 			}
+		} else {
+			timeslot.User = nil
 		}
 
-		apiTimeslots[i] = apiTimeslot
+		timeslots[i] = timeslot
 	}
 
-	return apiTimeslots, err
+	return timeslots, err
 
 }

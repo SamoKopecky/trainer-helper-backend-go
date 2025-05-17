@@ -36,7 +36,6 @@ func Post(c echo.Context) error {
 func Put(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	return api.PutModel[weekDayPutRequest](cc, cc.WeekDayCrud)
-
 }
 
 func Delete(c echo.Context) error {

@@ -166,7 +166,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	timeslots := jg.Group("/timeslots")
 	// FIXME:
 	// Get many + users + wd
-	// timeslots.GET("", timeslot.GetMany)
+	timeslots.GET("", timeslot.GetMany)
 	// Get one + user + wd + exexercises
 	// timeslots.GET("/:id", timeslot.Get)
 	timeslots.POST("", timeslot.Post, trainerOnlyMiddleware)
