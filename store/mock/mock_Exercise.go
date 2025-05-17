@@ -82,47 +82,47 @@ func (_c *MockExercise_Delete_Call) RunAndReturn(run func(modelId int) error) *M
 	return _c
 }
 
-// DeleteByTimeslot provides a mock function for the type MockExercise
-func (_mock *MockExercise) DeleteByTimeslot(timeslotId int) error {
-	ret := _mock.Called(timeslotId)
+// DeleteByWeekDayId provides a mock function for the type MockExercise
+func (_mock *MockExercise) DeleteByWeekDayId(weekDayId int) error {
+	ret := _mock.Called(weekDayId)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteByTimeslot")
+		panic("no return value specified for DeleteByWeekDayId")
 	}
 
 	var r0 error
 	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
-		r0 = returnFunc(timeslotId)
+		r0 = returnFunc(weekDayId)
 	} else {
 		r0 = ret.Error(0)
 	}
 	return r0
 }
 
-// MockExercise_DeleteByTimeslot_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByTimeslot'
-type MockExercise_DeleteByTimeslot_Call struct {
+// MockExercise_DeleteByWeekDayId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByWeekDayId'
+type MockExercise_DeleteByWeekDayId_Call struct {
 	*mock.Call
 }
 
-// DeleteByTimeslot is a helper method to define mock.On call
-//   - timeslotId
-func (_e *MockExercise_Expecter) DeleteByTimeslot(timeslotId interface{}) *MockExercise_DeleteByTimeslot_Call {
-	return &MockExercise_DeleteByTimeslot_Call{Call: _e.mock.On("DeleteByTimeslot", timeslotId)}
+// DeleteByWeekDayId is a helper method to define mock.On call
+//   - weekDayId
+func (_e *MockExercise_Expecter) DeleteByWeekDayId(weekDayId interface{}) *MockExercise_DeleteByWeekDayId_Call {
+	return &MockExercise_DeleteByWeekDayId_Call{Call: _e.mock.On("DeleteByWeekDayId", weekDayId)}
 }
 
-func (_c *MockExercise_DeleteByTimeslot_Call) Run(run func(timeslotId int)) *MockExercise_DeleteByTimeslot_Call {
+func (_c *MockExercise_DeleteByWeekDayId_Call) Run(run func(weekDayId int)) *MockExercise_DeleteByWeekDayId_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(int))
 	})
 	return _c
 }
 
-func (_c *MockExercise_DeleteByTimeslot_Call) Return(err error) *MockExercise_DeleteByTimeslot_Call {
+func (_c *MockExercise_DeleteByWeekDayId_Call) Return(err error) *MockExercise_DeleteByWeekDayId_Call {
 	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockExercise_DeleteByTimeslot_Call) RunAndReturn(run func(timeslotId int) error) *MockExercise_DeleteByTimeslot_Call {
+func (_c *MockExercise_DeleteByWeekDayId_Call) RunAndReturn(run func(weekDayId int) error) *MockExercise_DeleteByWeekDayId_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -183,27 +183,27 @@ func (_c *MockExercise_Get_Call) RunAndReturn(run func() ([]model.Exercise, erro
 }
 
 // GetExerciseWorkSets provides a mock function for the type MockExercise
-func (_mock *MockExercise) GetExerciseWorkSets(Id int) ([]*model.Exercise, error) {
-	ret := _mock.Called(Id)
+func (_mock *MockExercise) GetExerciseWorkSets(weekDayIds []int) ([]model.Exercise, error) {
+	ret := _mock.Called(weekDayIds)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetExerciseWorkSets")
 	}
 
-	var r0 []*model.Exercise
+	var r0 []model.Exercise
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(int) ([]*model.Exercise, error)); ok {
-		return returnFunc(Id)
+	if returnFunc, ok := ret.Get(0).(func([]int) ([]model.Exercise, error)); ok {
+		return returnFunc(weekDayIds)
 	}
-	if returnFunc, ok := ret.Get(0).(func(int) []*model.Exercise); ok {
-		r0 = returnFunc(Id)
+	if returnFunc, ok := ret.Get(0).(func([]int) []model.Exercise); ok {
+		r0 = returnFunc(weekDayIds)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.Exercise)
+			r0 = ret.Get(0).([]model.Exercise)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
-		r1 = returnFunc(Id)
+	if returnFunc, ok := ret.Get(1).(func([]int) error); ok {
+		r1 = returnFunc(weekDayIds)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -216,24 +216,24 @@ type MockExercise_GetExerciseWorkSets_Call struct {
 }
 
 // GetExerciseWorkSets is a helper method to define mock.On call
-//   - Id
-func (_e *MockExercise_Expecter) GetExerciseWorkSets(Id interface{}) *MockExercise_GetExerciseWorkSets_Call {
-	return &MockExercise_GetExerciseWorkSets_Call{Call: _e.mock.On("GetExerciseWorkSets", Id)}
+//   - weekDayIds
+func (_e *MockExercise_Expecter) GetExerciseWorkSets(weekDayIds interface{}) *MockExercise_GetExerciseWorkSets_Call {
+	return &MockExercise_GetExerciseWorkSets_Call{Call: _e.mock.On("GetExerciseWorkSets", weekDayIds)}
 }
 
-func (_c *MockExercise_GetExerciseWorkSets_Call) Run(run func(Id int)) *MockExercise_GetExerciseWorkSets_Call {
+func (_c *MockExercise_GetExerciseWorkSets_Call) Run(run func(weekDayIds []int)) *MockExercise_GetExerciseWorkSets_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int))
+		run(args[0].([]int))
 	})
 	return _c
 }
 
-func (_c *MockExercise_GetExerciseWorkSets_Call) Return(exercises []*model.Exercise, err error) *MockExercise_GetExerciseWorkSets_Call {
+func (_c *MockExercise_GetExerciseWorkSets_Call) Return(exercises []model.Exercise, err error) *MockExercise_GetExerciseWorkSets_Call {
 	_c.Call.Return(exercises, err)
 	return _c
 }
 
-func (_c *MockExercise_GetExerciseWorkSets_Call) RunAndReturn(run func(Id int) ([]*model.Exercise, error)) *MockExercise_GetExerciseWorkSets_Call {
+func (_c *MockExercise_GetExerciseWorkSets_Call) RunAndReturn(run func(weekDayIds []int) ([]model.Exercise, error)) *MockExercise_GetExerciseWorkSets_Call {
 	_c.Call.Return(run)
 	return _c
 }

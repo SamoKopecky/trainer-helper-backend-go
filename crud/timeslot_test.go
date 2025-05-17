@@ -24,7 +24,7 @@ func timeslotIds(trainerId, traineeId string) utils.FactoryOption[model.Timeslot
 }
 
 func timeslotFactory(options ...utils.FactoryOption[model.Timeslot]) *model.Timeslot {
-	timeslot := model.BuildTimeslot("name", time.Time{}, time.Time{}, utils.RandomUUID(), nil)
+	timeslot := model.BuildTimeslot(time.Time{}, time.Time{}, utils.RandomUUID(), nil)
 	for _, option := range options {
 		option(timeslot)
 	}

@@ -17,7 +17,7 @@ type weekDayPostRequest struct {
 }
 
 func (wdpr weekDayPostRequest) ToModel() model.WeekDay {
-	return *model.BuildWeekDay(wdpr.WeekId, wdpr.UserId, wdpr.DayDate.Time, wdpr.Name)
+	return *model.BuildWeekDay(wdpr.WeekId, wdpr.UserId, wdpr.DayDate.Time, wdpr.Name, nil)
 
 }
 

@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) (err error) {
+func GetMany(c echo.Context) (err error) {
 	cc := c.(*api.DbContext)
 
 	isTrainer := cc.Claims.IsTrainer()

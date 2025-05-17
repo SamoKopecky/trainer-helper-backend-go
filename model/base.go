@@ -13,6 +13,10 @@ type DeletedTimestamp struct {
 	DeletedAt *time.Time `json:"-" bun:",soft_delete,nullzero"`
 }
 
+type DeletedTimestampJson struct {
+	DeletedAt *time.Time `json:"deleted_at" bun:",soft_delete,nullzero"`
+}
+
 type Timestamp struct {
 	bun.BaseModel
 

@@ -21,7 +21,8 @@ func TestGetByWeekDayId(t *testing.T) {
 	}
 
 	// Act
-	weekDays, err := crud.GetByWeekId(2)
+	// TODO: Test with deleted
+	weekDays, err := crud.GetByWeekIdWithDeleted(2)
 	if err != nil {
 		t.Fatalf("Failed to get week days: %v", err)
 	}

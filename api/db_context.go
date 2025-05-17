@@ -29,6 +29,7 @@ type DbContext struct {
 	ExerciseTypeService service.ExerciseType
 	BlockService        service.Block
 	WeekService         service.Week
+	ExerciseService     service.Exercise
 
 	Claims *schema.JwtClaims
 }

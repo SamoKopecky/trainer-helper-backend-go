@@ -6,22 +6,18 @@ import (
 	"slices"
 	"trainer-helper/api"
 	"trainer-helper/model"
-	"trainer-helper/schema"
 
 	"github.com/labstack/echo/v4"
 )
 
+// FIXME: Rework this
 func PostDuplicate(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	params, err := api.BindParams[exerciseDuplicatePostParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
-	// TODO: Service
-	newTimeslot, err := updateTimeslot(&params, cc)
-	if err != nil {
-		return err
-	}
+
 	// TODO: Service
 	newExercises, err := updateExericses(&params, cc)
 	if err != nil {
@@ -32,20 +28,17 @@ func PostDuplicate(c echo.Context) error {
 		newExercises = []*model.Exercise{}
 	}
 
-	return cc.JSON(http.StatusOK, schema.TimeslotExercises{
-		Exercises: newExercises,
-		Timeslot:  newTimeslot,
-	})
+	return cc.JSON(http.StatusOK, newExercises)
 }
 
 // TODO: Make service
 func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (newExercises []*model.Exercise, err error) {
-	err = cc.ExerciseCrud.DeleteByTimeslot(param.TimeslotId)
+	err = cc.ExerciseCrud.DeleteByWeekDayId(param.TimeslotId)
 	if err != nil {
 		return
 	}
 
-	copyExercises, err := cc.ExerciseCrud.GetExerciseWorkSets(param.CopyTimeslotId)
+	copyExercises, err := cc.ExerciseCrud.GetExerciseWorkSets([]int{param.CopyTimeslotId})
 	if err != nil {
 		return
 	}
@@ -57,7 +50,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		exercise.ToNew(param.TimeslotId)
 
 		// NOTE: Possible performance improvment, insert many
-		err = cc.ExerciseCrud.Insert(exercise)
+		err = cc.ExerciseCrud.Insert(&exercise)
 		if err != nil {
 			return
 		}
@@ -67,7 +60,7 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		}
 		// Clean up
 		exercise.WorkSets = nil
-		newExercisesMap[exercise.Id] = exercise
+		newExercisesMap[exercise.Id] = &exercise
 	}
 
 	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
@@ -81,27 +74,5 @@ func updateExericses(param *exerciseDuplicatePostParams, cc *api.DbContext) (new
 		}
 	}
 	newExercises = slices.Collect(maps.Values(newExercisesMap))
-	return
-}
-
-func updateTimeslot(params *exerciseDuplicatePostParams, cc *api.DbContext) (newApiTimeslot schema.Timeslot, err error) {
-	copyTimeslot, err := cc.TimeslotCrud.GetById(params.CopyTimeslotId)
-	if err != nil {
-		return
-	}
-
-	newTimeslot := model.Timeslot{
-		IdModel: model.IdModel{
-			Id: params.TimeslotId,
-		},
-		Name: copyTimeslot.Name,
-	}
-
-	err = cc.TimeslotCrud.Update(&newTimeslot)
-	if err != nil {
-		return
-	}
-
-	newApiTimeslot, err = cc.TimeslotService.GetById(params.TimeslotId)
 	return
 }

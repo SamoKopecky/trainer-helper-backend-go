@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) error {
+func GetMany(c echo.Context) error {
 	cc := c.(*api.DbContext)
 
 	params, err := api.BindParams[weekDayGetRequest](cc)
@@ -16,7 +16,7 @@ func Get(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	weekDays, err := cc.WeekDayCrud.GetByWeekId(params.WeekId)
+	weekDays, err := cc.WeekDayCrud.GetByWeekIdWithDeleted(params.WeekId)
 	if err != nil {
 		return err
 	}
@@ -36,10 +36,9 @@ func Post(c echo.Context) error {
 func Put(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	return api.PutModel[weekDayPutRequest](cc, cc.WeekDayCrud)
-
 }
 
 func Delete(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	return api.DeleteModel(cc, cc.WeekCrud)
+	return api.DeleteModel(cc, cc.WeekDayCrud)
 }

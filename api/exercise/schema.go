@@ -6,7 +6,7 @@ import (
 )
 
 type exerciseGetParams struct {
-	Id int
+	WeekDayIds []int `query:"week_day_ids"`
 }
 
 type exercisePutParams struct {
@@ -31,8 +31,8 @@ type exerciseCountDeleteParams struct {
 }
 
 type exercisePostParams struct {
-	TimeslotId int `json:"timeslot_id"`
-	GroupId    int `json:"group_id"`
+	WeekDayId int `json:"week_day_id"`
+	GroupId   int `json:"group_id"`
 }
 
 func (epp exercisePutParams) ToModel() model.Exercise {
