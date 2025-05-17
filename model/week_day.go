@@ -10,6 +10,7 @@ type WeekDay struct {
 	bun.BaseModel `bun:"table:week_day"`
 	IdModel
 	Timestamp
+	DeletedTimestampJson
 
 	WeekId     int       `json:"week_id"`
 	UserId     string    `json:"user_id"`

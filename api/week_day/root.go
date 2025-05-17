@@ -16,7 +16,7 @@ func GetMany(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	weekDays, err := cc.WeekDayCrud.GetByWeekId(params.WeekId)
+	weekDays, err := cc.WeekDayCrud.GetByWeekIdWithDeleted(params.WeekId)
 	if err != nil {
 		return err
 	}
@@ -41,5 +41,5 @@ func Put(c echo.Context) error {
 
 func Delete(c echo.Context) error {
 	cc := c.(*api.DbContext)
-	return api.DeleteModel(cc, cc.WeekCrud)
+	return api.DeleteModel(cc, cc.WeekDayCrud)
 }

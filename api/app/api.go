@@ -218,6 +218,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	week_days.POST("", weekday.Post, trainerOnlyMiddleware)
 	week_days.PUT("", weekday.Put, trainerOnlyMiddleware)
 	week_days.DELETE("/:id", weekday.Delete, trainerOnlyMiddleware)
+	week_days.POST("/undelete/:id", weekday.PostUndelete, trainerOnlyMiddleware)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }
