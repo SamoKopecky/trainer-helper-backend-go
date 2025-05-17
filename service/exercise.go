@@ -10,21 +10,20 @@ type Exercise struct {
 	Store store.Exercise
 }
 
-func (e Exercise) GetExerciseWorkSets(weekDayIds []int) (exercisesMap map[int][]model.Exercise, err error) {
-	exercisesMap = make(map[int][]model.Exercise)
-	rawExercises, err := e.Store.GetExerciseWorkSets(weekDayIds)
-	if err != nil || rawExercises == nil {
-		return
+// Get maped exercises by week day id
+func (e Exercise) GetExerciseWorkSets(weekDayIds []int) (exercises []model.Exercise, err error) {
+	exercises, err = e.Store.GetExerciseWorkSets(weekDayIds)
+	if err != nil || exercises == nil {
+		return []model.Exercise{}, nil
 	}
 
-	e.sortExercises(rawExercises)
+	e.sortExercises(exercises)
 
-	for i, exercise := range rawExercises {
-		if len(rawExercises[i].WorkSets) == 0 {
-			rawExercises[i].WorkSets = []model.WorkSet{}
+	for i := range exercises {
+		if len(exercises[i].WorkSets) == 0 {
+			exercises[i].WorkSets = []model.WorkSet{}
 		}
 
-		exercisesMap[exercise.WeekDayId] = append(exercisesMap[exercise.WeekDayId], exercise)
 	}
 
 	return

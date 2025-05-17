@@ -42,7 +42,7 @@ func Post(c echo.Context) error {
 	}
 
 	// Create exercise
-	newExercise := model.BuildExercise(params.TimeslotId, params.GroupId, nil, nil)
+	newExercise := model.BuildExercise(params.WeekDayId, params.GroupId, nil, nil)
 	err = cc.ExerciseCrud.Insert(newExercise)
 	if err != nil {
 		return err
