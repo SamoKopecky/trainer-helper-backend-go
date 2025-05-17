@@ -4,6 +4,6 @@ import "trainer-helper/model"
 
 type Timeslot struct {
 	model.Timeslot
-	User *model.User `json:"user"`
-	Name *string     `json:"name"`
+	User    *model.User    `json:"user"`
+	WeekDay *model.WeekDay `json:"week_day"`
 }

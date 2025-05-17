@@ -126,7 +126,7 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 				WeekCrud:            crudWeek,
 				WeekDayCrud:         crudWeekDay,
 				IAMFetcher:          iam,
-				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
+				TimeslotService:     service.Timeslot{TimeslotCrud: crudTimeslot, WeekDayCrud: crudWeekDay, Fetcher: iam},
 				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
 				BlockService:        service.Block{Store: crudBlock},
@@ -164,11 +164,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.Use(claimContextMiddleware)
 
 	timeslots := jg.Group("/timeslots")
-	// FIXME:
-	// Get many + users + wd
 	timeslots.GET("", timeslot.GetMany)
-	// Get one + user + wd + exexercises
-	// timeslots.GET("/:id", timeslot.Get)
 	timeslots.POST("", timeslot.Post, trainerOnlyMiddleware)
 	timeslots.DELETE("/:id", timeslot.Delete, trainerOnlyMiddleware)
 	timeslots.PUT("", timeslot.Put, trainerOnlyMiddleware)

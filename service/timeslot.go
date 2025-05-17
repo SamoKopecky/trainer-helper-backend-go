@@ -6,11 +6,35 @@ import (
 	"trainer-helper/model"
 	"trainer-helper/schema"
 	"trainer-helper/store"
+
+	mapset "github.com/deckarep/golang-set/v2"
 )
 
 type Timeslot struct {
-	Crud    store.Timeslot
-	Fetcher fetcher.IAM
+	TimeslotCrud store.Timeslot
+	WeekDayCrud  store.WeekDay
+	Fetcher      fetcher.IAM
+}
+
+func (t Timeslot) getWeekDayMap(timeslots []model.Timeslot) (map[int]model.WeekDay, error) {
+	weekDayMap := make(map[int]model.WeekDay)
+
+	timeslotIds := mapset.NewSet[int]()
+	for _, timeslot := range timeslots {
+		timeslotIds.Add(timeslot.Id)
+	}
+
+	weekDays, err := t.WeekDayCrud.GetByTimeslotIds([]int{1})
+	if err != nil {
+		return weekDayMap, err
+	}
+
+	for _, weekDay := range weekDays {
+		if weekDay.TimeslotId != nil {
+			weekDayMap[*weekDay.TimeslotId] = weekDay
+		}
+	}
+	return weekDayMap, nil
 }
 
 func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.KeycloakUser, claims *schema.JwtClaims) ([]schema.Timeslot, error) {
@@ -18,7 +42,7 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 	var dbTimeslots []model.Timeslot
 
 	isTrainer := claims.IsTrainer()
-	dbTimeslots, err = t.Crud.GetByTimeRangeAndUserId(start, end, claims.Subject, isTrainer)
+	dbTimeslots, err = t.TimeslotCrud.GetByTimeRangeAndUserId(start, end, claims.Subject, isTrainer)
 	if err != nil {
 		return nil, err
 	}
@@ -26,6 +50,10 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 	iamUserMap := make(map[string]fetcher.KeycloakUser)
 	for _, user := range users {
 		iamUserMap[user.Id] = user
+	}
+	weekDayMap, err := t.getWeekDayMap(dbTimeslots)
+	if err != nil {
+		return nil, err
 	}
 
 	timeslots := make([]schema.Timeslot, len(dbTimeslots))
@@ -41,6 +69,10 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 			}
 		} else {
 			timeslot.User = nil
+		}
+
+		if weekDay, ok := weekDayMap[timeslot.Id]; ok {
+			timeslot.WeekDay = &weekDay
 		}
 
 		timeslots[i] = timeslot

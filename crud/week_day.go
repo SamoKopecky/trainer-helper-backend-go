@@ -24,3 +24,12 @@ func (wd WeekDay) GetByWeekIdWithDeleted(weekId int) (weekDays []model.WeekDay, 
 
 	return
 }
+
+func (wd WeekDay) GetByTimeslotIds(timeslotIds []int) (weekDays []model.WeekDay, err error) {
+	err = wd.db.NewSelect().
+		Model(&weekDays).
+		Where("timeslot_id IN (?)", bun.In(timeslotIds)).
+		Scan(context.Background())
+
+	return
+}
