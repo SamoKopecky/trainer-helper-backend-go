@@ -204,6 +204,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	blocks.POST("/undelete/:id", block.PostUndelete, trainerOnlyMiddleware)
 
 	weeks := jg.Group("/weeks")
+	weeks.GET("", week.Get)
 	weeks.POST("", week.Post, trainerOnlyMiddleware)
 	weeks.PUT("", week.Put, trainerOnlyMiddleware)
 	weeks.DELETE("/:id", week.Delete, trainerOnlyMiddleware)

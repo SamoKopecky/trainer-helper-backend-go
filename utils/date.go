@@ -36,3 +36,12 @@ func (d *Date) UnmarshalJSON(b []byte) (err error) {
 	d.Time = date
 	return
 }
+
+func (d *Date) UnmarshalParam(param string) error {
+	date, err := time.Parse("2006-01-02", param)
+	if err != nil {
+		return fmt.Errorf("error parsing date from query param '%s': %w", param, err)
+	}
+	d.Time = date
+	return nil
+}

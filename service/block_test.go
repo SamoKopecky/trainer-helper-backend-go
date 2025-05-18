@@ -5,7 +5,6 @@ import (
 	"trainer-helper/model"
 	store "trainer-helper/store/mock"
 	"trainer-helper/testutil"
-	"trainer-helper/utils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,7 +28,6 @@ func TestBlockGetBlocks(t *testing.T) {
 
 	// Act
 	actual, err := service.GetBlocks("1")
-	utils.PrettyPrint(actual)
 
 	// Assert
 

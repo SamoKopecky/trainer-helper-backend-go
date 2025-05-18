@@ -1,11 +1,34 @@
 package week
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 	"trainer-helper/api"
+	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )
+
+func Get(c echo.Context) error {
+	cc := c.(*api.DbContext)
+	params, err := api.BindParams[WeekGetRequest](cc)
+	if err != nil {
+		utils.PrettyPrint(err)
+		return cc.BadRequest(err)
+	}
+
+	week, err := cc.WeekCrud.GetClosestToDate(params.StartDate.Time, params.UserId)
+	if errors.Is(err, sql.ErrNoRows) {
+		return cc.JSON(http.StatusOK, map[string]string{})
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return cc.JSON(http.StatusOK, week)
+}
 
 func Post(c echo.Context) error {
 	cc := c.(*api.DbContext)

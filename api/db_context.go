@@ -35,5 +35,7 @@ type DbContext struct {
 }
 
 func (c DbContext) BadRequest(err error) error {
-	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid query parameters", "reason": fmt.Sprint(err)})
+	errStr := fmt.Sprint(err)
+	// TODO: log error too
+	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid query parameters", "reason": errStr})
 }

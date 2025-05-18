@@ -138,6 +138,60 @@ func (_c *MockWeek_Get_Call) RunAndReturn(run func() ([]model.Week, error)) *Moc
 	return _c
 }
 
+// GetClosestToDate provides a mock function for the type MockWeek
+func (_mock *MockWeek) GetClosestToDate(startDate time.Time) (model.Week, error) {
+	ret := _mock.Called(startDate)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetClosestToDate")
+	}
+
+	var r0 model.Week
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(time.Time) (model.Week, error)); ok {
+		return returnFunc(startDate)
+	}
+	if returnFunc, ok := ret.Get(0).(func(time.Time) model.Week); ok {
+		r0 = returnFunc(startDate)
+	} else {
+		r0 = ret.Get(0).(model.Week)
+	}
+	if returnFunc, ok := ret.Get(1).(func(time.Time) error); ok {
+		r1 = returnFunc(startDate)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWeek_GetClosestToDate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetClosestToDate'
+type MockWeek_GetClosestToDate_Call struct {
+	*mock.Call
+}
+
+// GetClosestToDate is a helper method to define mock.On call
+//   - startDate
+func (_e *MockWeek_Expecter) GetClosestToDate(startDate interface{}) *MockWeek_GetClosestToDate_Call {
+	return &MockWeek_GetClosestToDate_Call{Call: _e.mock.On("GetClosestToDate", startDate)}
+}
+
+func (_c *MockWeek_GetClosestToDate_Call) Run(run func(startDate time.Time)) *MockWeek_GetClosestToDate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(time.Time))
+	})
+	return _c
+}
+
+func (_c *MockWeek_GetClosestToDate_Call) Return(week model.Week, err error) *MockWeek_GetClosestToDate_Call {
+	_c.Call.Return(week, err)
+	return _c
+}
+
+func (_c *MockWeek_GetClosestToDate_Call) RunAndReturn(run func(startDate time.Time) (model.Week, error)) *MockWeek_GetClosestToDate_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetLastWeekDate provides a mock function for the type MockWeek
 func (_mock *MockWeek) GetLastWeekDate(blockId int) (time.Time, error) {
 	ret := _mock.Called(blockId)

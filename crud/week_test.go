@@ -88,3 +88,61 @@ func TestGetPreviousBlockId(t *testing.T) {
 	// Assert
 	assert.Equal(t, time.Now().AddDate(0, 0, 3).Day(), startDate.UTC().Day())
 }
+
+func TestGetClosestToDate(t *testing.T) {
+	testCases := []struct {
+		name       string
+		dayOffset  int
+		expectedId int
+	}{
+		{
+			name:       "exact match",
+			dayOffset:  2,
+			expectedId: 1,
+		},
+		{
+			name:       "greater",
+			dayOffset:  4,
+			expectedId: 2,
+		},
+		{
+			name:       "smaller",
+			dayOffset:  0,
+			expectedId: 3,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			db := testSetupDb(t)
+			crud := NewWeek(db)
+			var weeks []model.Week
+
+			weeks = append(weeks,
+				*testutil.WeekFactory(testutil.WeekId(1),
+					testutil.WeekIds("1", 1),
+					testutil.WeekDate(time.Now().AddDate(0, 0, 2))))
+			weeks = append(weeks,
+				*testutil.WeekFactory(testutil.WeekId(2),
+					testutil.WeekIds("1", 1),
+					testutil.WeekDate(time.Now().AddDate(0, 0, 3))))
+			weeks = append(weeks,
+				*testutil.WeekFactory(testutil.WeekId(3),
+					testutil.WeekIds("1", 1),
+					testutil.WeekDate(time.Now().AddDate(0, 0, 1))))
+			if err := crud.InsertMany(&weeks); err != nil {
+				t.Fatalf("Failed to insert work sets: %v", err)
+			}
+
+			// Act
+			closestWeek, err := crud.GetClosestToDate(time.Now().AddDate(0, 0, tc.dayOffset), "1")
+			if err != nil {
+				t.Fatalf("Failed to get week date: %v", err)
+			}
+
+			// Assert
+			assert.Equal(t, tc.expectedId, closestWeek.Id)
+
+		})
+	}
+}
