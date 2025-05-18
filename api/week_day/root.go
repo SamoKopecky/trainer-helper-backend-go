@@ -1,6 +1,7 @@
 package weekday
 
 import (
+	"errors"
 	"net/http"
 	"trainer-helper/api"
 	"trainer-helper/model"
@@ -15,10 +16,20 @@ func GetMany(c echo.Context) error {
 	if err != nil {
 		return cc.BadRequest(err)
 	}
+	var weekDays []model.WeekDay
 
-	weekDays, err := cc.WeekDayCrud.GetByWeekIdWithDeleted(params.WeekId)
-	if err != nil {
-		return err
+	if params.WeekId != nil {
+		weekDays, err = cc.WeekDayCrud.GetByWeekIdWithDeleted(*params.WeekId)
+		if err != nil {
+			return err
+		}
+	} else if params.DayDate != nil && params.UserId != nil {
+		weekDays, err = cc.WeekDayCrud.GetByDate(*&params.DayDate.Time, *params.UserId)
+		if err != nil {
+			return err
+		}
+	} else {
+		return cc.BadRequest(errors.New("Provide either 'week_id' OR both 'day_date' AND 'user_id'"))
 	}
 
 	if weekDays == nil {

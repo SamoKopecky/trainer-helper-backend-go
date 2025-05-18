@@ -5,6 +5,7 @@
 package store
 
 import (
+	"time"
 	"trainer-helper/model"
 
 	mock "github.com/stretchr/testify/mock"
@@ -133,6 +134,63 @@ func (_c *MockWeekDay_Get_Call) Return(weekDays []model.WeekDay, err error) *Moc
 }
 
 func (_c *MockWeekDay_Get_Call) RunAndReturn(run func() ([]model.WeekDay, error)) *MockWeekDay_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetByDate provides a mock function for the type MockWeekDay
+func (_mock *MockWeekDay) GetByDate(dayDate time.Time, userId string) ([]model.WeekDay, error) {
+	ret := _mock.Called(dayDate, userId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByDate")
+	}
+
+	var r0 []model.WeekDay
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(time.Time, string) ([]model.WeekDay, error)); ok {
+		return returnFunc(dayDate, userId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(time.Time, string) []model.WeekDay); ok {
+		r0 = returnFunc(dayDate, userId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.WeekDay)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(time.Time, string) error); ok {
+		r1 = returnFunc(dayDate, userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWeekDay_GetByDate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByDate'
+type MockWeekDay_GetByDate_Call struct {
+	*mock.Call
+}
+
+// GetByDate is a helper method to define mock.On call
+//   - dayDate
+//   - userId
+func (_e *MockWeekDay_Expecter) GetByDate(dayDate interface{}, userId interface{}) *MockWeekDay_GetByDate_Call {
+	return &MockWeekDay_GetByDate_Call{Call: _e.mock.On("GetByDate", dayDate, userId)}
+}
+
+func (_c *MockWeekDay_GetByDate_Call) Run(run func(dayDate time.Time, userId string)) *MockWeekDay_GetByDate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(time.Time), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockWeekDay_GetByDate_Call) Return(weekDays []model.WeekDay, err error) *MockWeekDay_GetByDate_Call {
+	_c.Call.Return(weekDays, err)
+	return _c
+}
+
+func (_c *MockWeekDay_GetByDate_Call) RunAndReturn(run func(dayDate time.Time, userId string) ([]model.WeekDay, error)) *MockWeekDay_GetByDate_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -14,7 +14,7 @@ type WeekDay struct {
 
 	WeekId     int       `json:"week_id"`
 	UserId     string    `json:"user_id"`
-	DayDate    time.Time `json:"day_date"`
+	DayDate    time.Time `json:"day_date" bun:"day_date,type:date"`
 	Name       *string   `json:"name"`
 	TimeslotId *int      `json:"timeslot_id"`
 }

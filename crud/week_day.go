@@ -2,6 +2,7 @@ package crud
 
 import (
 	"context"
+	"time"
 	"trainer-helper/model"
 
 	"github.com/uptrace/bun"
@@ -32,4 +33,16 @@ func (wd WeekDay) GetByTimeslotIds(timeslotIds []int) (weekDays []model.WeekDay,
 		Scan(context.Background())
 
 	return
+}
+
+func (wd WeekDay) GetByDate(dayDate time.Time, userId string) (weekDays []model.WeekDay, err error) {
+	dateString := dayDate.Format("2006-01-02")
+
+	err = wd.db.NewSelect().
+		Model(&weekDays).
+		Where("day_date = ? AND user_id = ?", dateString, userId).
+		Scan(context.Background())
+
+	return
+
 }
