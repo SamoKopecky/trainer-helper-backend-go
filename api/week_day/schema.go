@@ -26,9 +26,10 @@ func (wdpr weekDayPostRequest) ToModel() model.WeekDay {
 }
 
 type weekDayPutRequest struct {
-	Id      int         `json:"id"`
-	Name    *string     `json:"name"`
-	DayDate *utils.Date `json:"day_date"`
+	Id         int         `json:"id"`
+	Name       *string     `json:"name"`
+	DayDate    *utils.Date `json:"day_date"`
+	TimeslotId *int        `json:"timeslot_id"`
 }
 
 func (wdpr weekDayPutRequest) ToModel() model.WeekDay {
@@ -36,7 +37,8 @@ func (wdpr weekDayPutRequest) ToModel() model.WeekDay {
 		IdModel: model.IdModel{
 			Id: wdpr.Id,
 		},
-		Name:    wdpr.Name,
-		DayDate: api.DerefDate(wdpr.DayDate),
+		Name:       wdpr.Name,
+		TimeslotId: wdpr.TimeslotId,
+		DayDate:    api.DerefDate(wdpr.DayDate),
 	}
 }

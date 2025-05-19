@@ -46,3 +46,13 @@ func (wd WeekDay) GetByDate(dayDate time.Time, userId string) (weekDays []model.
 	return
 
 }
+
+func (wd WeekDay) DeleteTimeslot(weekId int) error {
+	_, err := wd.db.NewUpdate().
+		Model((*model.WeekDay)(nil)).
+		Set("timeslot_id = NULL").
+		Where("id = ?", weekId).
+		Exec(context.Background())
+
+	return err
+}

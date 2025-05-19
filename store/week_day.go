@@ -10,4 +10,5 @@ type WeekDay interface {
 	GetByWeekIdWithDeleted(weekId int) (weekDays []model.WeekDay, err error)
 	GetByTimeslotIds(timeslotIds []int) (weekDays []model.WeekDay, err error)
 	GetByDate(dayDate time.Time, userId string) (weekDays []model.WeekDay, err error)
+	DeleteTimeslot(weekId int) error
 }

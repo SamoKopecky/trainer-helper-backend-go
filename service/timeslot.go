@@ -24,7 +24,7 @@ func (t Timeslot) getWeekDayMap(timeslots []model.Timeslot) (map[int]model.WeekD
 		timeslotIds.Add(timeslot.Id)
 	}
 
-	weekDays, err := t.WeekDayCrud.GetByTimeslotIds([]int{1})
+	weekDays, err := t.WeekDayCrud.GetByTimeslotIds(timeslotIds.ToSlice())
 	if err != nil {
 		return weekDayMap, err
 	}

@@ -83,6 +83,51 @@ func (_c *MockWeekDay_Delete_Call) RunAndReturn(run func(modelId int) error) *Mo
 	return _c
 }
 
+// DeleteTimeslot provides a mock function for the type MockWeekDay
+func (_mock *MockWeekDay) DeleteTimeslot(weekId int) error {
+	ret := _mock.Called(weekId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteTimeslot")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(weekId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWeekDay_DeleteTimeslot_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteTimeslot'
+type MockWeekDay_DeleteTimeslot_Call struct {
+	*mock.Call
+}
+
+// DeleteTimeslot is a helper method to define mock.On call
+//   - weekId
+func (_e *MockWeekDay_Expecter) DeleteTimeslot(weekId interface{}) *MockWeekDay_DeleteTimeslot_Call {
+	return &MockWeekDay_DeleteTimeslot_Call{Call: _e.mock.On("DeleteTimeslot", weekId)}
+}
+
+func (_c *MockWeekDay_DeleteTimeslot_Call) Run(run func(weekId int)) *MockWeekDay_DeleteTimeslot_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWeekDay_DeleteTimeslot_Call) Return(err error) *MockWeekDay_DeleteTimeslot_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWeekDay_DeleteTimeslot_Call) RunAndReturn(run func(weekId int) error) *MockWeekDay_DeleteTimeslot_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockWeekDay
 func (_mock *MockWeekDay) Get() ([]model.WeekDay, error) {
 	ret := _mock.Called()
