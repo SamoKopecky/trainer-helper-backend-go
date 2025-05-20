@@ -45,3 +45,10 @@ func (d *Date) UnmarshalParam(param string) error {
 	d.Time = date
 	return nil
 }
+
+func (d *Date) ToTimerange() (time.Time, time.Time) {
+	year, month, day := d.Time.Date()
+	start := time.Date(year, month, day, 0, 0, 0, 0, d.Time.Location())
+	end := start.Add(24*time.Hour - time.Second)
+	return start, end
+}

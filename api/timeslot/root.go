@@ -3,15 +3,16 @@ package timeslot
 import (
 	"net/http"
 	"trainer-helper/api"
+	"trainer-helper/model"
 	"trainer-helper/schema"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetMany(c echo.Context) error {
+func GetManyEnhanced(c echo.Context) error {
 	cc := c.(*api.DbContext)
 
-	params, err := api.BindParams[timeslotGetParams](cc)
+	params, err := api.BindParams[timeslotEnchancedGetParams](cc)
 	if err != nil {
 		return cc.BadRequest(err)
 	}
@@ -22,8 +23,8 @@ func GetMany(c echo.Context) error {
 	}
 
 	apiTimeslots, err := cc.TimeslotService.GetByRoleAndDate(
-		params.StartDate,
-		params.EndDate,
+		params.Start,
+		params.End,
 		users,
 		cc.Claims)
 	if err != nil {
@@ -35,6 +36,27 @@ func GetMany(c echo.Context) error {
 	}
 
 	return cc.JSON(http.StatusOK, apiTimeslots)
+}
+
+func GetMany(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	params, err := api.BindParams[timeslotGetParams](cc)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	timeslots, err := cc.TimeslotService.GetByStartAndUser(params.StartDate, params.EndDate, params.UserId)
+	if err != nil {
+		return err
+	}
+
+	if timeslots == nil {
+		timeslots = []model.Timeslot{}
+	}
+
+	return cc.JSON(http.StatusOK, timeslots)
+
 }
 
 func Post(c echo.Context) error {

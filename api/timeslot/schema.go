@@ -4,11 +4,18 @@ import (
 	"time"
 	"trainer-helper/api"
 	"trainer-helper/model"
+	"trainer-helper/utils"
 )
 
+type timeslotEnchancedGetParams struct {
+	Start time.Time `query:"start"`
+	End   time.Time `query:"end"`
+}
+
 type timeslotGetParams struct {
-	StartDate time.Time `query:"start_date"`
-	EndDate   time.Time `query:"end_date"`
+	StartDate utils.Date `query:"start_date"`
+	EndDate   utils.Date `query:"end_date"`
+	UserId    string     `query:"user_id"`
 }
 
 type timeslotPostParams struct {

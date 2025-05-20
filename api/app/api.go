@@ -170,6 +170,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	timeslots.PUT("", timeslot.Put, trainerOnlyMiddleware)
 	// TODO: Don't use action, use action field in request param
 	timeslots.POST("/undelete/:id", timeslot.PostUndelete, trainerOnlyMiddleware)
+	timeslots.GET("/detailed", timeslot.GetManyEnhanced)
 
 	exercises := jg.Group("/exercises")
 	exercises.GET("", exercise.GetMany)

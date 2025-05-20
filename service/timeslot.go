@@ -6,6 +6,7 @@ import (
 	"trainer-helper/model"
 	"trainer-helper/schema"
 	"trainer-helper/store"
+	"trainer-helper/utils"
 
 	mapset "github.com/deckarep/golang-set/v2"
 )
@@ -80,4 +81,12 @@ func (t Timeslot) GetByRoleAndDate(start, end time.Time, users []fetcher.Keycloa
 
 	return timeslots, err
 
+}
+
+func (t Timeslot) GetByStartAndUser(start, end utils.Date, userId string) (timeslots []model.Timeslot, err error) {
+	startDateTime, _ := start.ToTimerange()
+	_, endDateTime := end.ToTimerange()
+	timeslots, err = t.TimeslotCrud.GetByTimeRangeAndUserId(startDateTime, endDateTime, userId, false)
+
+	return
 }
