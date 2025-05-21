@@ -60,13 +60,12 @@ func TestDeleteMany(t *testing.T) {
 	assert.Equal(t, 3, len(workSets))
 
 	// Act
-	deleted, err := crud.DeleteMany(toDelete)
+	err := crud.DeleteMany(toDelete)
 	if err != nil {
 		t.Fatalf("Failed to delete work sets: %v", err)
 	}
 
 	// Asert
-	assert.Equal(t, 1, deleted)
 	dbModels, err := crud.Get()
 	if err != nil {
 		t.Fatalf("Failed to retrieve work sets: %v", err)

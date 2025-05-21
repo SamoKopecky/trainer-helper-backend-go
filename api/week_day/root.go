@@ -19,7 +19,7 @@ func GetMany(c echo.Context) error {
 	var weekDays []model.WeekDay
 
 	if params.WeekId != nil {
-		weekDays, err = cc.WeekDayCrud.GetByWeekIdWithDeleted(*params.WeekId)
+		weekDays, err = cc.WeekDayCrud.GetByWeekIdsWithDeleted([]int{*params.WeekId})
 		if err != nil {
 			return err
 		}

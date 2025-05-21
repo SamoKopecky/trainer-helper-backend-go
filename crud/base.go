@@ -49,6 +49,31 @@ func (c CRUDBase[T]) Delete(modelId int) error {
 	return err
 }
 
+func (c CRUDBase[T]) DeleteManyReal(modelIds []int) error {
+	ctx := context.Background()
+
+	// Actually does soft delete
+	_, err := c.db.NewDelete().
+		WhereAllWithDeleted().
+		Model((*T)(nil)).
+		Where("id IN (?)", bun.In(modelIds)).
+		Exec(ctx)
+
+	return err
+}
+
+func (c CRUDBase[T]) DeleteMany(modelIds []int) error {
+	ctx := context.Background()
+
+	// Actually does soft delete
+	_, err := c.db.NewDelete().
+		Model((*T)(nil)).
+		Where("id IN (?)", bun.In(modelIds)).
+		Exec(ctx)
+
+	return err
+}
+
 func (c CRUDBase[T]) InsertMany(models *[]T) error {
 	if len(*models) == 0 {
 		return nil

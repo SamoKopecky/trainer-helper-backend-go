@@ -141,7 +141,7 @@ func TestUndeleteSoftDelete(t *testing.T) {
 		worksets = append(worksets, *work_set)
 		deleteIds = append(deleteIds, work_set.Id)
 	}
-	_, err := crud.DeleteMany(deleteIds)
+	err := crud.DeleteMany(deleteIds)
 	if err != nil {
 		t.Fatalf("Failed to delete timeslot: %v", err)
 	}

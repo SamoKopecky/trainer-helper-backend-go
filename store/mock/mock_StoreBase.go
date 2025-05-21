@@ -80,6 +80,96 @@ func (_c *MockStoreBase_Delete_Call[T]) RunAndReturn(run func(modelId int) error
 	return _c
 }
 
+// DeleteMany provides a mock function for the type MockStoreBase
+func (_mock *MockStoreBase[T]) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockStoreBase_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
+type MockStoreBase_DeleteMany_Call[T any] struct {
+	*mock.Call
+}
+
+// DeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockStoreBase_Expecter[T]) DeleteMany(modelIds interface{}) *MockStoreBase_DeleteMany_Call[T] {
+	return &MockStoreBase_DeleteMany_Call[T]{Call: _e.mock.On("DeleteMany", modelIds)}
+}
+
+func (_c *MockStoreBase_DeleteMany_Call[T]) Run(run func(modelIds []int)) *MockStoreBase_DeleteMany_Call[T] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockStoreBase_DeleteMany_Call[T]) Return(err error) *MockStoreBase_DeleteMany_Call[T] {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockStoreBase_DeleteMany_Call[T]) RunAndReturn(run func(modelIds []int) error) *MockStoreBase_DeleteMany_Call[T] {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteManyReal provides a mock function for the type MockStoreBase
+func (_mock *MockStoreBase[T]) DeleteManyReal(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteManyReal")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockStoreBase_DeleteManyReal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteManyReal'
+type MockStoreBase_DeleteManyReal_Call[T any] struct {
+	*mock.Call
+}
+
+// DeleteManyReal is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockStoreBase_Expecter[T]) DeleteManyReal(modelIds interface{}) *MockStoreBase_DeleteManyReal_Call[T] {
+	return &MockStoreBase_DeleteManyReal_Call[T]{Call: _e.mock.On("DeleteManyReal", modelIds)}
+}
+
+func (_c *MockStoreBase_DeleteManyReal_Call[T]) Run(run func(modelIds []int)) *MockStoreBase_DeleteManyReal_Call[T] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockStoreBase_DeleteManyReal_Call[T]) Return(err error) *MockStoreBase_DeleteManyReal_Call[T] {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockStoreBase_DeleteManyReal_Call[T]) RunAndReturn(run func(modelIds []int) error) *MockStoreBase_DeleteManyReal_Call[T] {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockStoreBase
 func (_mock *MockStoreBase[T]) Get() ([]T, error) {
 	ret := _mock.Called()

@@ -82,6 +82,96 @@ func (_c *MockBlock_Delete_Call) RunAndReturn(run func(modelId int) error) *Mock
 	return _c
 }
 
+// DeleteMany provides a mock function for the type MockBlock
+func (_mock *MockBlock) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockBlock_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
+type MockBlock_DeleteMany_Call struct {
+	*mock.Call
+}
+
+// DeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockBlock_Expecter) DeleteMany(modelIds interface{}) *MockBlock_DeleteMany_Call {
+	return &MockBlock_DeleteMany_Call{Call: _e.mock.On("DeleteMany", modelIds)}
+}
+
+func (_c *MockBlock_DeleteMany_Call) Run(run func(modelIds []int)) *MockBlock_DeleteMany_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockBlock_DeleteMany_Call) Return(err error) *MockBlock_DeleteMany_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockBlock_DeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockBlock_DeleteMany_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteManyReal provides a mock function for the type MockBlock
+func (_mock *MockBlock) DeleteManyReal(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteManyReal")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockBlock_DeleteManyReal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteManyReal'
+type MockBlock_DeleteManyReal_Call struct {
+	*mock.Call
+}
+
+// DeleteManyReal is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockBlock_Expecter) DeleteManyReal(modelIds interface{}) *MockBlock_DeleteManyReal_Call {
+	return &MockBlock_DeleteManyReal_Call{Call: _e.mock.On("DeleteManyReal", modelIds)}
+}
+
+func (_c *MockBlock_DeleteManyReal_Call) Run(run func(modelIds []int)) *MockBlock_DeleteManyReal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockBlock_DeleteManyReal_Call) Return(err error) *MockBlock_DeleteManyReal_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockBlock_DeleteManyReal_Call) RunAndReturn(run func(modelIds []int) error) *MockBlock_DeleteManyReal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockBlock
 func (_mock *MockBlock) Get() ([]model.Block, error) {
 	ret := _mock.Called()

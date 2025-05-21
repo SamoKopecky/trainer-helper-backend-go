@@ -83,6 +83,96 @@ func (_c *MockWeek_Delete_Call) RunAndReturn(run func(modelId int) error) *MockW
 	return _c
 }
 
+// DeleteMany provides a mock function for the type MockWeek
+func (_mock *MockWeek) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWeek_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
+type MockWeek_DeleteMany_Call struct {
+	*mock.Call
+}
+
+// DeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockWeek_Expecter) DeleteMany(modelIds interface{}) *MockWeek_DeleteMany_Call {
+	return &MockWeek_DeleteMany_Call{Call: _e.mock.On("DeleteMany", modelIds)}
+}
+
+func (_c *MockWeek_DeleteMany_Call) Run(run func(modelIds []int)) *MockWeek_DeleteMany_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockWeek_DeleteMany_Call) Return(err error) *MockWeek_DeleteMany_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWeek_DeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockWeek_DeleteMany_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// DeleteManyReal provides a mock function for the type MockWeek
+func (_mock *MockWeek) DeleteManyReal(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteManyReal")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWeek_DeleteManyReal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteManyReal'
+type MockWeek_DeleteManyReal_Call struct {
+	*mock.Call
+}
+
+// DeleteManyReal is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockWeek_Expecter) DeleteManyReal(modelIds interface{}) *MockWeek_DeleteManyReal_Call {
+	return &MockWeek_DeleteManyReal_Call{Call: _e.mock.On("DeleteManyReal", modelIds)}
+}
+
+func (_c *MockWeek_DeleteManyReal_Call) Run(run func(modelIds []int)) *MockWeek_DeleteManyReal_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockWeek_DeleteManyReal_Call) Return(err error) *MockWeek_DeleteManyReal_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWeek_DeleteManyReal_Call) RunAndReturn(run func(modelIds []int) error) *MockWeek_DeleteManyReal_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockWeek
 func (_mock *MockWeek) Get() ([]model.Week, error) {
 	ret := _mock.Called()
