@@ -83,6 +83,51 @@ func (_c *MockWeekDay_Delete_Call) RunAndReturn(run func(modelId int) error) *Mo
 	return _c
 }
 
+// DeleteByWeekId provides a mock function for the type MockWeekDay
+func (_mock *MockWeekDay) DeleteByWeekId(weekId int) error {
+	ret := _mock.Called(weekId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteByWeekId")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int) error); ok {
+		r0 = returnFunc(weekId)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWeekDay_DeleteByWeekId_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteByWeekId'
+type MockWeekDay_DeleteByWeekId_Call struct {
+	*mock.Call
+}
+
+// DeleteByWeekId is a helper method to define mock.On call
+//   - weekId
+func (_e *MockWeekDay_Expecter) DeleteByWeekId(weekId interface{}) *MockWeekDay_DeleteByWeekId_Call {
+	return &MockWeekDay_DeleteByWeekId_Call{Call: _e.mock.On("DeleteByWeekId", weekId)}
+}
+
+func (_c *MockWeekDay_DeleteByWeekId_Call) Run(run func(weekId int)) *MockWeekDay_DeleteByWeekId_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWeekDay_DeleteByWeekId_Call) Return(err error) *MockWeekDay_DeleteByWeekId_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWeekDay_DeleteByWeekId_Call) RunAndReturn(run func(weekId int) error) *MockWeekDay_DeleteByWeekId_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DeleteMany provides a mock function for the type MockWeekDay
 func (_mock *MockWeekDay) DeleteMany(modelIds []int) error {
 	ret := _mock.Called(modelIds)
@@ -124,51 +169,6 @@ func (_c *MockWeekDay_DeleteMany_Call) Return(err error) *MockWeekDay_DeleteMany
 }
 
 func (_c *MockWeekDay_DeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockWeekDay_DeleteMany_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// DeleteManyReal provides a mock function for the type MockWeekDay
-func (_mock *MockWeekDay) DeleteManyReal(modelIds []int) error {
-	ret := _mock.Called(modelIds)
-
-	if len(ret) == 0 {
-		panic("no return value specified for DeleteManyReal")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
-		r0 = returnFunc(modelIds)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// MockWeekDay_DeleteManyReal_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteManyReal'
-type MockWeekDay_DeleteManyReal_Call struct {
-	*mock.Call
-}
-
-// DeleteManyReal is a helper method to define mock.On call
-//   - modelIds
-func (_e *MockWeekDay_Expecter) DeleteManyReal(modelIds interface{}) *MockWeekDay_DeleteManyReal_Call {
-	return &MockWeekDay_DeleteManyReal_Call{Call: _e.mock.On("DeleteManyReal", modelIds)}
-}
-
-func (_c *MockWeekDay_DeleteManyReal_Call) Run(run func(modelIds []int)) *MockWeekDay_DeleteManyReal_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].([]int))
-	})
-	return _c
-}
-
-func (_c *MockWeekDay_DeleteManyReal_Call) Return(err error) *MockWeekDay_DeleteManyReal_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *MockWeekDay_DeleteManyReal_Call) RunAndReturn(run func(modelIds []int) error) *MockWeekDay_DeleteManyReal_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -330,6 +330,60 @@ func (_c *MockWeekDay_GetByDate_Call) RunAndReturn(run func(dayDate time.Time, u
 	return _c
 }
 
+// GetById provides a mock function for the type MockWeekDay
+func (_mock *MockWeekDay) GetById(modelId int) (model.WeekDay, error) {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetById")
+	}
+
+	var r0 model.WeekDay
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(int) (model.WeekDay, error)); ok {
+		return returnFunc(modelId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(int) model.WeekDay); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Get(0).(model.WeekDay)
+	}
+	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
+		r1 = returnFunc(modelId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWeekDay_GetById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetById'
+type MockWeekDay_GetById_Call struct {
+	*mock.Call
+}
+
+// GetById is a helper method to define mock.On call
+//   - modelId
+func (_e *MockWeekDay_Expecter) GetById(modelId interface{}) *MockWeekDay_GetById_Call {
+	return &MockWeekDay_GetById_Call{Call: _e.mock.On("GetById", modelId)}
+}
+
+func (_c *MockWeekDay_GetById_Call) Run(run func(modelId int)) *MockWeekDay_GetById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWeekDay_GetById_Call) Return(model1 model.WeekDay, err error) *MockWeekDay_GetById_Call {
+	_c.Call.Return(model1, err)
+	return _c
+}
+
+func (_c *MockWeekDay_GetById_Call) RunAndReturn(run func(modelId int) (model.WeekDay, error)) *MockWeekDay_GetById_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByTimeslotIds provides a mock function for the type MockWeekDay
 func (_mock *MockWeekDay) GetByTimeslotIds(timeslotIds []int) ([]model.WeekDay, error) {
 	ret := _mock.Called(timeslotIds)
@@ -386,58 +440,58 @@ func (_c *MockWeekDay_GetByTimeslotIds_Call) RunAndReturn(run func(timeslotIds [
 	return _c
 }
 
-// GetByWeekIdsWithDeleted provides a mock function for the type MockWeekDay
-func (_mock *MockWeekDay) GetByWeekIdsWithDeleted(weekIds []int) ([]model.WeekDay, error) {
-	ret := _mock.Called(weekIds)
+// GetByWeekIdWithDeleted provides a mock function for the type MockWeekDay
+func (_mock *MockWeekDay) GetByWeekIdWithDeleted(weekId int) ([]model.WeekDay, error) {
+	ret := _mock.Called(weekId)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetByWeekIdsWithDeleted")
+		panic("no return value specified for GetByWeekIdWithDeleted")
 	}
 
 	var r0 []model.WeekDay
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func([]int) ([]model.WeekDay, error)); ok {
-		return returnFunc(weekIds)
+	if returnFunc, ok := ret.Get(0).(func(int) ([]model.WeekDay, error)); ok {
+		return returnFunc(weekId)
 	}
-	if returnFunc, ok := ret.Get(0).(func([]int) []model.WeekDay); ok {
-		r0 = returnFunc(weekIds)
+	if returnFunc, ok := ret.Get(0).(func(int) []model.WeekDay); ok {
+		r0 = returnFunc(weekId)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.WeekDay)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func([]int) error); ok {
-		r1 = returnFunc(weekIds)
+	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
+		r1 = returnFunc(weekId)
 	} else {
 		r1 = ret.Error(1)
 	}
 	return r0, r1
 }
 
-// MockWeekDay_GetByWeekIdsWithDeleted_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByWeekIdsWithDeleted'
-type MockWeekDay_GetByWeekIdsWithDeleted_Call struct {
+// MockWeekDay_GetByWeekIdWithDeleted_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByWeekIdWithDeleted'
+type MockWeekDay_GetByWeekIdWithDeleted_Call struct {
 	*mock.Call
 }
 
-// GetByWeekIdsWithDeleted is a helper method to define mock.On call
-//   - weekIds
-func (_e *MockWeekDay_Expecter) GetByWeekIdsWithDeleted(weekIds interface{}) *MockWeekDay_GetByWeekIdsWithDeleted_Call {
-	return &MockWeekDay_GetByWeekIdsWithDeleted_Call{Call: _e.mock.On("GetByWeekIdsWithDeleted", weekIds)}
+// GetByWeekIdWithDeleted is a helper method to define mock.On call
+//   - weekId
+func (_e *MockWeekDay_Expecter) GetByWeekIdWithDeleted(weekId interface{}) *MockWeekDay_GetByWeekIdWithDeleted_Call {
+	return &MockWeekDay_GetByWeekIdWithDeleted_Call{Call: _e.mock.On("GetByWeekIdWithDeleted", weekId)}
 }
 
-func (_c *MockWeekDay_GetByWeekIdsWithDeleted_Call) Run(run func(weekIds []int)) *MockWeekDay_GetByWeekIdsWithDeleted_Call {
+func (_c *MockWeekDay_GetByWeekIdWithDeleted_Call) Run(run func(weekId int)) *MockWeekDay_GetByWeekIdWithDeleted_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].([]int))
+		run(args[0].(int))
 	})
 	return _c
 }
 
-func (_c *MockWeekDay_GetByWeekIdsWithDeleted_Call) Return(weekDays []model.WeekDay, err error) *MockWeekDay_GetByWeekIdsWithDeleted_Call {
+func (_c *MockWeekDay_GetByWeekIdWithDeleted_Call) Return(weekDays []model.WeekDay, err error) *MockWeekDay_GetByWeekIdWithDeleted_Call {
 	_c.Call.Return(weekDays, err)
 	return _c
 }
 
-func (_c *MockWeekDay_GetByWeekIdsWithDeleted_Call) RunAndReturn(run func(weekIds []int) ([]model.WeekDay, error)) *MockWeekDay_GetByWeekIdsWithDeleted_Call {
+func (_c *MockWeekDay_GetByWeekIdWithDeleted_Call) RunAndReturn(run func(weekId int) ([]model.WeekDay, error)) *MockWeekDay_GetByWeekIdWithDeleted_Call {
 	_c.Call.Return(run)
 	return _c
 }

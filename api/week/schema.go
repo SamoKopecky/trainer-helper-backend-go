@@ -6,6 +6,11 @@ import (
 	"trainer-helper/utils"
 )
 
+type WeekDuplicatePostRequest struct {
+	TemplateWeekId int `json:"template_week_id"`
+	NewWeekId      int `json:"new_week_id"`
+}
+
 type WeekGetRequest struct {
 	UserId    string     `query:"user_id"`
 	StartDate utils.Date `query:"start_date"`

@@ -10,7 +10,10 @@ import (
 const DaysInAWeek = 7
 
 type Week struct {
-	WeekStore store.Week
+	WeekStore     store.Week
+	WeekDayStore  store.WeekDay
+	ExerciseStore store.Exercise
+	WorkSetStore  store.WorkSet
 }
 
 func (w Week) CreateWeek(newWeek *model.Week, isFirst bool) (err error) {
@@ -39,4 +42,84 @@ func (w Week) CreateWeek(newWeek *model.Week, isFirst bool) (err error) {
 
 	return nil
 
+}
+
+func (w Week) DuplicateWeekDays(templateWeekId, newWeekId int) error {
+	weekDays, templateWeekDays, err := w.duplicateWeekDays(templateWeekId, newWeekId)
+	if err != nil {
+		return err
+	}
+	templateWeekDayIds := make([]int, len(weekDays))
+	for i, weekDay := range templateWeekDays {
+		templateWeekDayIds[i] = weekDay.Id
+	}
+
+	templateExercises, err := w.ExerciseStore.GetExerciseWorkSets(templateWeekDayIds)
+	templateExercisesMap := make(map[int][]model.Exercise)
+	for _, e := range templateExercises {
+		templateExercisesMap[e.WeekDayId] = append(templateExercisesMap[e.WeekDayId], e)
+	}
+
+	var workSets []model.WorkSet
+	for i, weekDay := range weekDays {
+		wdExercises := templateExercisesMap[templateWeekDays[i].Id]
+		for _, exercise := range wdExercises {
+			exercise.Id = 0
+			exercise.SetZeroTimes()
+			exercise.WeekDayId = weekDay.Id
+			err := w.ExerciseStore.Insert(&exercise)
+			if err != nil {
+				return err
+			}
+			for _, workSet := range exercise.WorkSets {
+				workSet.Id = 0
+				workSet.SetZeroTimes()
+				workSet.ExerciseId = exercise.Id
+				workSets = append(workSets, workSet)
+			}
+		}
+	}
+
+	err = w.WorkSetStore.InsertMany(&workSets)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (w Week) duplicateWeekDays(templateWeekId, newWeekId int) (newWeekDays []model.WeekDay, templateWeekDays []model.WeekDay, err error) {
+	err = w.WeekDayStore.DeleteByWeekId(newWeekId)
+	if err != nil {
+		// raise error and stop process
+		return
+	}
+
+	newWeek, err := w.WeekStore.GetById(newWeekId)
+	if err != nil {
+		return
+	}
+
+	templateWeekDays, err = w.WeekDayStore.GetByWeekIdWithDeleted(templateWeekId)
+	if err != nil {
+		return
+	}
+
+	newWeekDays = make([]model.WeekDay, len(templateWeekDays))
+	for i, weekDay := range templateWeekDays {
+		weekDay.Id = 0
+		weekDay.SetZeroTimes()
+		weekDay.DeletedAt = nil
+		weekDay.WeekId = newWeekId
+		weekDay.DayDate = newWeek.StartDate.AddDate(0, 0, i)
+		newWeekDays[i] = weekDay
+	}
+
+	err = w.WeekDayStore.InsertMany(&newWeekDays)
+	if err != nil {
+		return
+	}
+
+	return
 }

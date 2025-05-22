@@ -7,8 +7,9 @@ import (
 
 type WeekDay interface {
 	StoreBase[model.WeekDay]
-	GetByWeekIdsWithDeleted(weekIds []int) (weekDays []model.WeekDay, err error)
+	GetByWeekIdWithDeleted(weekId int) (weekDays []model.WeekDay, err error)
 	GetByTimeslotIds(timeslotIds []int) (weekDays []model.WeekDay, err error)
 	GetByDate(dayDate time.Time, userId string) (weekDays []model.WeekDay, err error)
 	DeleteTimeslot(weekId int) error
+	DeleteByWeekId(weekId int) error
 }

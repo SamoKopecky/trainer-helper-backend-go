@@ -5,7 +5,6 @@ import (
 	"errors"
 	"net/http"
 	"trainer-helper/api"
-	"trainer-helper/utils"
 
 	"github.com/labstack/echo/v4"
 )
@@ -14,7 +13,6 @@ func Get(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	params, err := api.BindParams[WeekGetRequest](cc)
 	if err != nil {
-		utils.PrettyPrint(err)
 		return cc.BadRequest(err)
 	}
 

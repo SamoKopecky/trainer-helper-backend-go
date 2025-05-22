@@ -16,11 +16,12 @@ func NewWeekDay(db bun.IDB) WeekDay {
 	return WeekDay{CRUDBase: CRUDBase[model.WeekDay]{db: db}}
 }
 
-func (wd WeekDay) GetByWeekIdsWithDeleted(weekIds []int) (weekDays []model.WeekDay, err error) {
+func (wd WeekDay) GetByWeekIdWithDeleted(weekId int) (weekDays []model.WeekDay, err error) {
 	err = wd.db.NewSelect().
 		Model(&weekDays).
 		WhereAllWithDeleted().
-		Where("week_id IN (?)", bun.In(weekIds)).
+		Where("week_id = ?", weekId).
+		Order("day_date DESC").
 		Scan(context.Background())
 
 	return
@@ -53,6 +54,14 @@ func (wd WeekDay) DeleteTimeslot(weekId int) error {
 		Set("timeslot_id = NULL").
 		Where("id = ?", weekId).
 		Exec(context.Background())
+
+	return err
+}
+func (wd WeekDay) DeleteByWeekId(weekId int) error {
+	err := wd.db.NewDelete().
+		Model((*model.WeekDay)(nil)).
+		Where("week_day = ?", weekId).
+		Scan(context.Background())
 
 	return err
 }
