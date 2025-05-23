@@ -71,6 +71,7 @@ func (w Week) DuplicateWeekDays(templateWeekId, newWeekId int) error {
 			if err != nil {
 				return err
 			}
+
 			for _, workSet := range exercise.WorkSets {
 				workSet.Id = 0
 				workSet.SetZeroTimes()

@@ -27,6 +27,7 @@ func WeekDayFactory(options ...utils.FactoryOption[model.WeekDay]) *model.WeekDa
 		DayDate: now,
 		Name:    nil,
 	}
+	weekDay.Id = utils.RandomInt()
 
 	for _, option := range options {
 		option(weekDay)

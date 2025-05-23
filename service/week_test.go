@@ -5,6 +5,7 @@ import (
 	"time"
 	"trainer-helper/model"
 	store "trainer-helper/store/mock"
+	"trainer-helper/testutil"
 	"trainer-helper/utils"
 
 	"github.com/stretchr/testify/assert"
@@ -85,4 +86,64 @@ func TestCreateWeek__First(t *testing.T) {
 	w.Mock.AssertNumberOfCalls(t, "Insert", 1)
 	// +7 to get to the next monday
 	assert.Equal(t, nextMonday.AddDate(0, 0, 7), newWeek.StartDate)
+}
+
+func TestDuplicateWeekDays(t *testing.T) {
+	w := store.NewMockWeek(t)
+	wd := store.NewMockWeekDay(t)
+	service := Week{WeekStore: w, WeekDayStore: wd}
+	now := time.Now()
+	week := testutil.WeekFactory(testutil.WeekDate(now))
+
+	templateWeek := testutil.WeekFactory()
+	weekDays := make([]model.WeekDay, 7)
+	for i := range 7 {
+		weekDays[i] = *testutil.WeekDayFactory(
+			testutil.WeekDayIds("1", templateWeek.Id))
+	}
+
+	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
+	w.EXPECT().GetById(week.Id).Return(*week, nil)
+	wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
+
+	var insertedArgs []model.WeekDay
+	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
+		insertedArgs = *models
+		return nil
+	})
+	createWeekDays, templateWeekDays, err := service.duplicateWeekDays(templateWeek.Id, week.Id)
+
+	assert.Nil(t, err)
+	assert.Equal(t, weekDays, templateWeekDays)
+
+	for i := range 7 {
+		weekDays[i].Id = 0
+		weekDays[i].WeekId = week.Id
+		weekDays[i].DayDate = now.AddDate(0, 0, i)
+	}
+
+	assert.Equal(t, weekDays, insertedArgs)
+	assert.Equal(t, weekDays, createWeekDays)
+}
+
+func TestDuplicateWeekDaysPublic(t *testing.T) {
+	w := store.NewMockWeek(t)
+	wd := store.NewMockWeekDay(t)
+	e := store.MockExercise(t)
+	ws := store.MockWorkSet(t)
+	service := Week{WeekStore: w, WeekDayStore: wd, ExerciseStore: e, WorkSetStore: ws}
+	now := time.Now()
+	week := testutil.WeekFactory(testutil.WeekDate(now))
+
+	templateWeek := testutil.WeekFactory()
+	weekDays := make([]model.WeekDay, 7)
+	for i := range 7 {
+		weekDays[i] = *testutil.WeekDayFactory(
+			testutil.WeekDayIds("1", templateWeek.Id))
+	}
+
+	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
+	w.EXPECT().GetById(week.Id).Return(*week, nil)
+	wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
+	wd.EXPECT().InsertMany(mock.Anything).Return(nil)
 }
