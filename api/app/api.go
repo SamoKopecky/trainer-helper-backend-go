@@ -181,7 +181,6 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	exercises.PUT("/count", exercise.PutCount)
 	exercises.DELETE("/count", exercise.DeleteCount)
 	exercises.POST("/undelete/:id", exercise.PostUndelete)
-	exercises.POST("/duplicate", exercise.PostDuplicate, trainerOnlyMiddleware)
 
 	workSets := jg.Group("/work-sets")
 	workSets.PUT("", work_set.Put)
