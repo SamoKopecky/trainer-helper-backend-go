@@ -15,11 +15,11 @@ func TestBlockGetBlocks(t *testing.T) {
 	service := Block{Store: m}
 
 	userId := "1"
-	blockWithWeeks := testutil.BlockFactory(testutil.BlockUserId(userId), testutil.BlockLabel(3))
-	blockWithNoWeeks := testutil.BlockFactory(testutil.BlockUserId(userId), testutil.BlockLabel(2))
+	blockWithWeeks := testutil.BlockFactory(t, testutil.BlockUserId(t, userId), testutil.BlockLabel(t, 3))
+	blockWithNoWeeks := testutil.BlockFactory(t, testutil.BlockUserId(t, userId), testutil.BlockLabel(t, 2))
 
-	weekOne := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(30))
-	weekTwo := testutil.WeekFactory(testutil.WeekIds(userId, 0), testutil.WeekLabel(20))
+	weekOne := testutil.WeekFactory(t, testutil.WeekIds(t, userId, 0), testutil.WeekLabel(t, 30))
+	weekTwo := testutil.WeekFactory(t, testutil.WeekIds(t, userId, 0), testutil.WeekLabel(t, 20))
 
 	blockWithWeeks.Weeks = []model.Week{*weekOne, *weekTwo}
 

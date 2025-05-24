@@ -4,24 +4,10 @@ import (
 	"slices"
 	"testing"
 	"trainer-helper/model"
-	"trainer-helper/utils"
+	"trainer-helper/testutil"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func workSetExerciseId(exerciseId int) utils.FactoryOption[model.WorkSet] {
-	return func(ws *model.WorkSet) {
-		ws.ExerciseId = exerciseId
-	}
-}
-func workSetFactory(options ...utils.FactoryOption[model.WorkSet]) *model.WorkSet {
-	rpe := utils.RandomInt()
-	ws := model.BuildWorkSet(utils.RandomInt(), utils.RandomInt(), &rpe, "10Kg")
-	for _, option := range options {
-		option(ws)
-	}
-	return ws
-}
 
 func TestInsertManyEmpty(t *testing.T) {
 	db := testSetupDb(t)
@@ -51,7 +37,7 @@ func TestDeleteMany(t *testing.T) {
 	// Arange
 	var workSets []model.WorkSet
 	for range 3 {
-		workSets = append(workSets, *workSetFactory())
+		workSets = append(workSets, *testutil.WorkSetFactory(t))
 	}
 	if err := crud.InsertMany(&workSets); err != nil {
 		t.Fatalf("Failed to insert work sets: %v", err)
@@ -93,7 +79,7 @@ func TestUpdateMany(t *testing.T) {
 	// Arange
 	var workSets []model.WorkSet
 	for range 3 {
-		workSets = append(workSets, *workSetFactory())
+		workSets = append(workSets, *testutil.WorkSetFactory(t))
 	}
 	if err := crud.InsertMany(&workSets); err != nil {
 		t.Fatalf("Failed to insert work sets: %v", err)

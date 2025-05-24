@@ -47,6 +47,7 @@ require (
 
 require (
 	github.com/deckarep/golang-set/v2 v2.8.0
+	github.com/google/go-cmp v0.7.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect

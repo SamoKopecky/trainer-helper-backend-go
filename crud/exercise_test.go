@@ -21,15 +21,15 @@ func TestGetExerciseWorkSets(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewExercise(db)
 	wsCrud := NewWorkSet(db)
-	exercise1 := testutil.ExerciseFactory(testutil.ExerciseWeekDayId(1))
-	exercise2 := testutil.ExerciseFactory(testutil.ExerciseWeekDayId(2))
-	exercise3 := testutil.ExerciseFactory(testutil.ExerciseWeekDayId(3))
+	exercise1 := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, 1))
+	exercise2 := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, 2))
+	exercise3 := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, 3))
 	exercises := []model.Exercise{*exercise1, *exercise2, *exercise3}
 	crud.InsertMany(&exercises)
 
 	var workSets []model.WorkSet
 	for range 2 {
-		ws := workSetFactory(workSetExerciseId(exercises[0].Id))
+		ws := testutil.WorkSetFactory(t, testutil.WorkSetExerciseId(t, exercises[0].Id))
 		workSets = append(workSets, *ws)
 	}
 	wsCrud.InsertMany(&workSets)
@@ -57,7 +57,7 @@ func TestDeleteByWeekDayId(t *testing.T) {
 	weekDayIds := []int{1, 1, 2}
 	var insertedExercises []*model.Exercise
 	for _, id := range weekDayIds {
-		exercise := testutil.ExerciseFactory(testutil.ExerciseWeekDayId(id))
+		exercise := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, id))
 		crud.Insert(exercise)
 		insertedExercises = append(insertedExercises, exercise)
 	}

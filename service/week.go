@@ -93,7 +93,7 @@ func (w Week) DuplicateWeekDays(templateWeekId, newWeekId int) error {
 func (w Week) duplicateWeekDays(templateWeekId, newWeekId int) (newWeekDays []model.WeekDay, templateWeekDays []model.WeekDay, err error) {
 	err = w.WeekDayStore.DeleteByWeekId(newWeekId)
 	if err != nil {
-		// raise error and stop process
+		// TODO: raise error and stop process
 		return
 	}
 

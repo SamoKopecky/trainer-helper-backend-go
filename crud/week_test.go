@@ -15,17 +15,17 @@ func TestGetLastWeekDate(t *testing.T) {
 	var weeks []model.Week
 
 	weeks = append(weeks,
-		*testutil.WeekFactory(testutil.WeekIds("1", 1),
-			testutil.WeekLabel(2),
-			testutil.WeekDate(time.Now().AddDate(0, 0, 2))))
+		*testutil.WeekFactory(t, testutil.WeekIds(t, "1", 1),
+			testutil.WeekLabel(t, 2),
+			testutil.WeekDate(t, time.Now().AddDate(0, 0, 2))))
 	weeks = append(weeks,
-		*testutil.WeekFactory(testutil.WeekIds("1", 2),
-			testutil.WeekLabel(3),
-			testutil.WeekDate(time.Now().AddDate(0, 0, 3))))
+		*testutil.WeekFactory(t, testutil.WeekIds(t, "1", 2),
+			testutil.WeekLabel(t, 3),
+			testutil.WeekDate(t, time.Now().AddDate(0, 0, 3))))
 	weeks = append(weeks,
-		*testutil.WeekFactory(testutil.WeekIds("1", 2),
-			testutil.WeekLabel(1),
-			testutil.WeekDate(time.Now().AddDate(0, 0, 1))))
+		*testutil.WeekFactory(t, testutil.WeekIds(t, "1", 2),
+			testutil.WeekLabel(t, 1),
+			testutil.WeekDate(t, time.Now().AddDate(0, 0, 1))))
 	if err := crud.InsertMany(&weeks); err != nil {
 		t.Fatalf("Failed to insert work sets: %v", err)
 	}
@@ -51,27 +51,27 @@ func TestGetPreviousBlockId(t *testing.T) {
 	// Block 1 has 1 week (1)
 	// Block 2 has 2 weeks (1 , 2)
 	blocks = append(blocks,
-		*testutil.BlockFactory(testutil.BlockUserId("1"),
-			testutil.BlockId(1),
-			testutil.BlockLabel(1),
+		*testutil.BlockFactory(t, testutil.BlockUserId(t, "1"),
+			testutil.BlockId(t, 1),
+			testutil.BlockLabel(t, 1),
 		))
 	blocks = append(blocks,
-		*testutil.BlockFactory(testutil.BlockUserId("1"),
-			testutil.BlockId(2),
-			testutil.BlockLabel(2),
+		*testutil.BlockFactory(t, testutil.BlockUserId(t, "1"),
+			testutil.BlockId(t, 2),
+			testutil.BlockLabel(t, 2),
 		))
 	weeks = append(weeks,
-		*testutil.WeekFactory(testutil.WeekIds("1", 1),
-			testutil.WeekLabel(1),
-			testutil.WeekDate(time.Now().AddDate(0, 0, 1))))
+		*testutil.WeekFactory(t, testutil.WeekIds(t, "1", 1),
+			testutil.WeekLabel(t, 1),
+			testutil.WeekDate(t, time.Now().AddDate(0, 0, 1))))
 	weeks = append(weeks,
-		*testutil.WeekFactory(testutil.WeekIds("1", 2),
-			testutil.WeekLabel(1),
-			testutil.WeekDate(time.Now().AddDate(0, 0, 2))))
+		*testutil.WeekFactory(t, testutil.WeekIds(t, "1", 2),
+			testutil.WeekLabel(t, 1),
+			testutil.WeekDate(t, time.Now().AddDate(0, 0, 2))))
 	weeks = append(weeks,
-		*testutil.WeekFactory(testutil.WeekIds("1", 2),
-			testutil.WeekLabel(2),
-			testutil.WeekDate(time.Now().AddDate(0, 0, 3))))
+		*testutil.WeekFactory(t, testutil.WeekIds(t, "1", 2),
+			testutil.WeekLabel(t, 2),
+			testutil.WeekDate(t, time.Now().AddDate(0, 0, 3))))
 	if err := crud.InsertMany(&weeks); err != nil {
 		t.Fatalf("Failed to insert weeks: %v", err)
 	}
@@ -119,17 +119,17 @@ func TestGetClosestToDate(t *testing.T) {
 			var weeks []model.Week
 
 			weeks = append(weeks,
-				*testutil.WeekFactory(testutil.WeekId(1),
-					testutil.WeekIds("1", 1),
-					testutil.WeekDate(time.Now().AddDate(0, 0, 2))))
+				*testutil.WeekFactory(t, testutil.WeekId(t, 1),
+					testutil.WeekIds(t, "1", 1),
+					testutil.WeekDate(t, time.Now().AddDate(0, 0, 2))))
 			weeks = append(weeks,
-				*testutil.WeekFactory(testutil.WeekId(2),
-					testutil.WeekIds("1", 1),
-					testutil.WeekDate(time.Now().AddDate(0, 0, 3))))
+				*testutil.WeekFactory(t, testutil.WeekId(t, 2),
+					testutil.WeekIds(t, "1", 1),
+					testutil.WeekDate(t, time.Now().AddDate(0, 0, 3))))
 			weeks = append(weeks,
-				*testutil.WeekFactory(testutil.WeekId(3),
-					testutil.WeekIds("1", 1),
-					testutil.WeekDate(time.Now().AddDate(0, 0, 1))))
+				*testutil.WeekFactory(t, testutil.WeekId(t, 3),
+					testutil.WeekIds(t, "1", 1),
+					testutil.WeekDate(t, time.Now().AddDate(0, 0, 1))))
 			if err := crud.InsertMany(&weeks); err != nil {
 				t.Fatalf("Failed to insert work sets: %v", err)
 			}

@@ -1,25 +1,29 @@
 package testutil
 
 import (
+	"testing"
 	"time"
 	"trainer-helper/model"
 	"trainer-helper/utils"
 )
 
-func WeekDayIds(userId string, weekId int) utils.FactoryOption[model.WeekDay] {
+func WeekDayIds(t *testing.T, userId string, weekId int) utils.FactoryOption[model.WeekDay] {
+	t.Helper()
 	return func(wd *model.WeekDay) {
 		wd.UserId = userId
 		wd.WeekId = weekId
 	}
 }
 
-func WeekDayTime(date time.Time) utils.FactoryOption[model.WeekDay] {
+func WeekDayTime(t *testing.T, date time.Time) utils.FactoryOption[model.WeekDay] {
+	t.Helper()
 	return func(wd *model.WeekDay) {
 		wd.DayDate = date
 	}
 }
 
-func WeekDayFactory(options ...utils.FactoryOption[model.WeekDay]) *model.WeekDay {
+func WeekDayFactory(t *testing.T, options ...utils.FactoryOption[model.WeekDay]) *model.WeekDay {
+	t.Helper()
 	now := time.Now()
 	weekDay := &model.WeekDay{
 		UserId:  "1",

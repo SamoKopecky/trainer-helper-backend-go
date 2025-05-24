@@ -14,9 +14,9 @@ func TestGetByWeekDayId(t *testing.T) {
 	crud := NewWeekDay(db)
 	var weekDays []model.WeekDay
 
-	weekDays = append(weekDays, *testutil.WeekDayFactory(testutil.WeekDayIds("1", 1)))
-	weekDays = append(weekDays, *testutil.WeekDayFactory(testutil.WeekDayIds("2", 2)))
-	weekDays = append(weekDays, *testutil.WeekDayFactory(testutil.WeekDayIds("3", 2)))
+	weekDays = append(weekDays, *testutil.WeekDayFactory(t, testutil.WeekDayIds(t, "1", 1)))
+	weekDays = append(weekDays, *testutil.WeekDayFactory(t, testutil.WeekDayIds(t, "2", 2)))
+	weekDays = append(weekDays, *testutil.WeekDayFactory(t, testutil.WeekDayIds(t, "3", 2)))
 	now := time.Now()
 	weekDays[0].DeletedAt = &now
 	if err := crud.InsertMany(&weekDays); err != nil {
@@ -41,9 +41,9 @@ func TestGetByDate(t *testing.T) {
 	var weekDays []model.WeekDay
 	now := time.Now()
 
-	weekDays = append(weekDays, *testutil.WeekDayFactory(testutil.WeekDayIds("2", 1), testutil.WeekDayTime(now)))
-	weekDays = append(weekDays, *testutil.WeekDayFactory(testutil.WeekDayIds("1", 1), testutil.WeekDayTime(now.AddDate(0, 0, 1))))
-	weekDays = append(weekDays, *testutil.WeekDayFactory(testutil.WeekDayIds("1", 1), testutil.WeekDayTime(now)))
+	weekDays = append(weekDays, *testutil.WeekDayFactory(t, testutil.WeekDayIds(t, "2", 1), testutil.WeekDayTime(t, now)))
+	weekDays = append(weekDays, *testutil.WeekDayFactory(t, testutil.WeekDayIds(t, "1", 1), testutil.WeekDayTime(t, now.AddDate(0, 0, 1))))
+	weekDays = append(weekDays, *testutil.WeekDayFactory(t, testutil.WeekDayIds(t, "1", 1), testutil.WeekDayTime(t, now)))
 	if err := crud.InsertMany(&weekDays); err != nil {
 		t.Fatalf("Failed to insert work sets: %v", err)
 	}

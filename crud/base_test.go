@@ -7,6 +7,7 @@ import (
 	"trainer-helper/config"
 	"trainer-helper/db"
 	"trainer-helper/model"
+	"trainer-helper/testutil"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -34,7 +35,7 @@ func testSetupDb(t *testing.T) *bun.Tx {
 func TestInsert(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewWorkSet(db)
-	workSet := workSetFactory()
+	workSet := testutil.WorkSetFactory(t)
 
 	// Act
 	if err := crud.Insert(workSet); err != nil {
@@ -57,7 +58,7 @@ func TestGet(t *testing.T) {
 	crud := NewWorkSet(db)
 	var workSets []model.WorkSet
 	for range 3 {
-		workSets = append(workSets, *workSetFactory())
+		workSets = append(workSets, *testutil.WorkSetFactory(t))
 	}
 	if err := crud.InsertMany(&workSets); err != nil {
 		t.Fatalf("Failed to insert work sets: %v", err)
@@ -81,7 +82,7 @@ func TestGet(t *testing.T) {
 func TestUpdate(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewWorkSet(db)
-	workSet := workSetFactory()
+	workSet := testutil.WorkSetFactory(t)
 	crud.Insert(workSet)
 
 	// Act
@@ -108,7 +109,7 @@ func TestInsertMany(t *testing.T) {
 	// Arange
 	var workSets []model.WorkSet
 	for range 2 {
-		workSets = append(workSets, *workSetFactory())
+		workSets = append(workSets, *testutil.WorkSetFactory(t))
 	}
 
 	// Act
@@ -133,12 +134,12 @@ func TestInsertMany(t *testing.T) {
 func TestUndeleteSoftDelete(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewWorkSet(db)
-	var worksets []model.WorkSet
+	var workSets []model.WorkSet
 	deleteIds := make([]int, 3)
 	for range 3 {
-		work_set := workSetFactory()
+		work_set := testutil.WorkSetFactory(t)
 		crud.Insert(work_set)
-		worksets = append(worksets, *work_set)
+		workSets = append(workSets, *work_set)
 		deleteIds = append(deleteIds, work_set.Id)
 	}
 	err := crud.DeleteMany(deleteIds)
@@ -147,7 +148,7 @@ func TestUndeleteSoftDelete(t *testing.T) {
 	}
 
 	// Act
-	if err := crud.UndeleteMany([]int{worksets[0].Id, worksets[1].Id}); err != nil {
+	if err := crud.UndeleteMany([]int{workSets[0].Id, workSets[1].Id}); err != nil {
 		t.Fatalf("Failed to revert soft delete timeslot: %v", err)
 	}
 
@@ -163,9 +164,9 @@ func TestUndeleteSoftDelete(t *testing.T) {
 	for _, model := range dbModels {
 		dbModelsMap[model.Id] = model
 	}
-	require.Nil(t, dbModelsMap[1].DeletedAt)
-	require.Nil(t, dbModelsMap[2].DeletedAt)
-	require.NotNil(t, dbModelsMap[3].DeletedAt)
+	require.Nil(t, dbModelsMap[workSets[0].Id].DeletedAt)
+	require.Nil(t, dbModelsMap[workSets[1].Id].DeletedAt)
+	require.NotNil(t, dbModelsMap[workSets[2].Id].DeletedAt)
 }
 
 func TestDelete(t *testing.T) {
@@ -173,7 +174,7 @@ func TestDelete(t *testing.T) {
 	crud := NewTimeslot(db)
 	var timeslots []model.Timeslot
 	for range 2 {
-		timeslot := timeslotFactory()
+		timeslot := testutil.TimeslotFactory(t)
 		crud.Insert(timeslot)
 		timeslots = append(timeslots, *timeslot)
 	}
@@ -193,9 +194,8 @@ func TestDelete(t *testing.T) {
 
 	dbModelsMap := make(map[int]model.Timeslot)
 	for _, model := range dbModels {
-		model.SetZeroTimes()
 		dbModelsMap[model.Id] = model
 	}
-	require.NotNil(t, dbModelsMap[1].DeletedAt)
-	require.Nil(t, dbModelsMap[0].DeletedAt)
+	require.NotNil(t, dbModelsMap[timeslots[0].Id].DeletedAt)
+	require.Nil(t, dbModelsMap[timeslots[1].Id].DeletedAt)
 }

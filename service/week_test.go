@@ -8,6 +8,8 @@ import (
 	"trainer-helper/testutil"
 	"trainer-helper/utils"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -93,13 +95,13 @@ func TestDuplicateWeekDays(t *testing.T) {
 	wd := store.NewMockWeekDay(t)
 	service := Week{WeekStore: w, WeekDayStore: wd}
 	now := time.Now()
-	week := testutil.WeekFactory(testutil.WeekDate(now))
+	week := testutil.WeekFactory(t, testutil.WeekDate(t, now))
 
-	templateWeek := testutil.WeekFactory()
+	templateWeek := testutil.WeekFactory(t)
 	weekDays := make([]model.WeekDay, 7)
 	for i := range 7 {
-		weekDays[i] = *testutil.WeekDayFactory(
-			testutil.WeekDayIds("1", templateWeek.Id))
+		weekDays[i] = *testutil.WeekDayFactory(t,
+			testutil.WeekDayIds(t, "1", templateWeek.Id))
 	}
 
 	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
@@ -129,21 +131,71 @@ func TestDuplicateWeekDays(t *testing.T) {
 func TestDuplicateWeekDaysPublic(t *testing.T) {
 	w := store.NewMockWeek(t)
 	wd := store.NewMockWeekDay(t)
-	e := store.MockExercise(t)
-	ws := store.MockWorkSet(t)
+	e := store.NewMockExercise(t)
+	ws := store.NewMockWorkSet(t)
 	service := Week{WeekStore: w, WeekDayStore: wd, ExerciseStore: e, WorkSetStore: ws}
 	now := time.Now()
-	week := testutil.WeekFactory(testutil.WeekDate(now))
 
-	templateWeek := testutil.WeekFactory()
+	week := testutil.WeekFactory(t, testutil.WeekDate(t, now))
+	templateWeek := testutil.WeekFactory(t)
+
 	weekDays := make([]model.WeekDay, 7)
+	weekDayIds := make([]int, 7)
 	for i := range 7 {
-		weekDays[i] = *testutil.WeekDayFactory(
-			testutil.WeekDayIds("1", templateWeek.Id))
+		weekDays[i] = *testutil.WeekDayFactory(t,
+			testutil.WeekDayIds(t, "1", templateWeek.Id))
+		weekDayIds[i] = weekDays[i].Id
 	}
+
+	exercises := make([]model.Exercise, 2)
+	exercises[0] = *testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, weekDayIds[0]))
+	exercises[1] = *testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, weekDayIds[1]))
+
+	workSets := make([]model.WorkSet, 2)
+
+	workSets[0] = *testutil.WorkSetFactory(t, testutil.WorkSetExerciseId(t, exercises[0].Id))
+	exercises[0].WorkSets = append(exercises[0].WorkSets, workSets[0])
+
+	workSets[1] = *testutil.WorkSetFactory(t, testutil.WorkSetExerciseId(t, exercises[1].Id))
+	exercises[1].WorkSets = append(exercises[1].WorkSets, workSets[1])
+
+	var expectedExerciseInserts []model.Exercise
+	var expectedWorkSetInsert []model.WorkSet
+	var newWeekDayIds []int
 
 	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
 	w.EXPECT().GetById(week.Id).Return(*week, nil)
 	wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
-	wd.EXPECT().InsertMany(mock.Anything).Return(nil)
+	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
+		for i, _ := range *models {
+			(*models)[i].Id = utils.RandomInt()
+			newWeekDayIds = append(newWeekDayIds, (*models)[i].Id)
+		}
+		return nil
+	})
+	e.EXPECT().GetExerciseWorkSets(weekDayIds).Return(exercises, nil)
+	e.EXPECT().Insert(mock.Anything).RunAndReturn(func(model1 *model.Exercise) error {
+		// Simluate insert
+		model1.Id = utils.RandomInt()
+		expectedExerciseInserts = append(expectedExerciseInserts, *model1)
+		return nil
+	}).Times(2)
+	ws.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WorkSet) error {
+		expectedWorkSetInsert = *models
+		return nil
+	})
+
+	service.DuplicateWeekDays(templateWeek.Id, week.Id)
+
+	ignoreFields := cmpopts.IgnoreFields(model.Exercise{}, "Id", "Timestamp", "WeekDayId")
+	assert.True(t, cmp.Equal(expectedExerciseInserts, exercises, ignoreFields),
+		cmp.Diff(expectedExerciseInserts, exercises, ignoreFields))
+	assert.Equal(t, expectedExerciseInserts[0].WeekDayId, newWeekDayIds[0])
+	assert.Equal(t, expectedExerciseInserts[1].WeekDayId, newWeekDayIds[1])
+
+	ignoreFields = cmpopts.IgnoreFields(model.WorkSet{}, "Id", "Timestamp", "ExerciseId")
+	assert.True(t, cmp.Equal(expectedWorkSetInsert, workSets, ignoreFields), cmp.Diff(expectedWorkSetInsert, workSets, ignoreFields))
+	assert.Equal(t, expectedWorkSetInsert[0].ExerciseId, expectedExerciseInserts[0].Id)
+	assert.Equal(t, expectedWorkSetInsert[1].ExerciseId, expectedExerciseInserts[1].Id)
+
 }
