@@ -3,24 +3,17 @@ package crud
 import (
 	"testing"
 	"trainer-helper/model"
-	"trainer-helper/utils"
+	"trainer-helper/testutil"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func exerciseTimeslotId(timeslotId int) utils.FactoryOption[model.Exercise] {
-	return func(e *model.Exercise) {
-		e.TimeslotId = timeslotId
+func setZeroTimes(exercises []model.Exercise) {
+	exercises[0].SetZeroTimes()
+	exercises[1].SetZeroTimes()
+	for i := range len(exercises[0].WorkSets) {
+		exercises[0].WorkSets[i].SetZeroTimes()
 	}
-}
-
-func exerciseFactory(options ...utils.FactoryOption[model.Exercise]) *model.Exercise {
-	note := "note"
-	exercise := model.BuildExercise(utils.RandomInt(), utils.RandomInt(), &note, nil)
-	for _, option := range options {
-		option(exercise)
-	}
-	return exercise
 }
 
 func TestGetExerciseWorkSets(t *testing.T) {
@@ -28,92 +21,50 @@ func TestGetExerciseWorkSets(t *testing.T) {
 	db := testSetupDb(t)
 	crud := NewExercise(db)
 	wsCrud := NewWorkSet(db)
-	timeslotId := 1
-	exercise := exerciseFactory(exerciseTimeslotId(timeslotId))
-	crud.Insert(exercise)
+	exercise1 := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, 1))
+	exercise2 := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, 2))
+	exercise3 := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, 3))
+	exercises := []model.Exercise{*exercise1, *exercise2, *exercise3}
+	crud.InsertMany(&exercises)
+
 	var workSets []model.WorkSet
 	for range 2 {
-		ws := workSetFactory(workSetExerciseId(exercise.Id))
+		ws := testutil.WorkSetFactory(t, testutil.WorkSetExerciseId(t, exercises[0].Id))
 		workSets = append(workSets, *ws)
 	}
 	wsCrud.InsertMany(&workSets)
 
 	// Act
-	dbExercises, err := crud.GetExerciseWorkSets(timeslotId)
+	dbExercises, err := crud.GetExerciseWorkSets([]int{1, 2})
 	if err != nil {
 		t.Fatalf("Failed to get exercises: %v", err)
 	}
 
 	// Assert
-	assert.Equal(t, 1, len(dbExercises))
-	exercise.WorkSets = workSets
-	exercise.SetZeroTimes()
-	for i := range len(workSets) {
-		workSets[i].SetZeroTimes()
-	}
-	dbExercise := dbExercises[0]
-	dbExercise.SetZeroTimes()
-	for i := range len(dbExercise.WorkSets) {
-		dbExercise.WorkSets[i].SetZeroTimes()
-	}
+	assert.Len(t, dbExercises, 2)
+	expectedExercises := exercises[:2]
+	expectedExercises[0].WorkSets = workSets
+	setZeroTimes(expectedExercises)
+	setZeroTimes(dbExercises)
 
-	assert.Equal(t, dbExercise, exercise)
+	assert.Equal(t, dbExercises, expectedExercises)
 }
 
-func TestDeleteByExerciseAndTimeslot(t *testing.T) {
+func TestDeleteByWeekDayId(t *testing.T) {
 	// Arrange
 	db := testSetupDb(t)
 	crud := NewExercise(db)
+	weekDayIds := []int{1, 1, 2}
 	var insertedExercises []*model.Exercise
-	for range 3 {
-		exercise := exerciseFactory(exerciseTimeslotId(1))
+	for _, id := range weekDayIds {
+		exercise := testutil.ExerciseFactory(t, testutil.ExerciseWeekDayId(t, id))
 		crud.Insert(exercise)
 		insertedExercises = append(insertedExercises, exercise)
 	}
-	exerciseDeleteId := insertedExercises[0].Id
+	weekDayDeleteId := weekDayIds[0]
 
 	// Act
-	if err := crud.Delete(exerciseDeleteId); err != nil {
-		t.Fatalf("Failed to delete exercises: %v", err)
-	}
-
-	// Assert
-	dbModels, err := crud.Get()
-	if err != nil {
-		t.Fatalf("Failed to retrieve work sets: %v", err)
-	}
-	assert.Equal(t, len(insertedExercises)-1, len(dbModels))
-	var assertExercises []model.Exercise
-	for i := range len(insertedExercises) {
-		exercise := insertedExercises[i]
-		if exercise.Id == exerciseDeleteId {
-			continue
-		}
-		exercise.SetZeroTimes()
-		assertExercises = append(assertExercises, *exercise)
-	}
-	for i := range len(dbModels) {
-		dbModels[i].SetZeroTimes()
-	}
-
-	assert.Equal(t, dbModels, assertExercises)
-}
-
-func TestDeleteByTimeslot(t *testing.T) {
-	// Arrange
-	db := testSetupDb(t)
-	crud := NewExercise(db)
-	timeslotIds := []int{1, 1, 2}
-	var insertedExercises []*model.Exercise
-	for _, id := range timeslotIds {
-		exercise := exerciseFactory(exerciseTimeslotId(id))
-		crud.Insert(exercise)
-		insertedExercises = append(insertedExercises, exercise)
-	}
-	timeslotDeleteId := timeslotIds[0]
-
-	// Act
-	if err := crud.DeleteByTimeslot(timeslotDeleteId); err != nil {
+	if err := crud.DeleteByWeekDayId(weekDayDeleteId); err != nil {
 		t.Fatalf("Failed to delete exercises: %v", err)
 	}
 
@@ -126,7 +77,7 @@ func TestDeleteByTimeslot(t *testing.T) {
 	var assertExercises []model.Exercise
 	for i := range len(insertedExercises) {
 		exercise := insertedExercises[i]
-		if exercise.TimeslotId == timeslotDeleteId {
+		if exercise.WeekDayId == weekDayDeleteId {
 			continue
 		}
 		exercise.SetZeroTimes()

@@ -37,6 +37,14 @@ func (c CRUDBase[T]) Get() (models []T, err error) {
 	return
 }
 
+func (c CRUDBase[T]) GetById(modelId int) (model T, err error) {
+	err = c.db.NewSelect().
+		Model(&model).
+		Where("id = ?", modelId).
+		Scan(context.TODO())
+	return
+}
+
 func (c CRUDBase[T]) Delete(modelId int) error {
 	ctx := context.Background()
 
@@ -44,6 +52,18 @@ func (c CRUDBase[T]) Delete(modelId int) error {
 	_, err := c.db.NewDelete().
 		Model((*T)(nil)).
 		Where("id = ?", modelId).
+		Exec(ctx)
+
+	return err
+}
+
+func (c CRUDBase[T]) DeleteMany(modelIds []int) error {
+	ctx := context.Background()
+
+	// Actually does soft delete
+	_, err := c.db.NewDelete().
+		Model((*T)(nil)).
+		Where("id IN (?)", bun.In(modelIds)).
 		Exec(ctx)
 
 	return err

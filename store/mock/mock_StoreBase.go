@@ -80,6 +80,51 @@ func (_c *MockStoreBase_Delete_Call[T]) RunAndReturn(run func(modelId int) error
 	return _c
 }
 
+// DeleteMany provides a mock function for the type MockStoreBase
+func (_mock *MockStoreBase[T]) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockStoreBase_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
+type MockStoreBase_DeleteMany_Call[T any] struct {
+	*mock.Call
+}
+
+// DeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockStoreBase_Expecter[T]) DeleteMany(modelIds interface{}) *MockStoreBase_DeleteMany_Call[T] {
+	return &MockStoreBase_DeleteMany_Call[T]{Call: _e.mock.On("DeleteMany", modelIds)}
+}
+
+func (_c *MockStoreBase_DeleteMany_Call[T]) Run(run func(modelIds []int)) *MockStoreBase_DeleteMany_Call[T] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockStoreBase_DeleteMany_Call[T]) Return(err error) *MockStoreBase_DeleteMany_Call[T] {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockStoreBase_DeleteMany_Call[T]) RunAndReturn(run func(modelIds []int) error) *MockStoreBase_DeleteMany_Call[T] {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockStoreBase
 func (_mock *MockStoreBase[T]) Get() ([]T, error) {
 	ret := _mock.Called()
@@ -131,6 +176,62 @@ func (_c *MockStoreBase_Get_Call[T]) Return(vs []T, err error) *MockStoreBase_Ge
 }
 
 func (_c *MockStoreBase_Get_Call[T]) RunAndReturn(run func() ([]T, error)) *MockStoreBase_Get_Call[T] {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetById provides a mock function for the type MockStoreBase
+func (_mock *MockStoreBase[T]) GetById(modelId int) (T, error) {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetById")
+	}
+
+	var r0 T
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(int) (T, error)); ok {
+		return returnFunc(modelId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(int) T); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(T)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
+		r1 = returnFunc(modelId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockStoreBase_GetById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetById'
+type MockStoreBase_GetById_Call[T any] struct {
+	*mock.Call
+}
+
+// GetById is a helper method to define mock.On call
+//   - modelId
+func (_e *MockStoreBase_Expecter[T]) GetById(modelId interface{}) *MockStoreBase_GetById_Call[T] {
+	return &MockStoreBase_GetById_Call[T]{Call: _e.mock.On("GetById", modelId)}
+}
+
+func (_c *MockStoreBase_GetById_Call[T]) Run(run func(modelId int)) *MockStoreBase_GetById_Call[T] {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockStoreBase_GetById_Call[T]) Return(model T, err error) *MockStoreBase_GetById_Call[T] {
+	_c.Call.Return(model, err)
+	return _c
+}
+
+func (_c *MockStoreBase_GetById_Call[T]) RunAndReturn(run func(modelId int) (T, error)) *MockStoreBase_GetById_Call[T] {
 	_c.Call.Return(run)
 	return _c
 }

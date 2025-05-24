@@ -82,6 +82,51 @@ func (_c *MockExerciseType_Delete_Call) RunAndReturn(run func(modelId int) error
 	return _c
 }
 
+// DeleteMany provides a mock function for the type MockExerciseType
+func (_mock *MockExerciseType) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockExerciseType_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
+type MockExerciseType_DeleteMany_Call struct {
+	*mock.Call
+}
+
+// DeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockExerciseType_Expecter) DeleteMany(modelIds interface{}) *MockExerciseType_DeleteMany_Call {
+	return &MockExerciseType_DeleteMany_Call{Call: _e.mock.On("DeleteMany", modelIds)}
+}
+
+func (_c *MockExerciseType_DeleteMany_Call) Run(run func(modelIds []int)) *MockExerciseType_DeleteMany_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockExerciseType_DeleteMany_Call) Return(err error) *MockExerciseType_DeleteMany_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockExerciseType_DeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockExerciseType_DeleteMany_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockExerciseType
 func (_mock *MockExerciseType) Get() ([]model.ExerciseType, error) {
 	ret := _mock.Called()
@@ -133,6 +178,60 @@ func (_c *MockExerciseType_Get_Call) Return(exerciseTypes []model.ExerciseType, 
 }
 
 func (_c *MockExerciseType_Get_Call) RunAndReturn(run func() ([]model.ExerciseType, error)) *MockExerciseType_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetById provides a mock function for the type MockExerciseType
+func (_mock *MockExerciseType) GetById(modelId int) (model.ExerciseType, error) {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetById")
+	}
+
+	var r0 model.ExerciseType
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(int) (model.ExerciseType, error)); ok {
+		return returnFunc(modelId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(int) model.ExerciseType); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Get(0).(model.ExerciseType)
+	}
+	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
+		r1 = returnFunc(modelId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockExerciseType_GetById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetById'
+type MockExerciseType_GetById_Call struct {
+	*mock.Call
+}
+
+// GetById is a helper method to define mock.On call
+//   - modelId
+func (_e *MockExerciseType_Expecter) GetById(modelId interface{}) *MockExerciseType_GetById_Call {
+	return &MockExerciseType_GetById_Call{Call: _e.mock.On("GetById", modelId)}
+}
+
+func (_c *MockExerciseType_GetById_Call) Run(run func(modelId int)) *MockExerciseType_GetById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockExerciseType_GetById_Call) Return(model1 model.ExerciseType, err error) *MockExerciseType_GetById_Call {
+	_c.Call.Return(model1, err)
+	return _c
+}
+
+func (_c *MockExerciseType_GetById_Call) RunAndReturn(run func(modelId int) (model.ExerciseType, error)) *MockExerciseType_GetById_Call {
 	_c.Call.Return(run)
 	return _c
 }

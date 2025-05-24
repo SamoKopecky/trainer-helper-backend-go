@@ -31,18 +31,18 @@ func TestGetBlockWeeksByUserId(t *testing.T) {
 
 	for i := range 2 {
 		userId := strconv.Itoa(i)
-		block := testutil.BlockFactory(testutil.BlockUserId(userId))
+		block := testutil.BlockFactory(t, testutil.BlockUserId(t, userId))
 		blockCrud.Insert(block)
 		blocks = append(blocks, *block)
 
 		for j := range 2 {
-			week := testutil.WeekFactory(testutil.WeekIds(userId, block.Id))
+			week := testutil.WeekFactory(t, testutil.WeekIds(t, userId, block.Id))
 			weekCrud.Insert(week)
 			weeks = append(weeks, *week)
 
 			if j == 0 {
 				for range 2 {
-					weekDay := testutil.WeekDayFactory(testutil.WeekDayIds(userId, week.Id))
+					weekDay := testutil.WeekDayFactory(t, testutil.WeekDayIds(t, userId, week.Id))
 					weekDayCrud.Insert(weekDay)
 					weekDays = append(weekDays, *weekDay)
 				}

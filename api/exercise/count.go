@@ -36,10 +36,10 @@ func DeleteCount(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	ids, err := cc.WorkSetCrud.DeleteMany(params.WorkSetIds)
+	err = cc.WorkSetCrud.DeleteMany(params.WorkSetIds)
 	if err != nil {
 		return err
 	}
 
-	return cc.JSON(http.StatusOK, ids)
+	return cc.NoContent(http.StatusOK)
 }

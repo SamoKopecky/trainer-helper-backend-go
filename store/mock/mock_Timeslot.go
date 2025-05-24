@@ -83,6 +83,51 @@ func (_c *MockTimeslot_Delete_Call) RunAndReturn(run func(modelId int) error) *M
 	return _c
 }
 
+// DeleteMany provides a mock function for the type MockTimeslot
+func (_mock *MockTimeslot) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteMany")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockTimeslot_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
+type MockTimeslot_DeleteMany_Call struct {
+	*mock.Call
+}
+
+// DeleteMany is a helper method to define mock.On call
+//   - modelIds
+func (_e *MockTimeslot_Expecter) DeleteMany(modelIds interface{}) *MockTimeslot_DeleteMany_Call {
+	return &MockTimeslot_DeleteMany_Call{Call: _e.mock.On("DeleteMany", modelIds)}
+}
+
+func (_c *MockTimeslot_DeleteMany_Call) Run(run func(modelIds []int)) *MockTimeslot_DeleteMany_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]int))
+	})
+	return _c
+}
+
+func (_c *MockTimeslot_DeleteMany_Call) Return(err error) *MockTimeslot_DeleteMany_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockTimeslot_DeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockTimeslot_DeleteMany_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockTimeslot
 func (_mock *MockTimeslot) Get() ([]model.Timeslot, error) {
 	ret := _mock.Called()

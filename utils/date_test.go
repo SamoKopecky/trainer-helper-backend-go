@@ -37,3 +37,12 @@ func TestNextMonday(t *testing.T) {
 		})
 	}
 }
+
+func TestDateTimerange(t *testing.T) {
+	dateTime, _ := time.Parse("2006-01-02 15:04:05", "2006-01-02 15:04:05")
+	date := Date{Time: dateTime}
+	start, end := date.ToTimerange()
+
+	assert.Equal(t, "2006-01-02 00:00:00", start.Format("2006-01-02 15:04:05"))
+	assert.Equal(t, "2006-01-02 23:59:59", end.Format("2006-01-02 15:04:05"))
+}

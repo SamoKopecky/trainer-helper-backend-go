@@ -18,6 +18,7 @@ func ExerciseTypeFactory(t *testing.T, options ...utils.FactoryOption[model.Exer
 	for _, option := range options {
 		option(exerciseType)
 	}
+	exerciseType.Id = utils.RandomInt()
 	return exerciseType
 
 }

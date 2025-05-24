@@ -5,6 +5,8 @@ type StoreBase[T any] interface {
 	Insert(model *T) error
 	Delete(modelId int) error
 	Get() ([]T, error)
+	GetById(modelId int) (model T, err error)
 	InsertMany(models *[]T) error
 	UndeleteMany(modelIds []int) error
+	DeleteMany(modelIds []int) error
 }

@@ -4,6 +4,6 @@ import "trainer-helper/model"
 
 type Exercise interface {
 	StoreBase[model.Exercise]
-	GetExerciseWorkSets(Id int) ([]*model.Exercise, error)
-	DeleteByTimeslot(timeslotId int) error
+	GetExerciseWorkSets(weekDayIds []int) ([]model.Exercise, error)
+	DeleteByWeekDayId(weekDayId int) error
 }
