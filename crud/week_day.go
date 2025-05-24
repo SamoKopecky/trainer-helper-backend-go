@@ -21,7 +21,7 @@ func (wd WeekDay) GetByWeekIdWithDeleted(weekId int) (weekDays []model.WeekDay, 
 		Model(&weekDays).
 		WhereAllWithDeleted().
 		Where("week_id = ?", weekId).
-		Order("day_date DESC").
+		Order("day_date ASC").
 		Scan(context.Background())
 
 	return
@@ -58,10 +58,11 @@ func (wd WeekDay) DeleteTimeslot(weekId int) error {
 	return err
 }
 func (wd WeekDay) DeleteByWeekId(weekId int) error {
-	err := wd.db.NewDelete().
+	_, err := wd.db.NewDelete().
 		Model((*model.WeekDay)(nil)).
-		Where("week_day = ?", weekId).
-		Scan(context.Background())
+		ForceDelete().
+		Where("week_id = ?", weekId).
+		Exec(context.Background())
 
 	return err
 }

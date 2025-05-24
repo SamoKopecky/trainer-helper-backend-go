@@ -113,6 +113,7 @@ func (w Week) duplicateWeekDays(templateWeekId, newWeekId int) (newWeekDays []mo
 		weekDay.SetZeroTimes()
 		weekDay.DeletedAt = nil
 		weekDay.WeekId = newWeekId
+		weekDay.TimeslotId = nil
 		weekDay.DayDate = newWeek.StartDate.AddDate(0, 0, i)
 		newWeekDays[i] = weekDay
 	}

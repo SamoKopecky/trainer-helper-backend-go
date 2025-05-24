@@ -103,6 +103,8 @@ func TestDuplicateWeekDays(t *testing.T) {
 		weekDays[i] = *testutil.WeekDayFactory(t,
 			testutil.WeekDayIds(t, "1", templateWeek.Id))
 	}
+	timelostId := 2
+	weekDays[0].TimeslotId = &timelostId
 
 	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
 	w.EXPECT().GetById(week.Id).Return(*week, nil)
@@ -122,6 +124,7 @@ func TestDuplicateWeekDays(t *testing.T) {
 		weekDays[i].Id = 0
 		weekDays[i].WeekId = week.Id
 		weekDays[i].DayDate = now.AddDate(0, 0, i)
+		weekDays[i].TimeslotId = nil
 	}
 
 	assert.Equal(t, weekDays, insertedArgs)

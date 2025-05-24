@@ -22,6 +22,11 @@ up:
 down:
 	docker compose down
 
+# Stop db only
+db-refresh:
+	docker compose down db
+	docker compose up db -d
+
 # Run tests
 test:
 	docker compose up db -d
