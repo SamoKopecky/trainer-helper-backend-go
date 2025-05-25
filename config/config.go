@@ -20,6 +20,8 @@ type Config struct {
 	KeycloakAdminClientId     string `env:"KC_ADMIN_CLIENT_ID" envDefault:"admin-cli"`
 	KeycloakAdminClientSecret string `env:"KC_ADMIN_CLIENT_SECRET"`
 	KeycloakRealm             string `env:"KC_REALM" envDefault:"trainer-helper"`
+
+	MediaFileRepository string `env:"FILE_REPOSITORY" envDefault:"./media"`
 }
 
 func (c Config) GetDSN() string {

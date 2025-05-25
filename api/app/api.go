@@ -191,6 +191,8 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	exerciseTypes.POST("", exercise_type.Post, trainerOnlyMiddleware)
 	exerciseTypes.PUT("", exercise_type.Put, trainerOnlyMiddleware)
 	exerciseTypes.POST("/duplicate", exercise_type.PostDuplicate, trainerOnlyMiddleware)
+	exerciseTypes.GET("/:id/files", exercise_type.GetMedia)
+	exerciseTypes.POST("/:id/files", exercise_type.PostMedia, trainerOnlyMiddleware)
 
 	users := jg.Group("/users")
 	users.GET("", user.GetMany)

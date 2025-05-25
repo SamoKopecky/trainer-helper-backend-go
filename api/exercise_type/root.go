@@ -3,7 +3,11 @@ package exercise_type
 import (
 	"errors"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
 	"trainer-helper/api"
+	"trainer-helper/media"
 	"trainer-helper/model"
 
 	"github.com/labstack/echo/v4"
@@ -53,4 +57,51 @@ func Post(c echo.Context) error {
 func Put(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	return api.PutModel[exerciseTypePutPrams](cc, cc.ExerciseTypeCrud)
+}
+
+func PostMedia(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	id, err := strconv.Atoi(cc.Param("id"))
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	file, err := c.FormFile("file")
+	if err != nil {
+		return err
+	}
+	fileId, err := media.SaveFile(file)
+	if err != nil {
+		return err
+	}
+
+	err = cc.ExerciseTypeCrud.UpdateMediaFile(id, fileId)
+	if err != nil {
+		return err
+	}
+
+	return cc.NoContent(http.StatusOK)
+}
+
+func GetMedia(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	id, err := strconv.Atoi(cc.Param("id"))
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	model, err := cc.ExerciseTypeCrud.GetById(id)
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	fileData, err := os.ReadFile(filepath.Join("./", *model.FilePath))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Could not read file")
+	}
+
+	// mediaType := http.DetectContentType(fileData)
+	return cc.Blob(http.StatusOK, "video/quicktime", fileData)
 }
