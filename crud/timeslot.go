@@ -41,5 +41,4 @@ func (t Timeslot) GetById(timeslotId int) (model.Timeslot, error) {
 		Scan(ctx)
 
 	return timeslot, err
-
 }

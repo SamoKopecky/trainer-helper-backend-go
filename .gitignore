@@ -3,3 +3,4 @@ trainer-helper
 tmp
 keycloak_data/*
 coverage.out
+.vscode/

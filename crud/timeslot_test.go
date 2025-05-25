@@ -4,32 +4,10 @@ import (
 	"testing"
 	"time"
 	"trainer-helper/model"
-	"trainer-helper/utils"
+	"trainer-helper/testutil"
 
 	"github.com/stretchr/testify/require"
 )
-
-func timeslotTime(start, end time.Time) utils.FactoryOption[model.Timeslot] {
-	return func(t *model.Timeslot) {
-		t.Start = start
-		t.End = end
-	}
-}
-
-func timeslotIds(trainerId, traineeId string) utils.FactoryOption[model.Timeslot] {
-	return func(t *model.Timeslot) {
-		t.TraineeId = &traineeId
-		t.TrainerId = trainerId
-	}
-}
-
-func timeslotFactory(options ...utils.FactoryOption[model.Timeslot]) *model.Timeslot {
-	timeslot := model.BuildTimeslot("name", time.Time{}, time.Time{}, utils.RandomUUID(), nil)
-	for _, option := range options {
-		option(timeslot)
-	}
-	return timeslot
-}
 
 func TestGetByTimeRangeAndUserId(t *testing.T) {
 	// Parametrize
@@ -50,13 +28,13 @@ func TestGetByTimeRangeAndUserId(t *testing.T) {
 	trainerIds := []string{"1", "1", "2"}
 	traineeIds := []string{"1", "2", "3"}
 	for i := range 3 {
-		timeslot := timeslotFactory(
-			timeslotTime(
+		timeslot := testutil.TimeslotFactory(t,
+			testutil.TimeslotTime(t,
 				start.Add(
 					time.Hour*time.Duration(i)),
 				start.Add(
 					time.Hour*(time.Duration(1+i)))),
-			timeslotIds(trainerIds[i], traineeIds[i]))
+			testutil.TimeslotIds(t, trainerIds[i], traineeIds[i]))
 
 		crud.Insert(timeslot)
 		timeslots = append(timeslots, timeslot)
@@ -89,7 +67,7 @@ func TestGetById(t *testing.T) {
 	crud := NewTimeslot(db)
 	var timeslots []model.Timeslot
 	for range 2 {
-		timeslot := timeslotFactory()
+		timeslot := testutil.TimeslotFactory(t)
 		crud.Insert(timeslot)
 		timeslots = append(timeslots, *timeslot)
 	}

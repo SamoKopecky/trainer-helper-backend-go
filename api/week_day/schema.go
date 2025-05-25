@@ -1,12 +1,16 @@
 package weekday
 
 import (
+	"trainer-helper/api"
 	"trainer-helper/model"
 	"trainer-helper/utils"
 )
 
 type weekDayGetRequest struct {
-	WeekId int `query:"week_id"`
+	WeekId *int `query:"week_id"`
+
+	DayDate *utils.Date `query:"day_date"`
+	UserId  *string     `query:"user_id"`
 }
 
 type weekDayPostRequest struct {
@@ -17,13 +21,15 @@ type weekDayPostRequest struct {
 }
 
 func (wdpr weekDayPostRequest) ToModel() model.WeekDay {
-	return *model.BuildWeekDay(wdpr.WeekId, wdpr.UserId, wdpr.DayDate.Time, wdpr.Name)
+	return *model.BuildWeekDay(wdpr.WeekId, wdpr.UserId, wdpr.DayDate.Time, wdpr.Name, nil)
 
 }
 
 type weekDayPutRequest struct {
-	Id   int     `json:"id"`
-	Name *string `json:"name"`
+	Id         int         `json:"id"`
+	Name       *string     `json:"name"`
+	DayDate    *utils.Date `json:"day_date"`
+	TimeslotId *int        `json:"timeslot_id"`
 }
 
 func (wdpr weekDayPutRequest) ToModel() model.WeekDay {
@@ -31,6 +37,8 @@ func (wdpr weekDayPutRequest) ToModel() model.WeekDay {
 		IdModel: model.IdModel{
 			Id: wdpr.Id,
 		},
-		Name: wdpr.Name,
+		Name:       wdpr.Name,
+		TimeslotId: wdpr.TimeslotId,
+		DayDate:    api.DerefDate(wdpr.DayDate),
 	}
 }

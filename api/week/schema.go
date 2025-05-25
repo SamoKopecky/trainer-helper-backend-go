@@ -6,6 +6,16 @@ import (
 	"trainer-helper/utils"
 )
 
+type WeekDuplicatePostRequest struct {
+	TemplateWeekId int `json:"template_week_id"`
+	NewWeekId      int `json:"new_week_id"`
+}
+
+type WeekGetRequest struct {
+	UserId    string     `query:"user_id"`
+	StartDate utils.Date `query:"start_date"`
+}
+
 type weekPostRequest struct {
 	BlockId int    `json:"block_id"`
 	Label   int    `json:"label"`
@@ -24,6 +34,7 @@ func (wpr weekPostRequest) ToModel() model.Week {
 type weekPutRequest struct {
 	Id        int         `json:"id"`
 	StartDate *utils.Date `json:"start_date"`
+	Note      *string     `json:"note"`
 }
 
 func (wpr weekPutRequest) ToModel() model.Week {
@@ -32,5 +43,6 @@ func (wpr weekPutRequest) ToModel() model.Week {
 			Id: wpr.Id,
 		},
 		StartDate: api.DerefDate(wpr.StartDate),
+		Note:      wpr.Note,
 	}
 }

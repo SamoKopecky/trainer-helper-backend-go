@@ -110,24 +110,29 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 			crudExerciseType := crud.NewExerciseType(db)
 			crudBlock := crud.NewBlock(db)
 			crudWeek := crud.NewWeek(db)
+			crudWeekDay := crud.NewWeekDay(db)
+			crudExercise := crud.NewExercise(db)
+			crudWorkSet := crud.NewWorkSet(db)
+
 			iam := fetcher.IAM{
 				AppConfig:  cfg,
 				AuthConfig: fetcher.CreateAuthConfig(cfg)}
 
 			cc := &api.DbContext{Context: c,
-				ExerciseCrud:        crud.NewExercise(db),
+				ExerciseCrud:        crudExercise,
 				TimeslotCrud:        crudTimeslot,
-				WorkSetCrud:         crud.NewWorkSet(db),
+				WorkSetCrud:         crudWorkSet,
 				ExerciseTypeCrud:    crudExerciseType,
 				BlockCrud:           crudBlock,
 				WeekCrud:            crudWeek,
-				WeekDayCrud:         crud.NewWeekDay(db),
+				WeekDayCrud:         crudWeekDay,
 				IAMFetcher:          iam,
-				TimeslotService:     service.Timeslot{Crud: crudTimeslot, Fetcher: iam},
+				TimeslotService:     service.Timeslot{TimeslotCrud: crudTimeslot, WeekDayCrud: crudWeekDay, Fetcher: iam},
 				UserService:         service.User{Fetcher: iam},
 				ExerciseTypeService: service.ExerciseType{Store: crudExerciseType},
 				BlockService:        service.Block{Store: crudBlock},
-				WeekService:         service.Week{WeekStore: crudWeek},
+				WeekService:         service.Week{WeekStore: crudWeek, WeekDayStore: crudWeekDay, ExerciseStore: crudExercise, WorkSetStore: crudWorkSet},
+				ExerciseService:     service.Exercise{Store: crudExercise},
 			}
 
 			return next(cc)
@@ -160,57 +165,62 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	jg.Use(claimContextMiddleware)
 
 	timeslots := jg.Group("/timeslots")
-	timeslots.GET("", timeslot.Get)
+	timeslots.GET("", timeslot.GetMany)
 	timeslots.POST("", timeslot.Post, trainerOnlyMiddleware)
 	timeslots.DELETE("/:id", timeslot.Delete, trainerOnlyMiddleware)
 	timeslots.PUT("", timeslot.Put, trainerOnlyMiddleware)
 	// TODO: Don't use action, use action field in request param
 	timeslots.POST("/undelete/:id", timeslot.PostUndelete, trainerOnlyMiddleware)
+	timeslots.GET("/detailed", timeslot.GetManyEnhanced)
 
 	exercises := jg.Group("/exercises")
-	// TODO: When to use :id param
-	exercises.GET("/:id", exercise.Get)
+	exercises.GET("", exercise.GetMany)
 	exercises.POST("", exercise.Post)
 	exercises.PUT("", exercise.Put)
 	exercises.DELETE("/:id", exercise.Delete)
 	exercises.PUT("/count", exercise.PutCount)
 	exercises.DELETE("/count", exercise.DeleteCount)
 	exercises.POST("/undelete/:id", exercise.PostUndelete)
-	exercises.POST("/duplicate", exercise.PostDuplicate, trainerOnlyMiddleware)
 
 	workSets := jg.Group("/work-sets")
 	workSets.PUT("", work_set.Put)
 	workSets.POST("/undelete", work_set.PostUndelete)
 
 	exerciseTypes := jg.Group("/exercise-types")
-	exerciseTypes.GET("", exercise_type.Get)
+	exerciseTypes.GET("", exercise_type.GetMany)
 	exerciseTypes.POST("", exercise_type.Post, trainerOnlyMiddleware)
 	exerciseTypes.PUT("", exercise_type.Put, trainerOnlyMiddleware)
 	exerciseTypes.POST("/duplicate", exercise_type.PostDuplicate, trainerOnlyMiddleware)
 
 	users := jg.Group("/users")
-	users.GET("", user.Get)
+	users.GET("", user.GetMany)
 	users.POST("", user.Post, trainerOnlyMiddleware)
 	users.DELETE("/:id", user.Delete, trainerOnlyMiddleware)
 	users.PUT("", user.Put, trainerOnlyMiddleware)
 
 	blocks := jg.Group("/blocks")
-	blocks.GET("", block.Get)
+	blocks.GET("", block.GetMany)
 	blocks.POST("", block.Post, trainerOnlyMiddleware)
 	blocks.DELETE("/:id", block.Delete, trainerOnlyMiddleware)
 	blocks.POST("/undelete/:id", block.PostUndelete, trainerOnlyMiddleware)
 
 	weeks := jg.Group("/weeks")
+	weeks.GET("", week.GetFiltered)
+	weeks.GET("/:id", week.Get)
 	weeks.POST("", week.Post, trainerOnlyMiddleware)
 	weeks.PUT("", week.Put, trainerOnlyMiddleware)
 	weeks.DELETE("/:id", week.Delete, trainerOnlyMiddleware)
 	weeks.POST("/undelete/:id", week.PostUndelete, trainerOnlyMiddleware)
+	weeks.POST("/duplicate", week.PostDuplicate, trainerOnlyMiddleware)
 
 	week_days := jg.Group("/week-days")
-	week_days.GET("", weekday.Get)
+	week_days.GET("", weekday.GetMany)
+	week_days.GET("/:id", weekday.Get)
 	week_days.POST("", weekday.Post, trainerOnlyMiddleware)
 	week_days.PUT("", weekday.Put, trainerOnlyMiddleware)
 	week_days.DELETE("/:id", weekday.Delete, trainerOnlyMiddleware)
+	week_days.POST("/undelete/:id", weekday.PostUndelete, trainerOnlyMiddleware)
+	week_days.DELETE("/timeslots/:id", weekday.DeleteTimeslot, trainerOnlyMiddleware)
 
 	e.Logger.Fatal(e.Start(":2001"))
 }

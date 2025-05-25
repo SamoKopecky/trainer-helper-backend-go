@@ -3,7 +3,6 @@ package timeslot
 import (
 	"testing"
 	"time"
-	"trainer-helper/model"
 )
 
 func TestHumanTime(t *testing.T) {
@@ -23,42 +22,5 @@ func TestHumanDate(t *testing.T) {
 
 	if got != want {
 		t.Errorf("got %s, want %s", got, want)
-	}
-}
-
-func TestToModelNil(t *testing.T) {
-	params := timeslotPutParams{
-		Id:   1,
-		Name: nil,
-	}
-	got := params.ToModel()
-	want := model.Timeslot{
-		IdModel: model.IdModel{
-			Id: 1,
-		},
-		Name: "",
-	}
-
-	if got != want {
-		t.Errorf("got %+v, want %+v", got, want)
-	}
-}
-
-func TestToModelNotNil(t *testing.T) {
-	name := "name"
-	params := timeslotPutParams{
-		Id:   1,
-		Name: &name,
-	}
-	got := params.ToModel()
-	want := model.Timeslot{
-		IdModel: model.IdModel{
-			Id: 1,
-		},
-		Name: "name",
-	}
-
-	if got != want {
-		t.Errorf("got %+v, want %+v", got, want)
 	}
 }

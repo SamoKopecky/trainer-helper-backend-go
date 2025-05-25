@@ -52,3 +52,11 @@ func (w Week) GetPreviousBlockId(userId string) (time.Time, error) {
 
 	return week.StartDate, err
 }
+
+func (w Week) GetClosestToDate(startDate time.Time, userId string) (model.Week, error) {
+	var week model.Week
+	err := w.db.NewRaw("SELECT * FROM week WHERE week.user_id = ? ORDER BY ? <-> week.start_date LIMIT 1", userId, startDate).
+		Scan(context.Background(), &week)
+
+	return week, err
+}

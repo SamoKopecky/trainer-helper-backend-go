@@ -83,29 +83,20 @@ func (_c *MockWorkSet_Delete_Call) RunAndReturn(run func(modelId int) error) *Mo
 }
 
 // DeleteMany provides a mock function for the type MockWorkSet
-func (_mock *MockWorkSet) DeleteMany(ids []int) (int, error) {
-	ret := _mock.Called(ids)
+func (_mock *MockWorkSet) DeleteMany(modelIds []int) error {
+	ret := _mock.Called(modelIds)
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeleteMany")
 	}
 
-	var r0 int
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func([]int) (int, error)); ok {
-		return returnFunc(ids)
-	}
-	if returnFunc, ok := ret.Get(0).(func([]int) int); ok {
-		r0 = returnFunc(ids)
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func([]int) error); ok {
+		r0 = returnFunc(modelIds)
 	} else {
-		r0 = ret.Get(0).(int)
+		r0 = ret.Error(0)
 	}
-	if returnFunc, ok := ret.Get(1).(func([]int) error); ok {
-		r1 = returnFunc(ids)
-	} else {
-		r1 = ret.Error(1)
-	}
-	return r0, r1
+	return r0
 }
 
 // MockWorkSet_DeleteMany_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteMany'
@@ -114,24 +105,24 @@ type MockWorkSet_DeleteMany_Call struct {
 }
 
 // DeleteMany is a helper method to define mock.On call
-//   - ids
-func (_e *MockWorkSet_Expecter) DeleteMany(ids interface{}) *MockWorkSet_DeleteMany_Call {
-	return &MockWorkSet_DeleteMany_Call{Call: _e.mock.On("DeleteMany", ids)}
+//   - modelIds
+func (_e *MockWorkSet_Expecter) DeleteMany(modelIds interface{}) *MockWorkSet_DeleteMany_Call {
+	return &MockWorkSet_DeleteMany_Call{Call: _e.mock.On("DeleteMany", modelIds)}
 }
 
-func (_c *MockWorkSet_DeleteMany_Call) Run(run func(ids []int)) *MockWorkSet_DeleteMany_Call {
+func (_c *MockWorkSet_DeleteMany_Call) Run(run func(modelIds []int)) *MockWorkSet_DeleteMany_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].([]int))
 	})
 	return _c
 }
 
-func (_c *MockWorkSet_DeleteMany_Call) Return(n int, err error) *MockWorkSet_DeleteMany_Call {
-	_c.Call.Return(n, err)
+func (_c *MockWorkSet_DeleteMany_Call) Return(err error) *MockWorkSet_DeleteMany_Call {
+	_c.Call.Return(err)
 	return _c
 }
 
-func (_c *MockWorkSet_DeleteMany_Call) RunAndReturn(run func(ids []int) (int, error)) *MockWorkSet_DeleteMany_Call {
+func (_c *MockWorkSet_DeleteMany_Call) RunAndReturn(run func(modelIds []int) error) *MockWorkSet_DeleteMany_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -187,6 +178,60 @@ func (_c *MockWorkSet_Get_Call) Return(workSets []model.WorkSet, err error) *Moc
 }
 
 func (_c *MockWorkSet_Get_Call) RunAndReturn(run func() ([]model.WorkSet, error)) *MockWorkSet_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetById provides a mock function for the type MockWorkSet
+func (_mock *MockWorkSet) GetById(modelId int) (model.WorkSet, error) {
+	ret := _mock.Called(modelId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetById")
+	}
+
+	var r0 model.WorkSet
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(int) (model.WorkSet, error)); ok {
+		return returnFunc(modelId)
+	}
+	if returnFunc, ok := ret.Get(0).(func(int) model.WorkSet); ok {
+		r0 = returnFunc(modelId)
+	} else {
+		r0 = ret.Get(0).(model.WorkSet)
+	}
+	if returnFunc, ok := ret.Get(1).(func(int) error); ok {
+		r1 = returnFunc(modelId)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWorkSet_GetById_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetById'
+type MockWorkSet_GetById_Call struct {
+	*mock.Call
+}
+
+// GetById is a helper method to define mock.On call
+//   - modelId
+func (_e *MockWorkSet_Expecter) GetById(modelId interface{}) *MockWorkSet_GetById_Call {
+	return &MockWorkSet_GetById_Call{Call: _e.mock.On("GetById", modelId)}
+}
+
+func (_c *MockWorkSet_GetById_Call) Run(run func(modelId int)) *MockWorkSet_GetById_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockWorkSet_GetById_Call) Return(model1 model.WorkSet, err error) *MockWorkSet_GetById_Call {
+	_c.Call.Return(model1, err)
+	return _c
+}
+
+func (_c *MockWorkSet_GetById_Call) RunAndReturn(run func(modelId int) (model.WorkSet, error)) *MockWorkSet_GetById_Call {
 	_c.Call.Return(run)
 	return _c
 }
