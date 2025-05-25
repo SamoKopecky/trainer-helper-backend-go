@@ -214,6 +214,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 
 	week_days := jg.Group("/week-days")
 	week_days.GET("", weekday.GetMany)
+	week_days.GET("/:id", weekday.Get)
 	week_days.POST("", weekday.Post, trainerOnlyMiddleware)
 	week_days.PUT("", weekday.Put, trainerOnlyMiddleware)
 	week_days.DELETE("/:id", weekday.Delete, trainerOnlyMiddleware)

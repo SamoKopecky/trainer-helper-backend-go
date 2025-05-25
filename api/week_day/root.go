@@ -3,11 +3,28 @@ package weekday
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"trainer-helper/api"
 	"trainer-helper/model"
 
 	"github.com/labstack/echo/v4"
 )
+
+func Get(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	id, err := strconv.Atoi(cc.Param("id"))
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	weekDay, err := cc.WeekDayCrud.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	return cc.JSON(http.StatusOK, weekDay)
+}
 
 func GetMany(c echo.Context) error {
 	cc := c.(*api.DbContext)
