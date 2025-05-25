@@ -4,12 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"strconv"
 	"trainer-helper/api"
 
 	"github.com/labstack/echo/v4"
 )
 
-func Get(c echo.Context) error {
+func GetFiltered(c echo.Context) error {
 	cc := c.(*api.DbContext)
 	params, err := api.BindParams[WeekGetRequest](cc)
 	if err != nil {
@@ -26,6 +27,23 @@ func Get(c echo.Context) error {
 	}
 
 	return cc.JSON(http.StatusOK, week)
+}
+
+func Get(c echo.Context) error {
+	cc := c.(*api.DbContext)
+
+	id, err := strconv.Atoi(cc.Param("id"))
+	if err != nil {
+		return cc.BadRequest(err)
+	}
+
+	weekDay, err := cc.WeekCrud.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	return cc.JSON(http.StatusOK, weekDay)
+
 }
 
 func Post(c echo.Context) error {

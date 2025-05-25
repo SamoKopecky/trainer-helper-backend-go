@@ -34,6 +34,7 @@ func (wpr weekPostRequest) ToModel() model.Week {
 type weekPutRequest struct {
 	Id        int         `json:"id"`
 	StartDate *utils.Date `json:"start_date"`
+	Note      *string     `json:"note"`
 }
 
 func (wpr weekPutRequest) ToModel() model.Week {
@@ -42,5 +43,6 @@ func (wpr weekPutRequest) ToModel() model.Week {
 			Id: wpr.Id,
 		},
 		StartDate: api.DerefDate(wpr.StartDate),
+		Note:      wpr.Note,
 	}
 }

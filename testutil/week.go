@@ -38,7 +38,7 @@ func WeekId(t *testing.T, id int) utils.FactoryOption[model.Week] {
 
 func WeekFactory(t *testing.T, options ...utils.FactoryOption[model.Week]) *model.Week {
 	t.Helper()
-	week := model.BuildWeek(1, time.Now(), 0, "1")
+	week := model.BuildWeek(1, time.Now(), 0, "1", nil)
 	week.Id = utils.RandomInt()
 	for _, option := range options {
 		option(week)

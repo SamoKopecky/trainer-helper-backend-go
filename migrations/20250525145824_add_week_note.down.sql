@@ -1,0 +1,2 @@
+ALTER TABLE week
+DROP COLUMN note;

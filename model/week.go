@@ -16,16 +16,18 @@ type Week struct {
 	UserId    string    `json:"user_id"`
 	StartDate time.Time `json:"start_date"`
 	Label     int       `json:"label"`
+	Note      *string   `json:"note"`
 
 	// Not used in DB model
 	WeekDays []WeekDay `bun:"rel:has-many,join:id=week_id" json:"-"`
 }
 
-func BuildWeek(blockId int, startDate time.Time, label int, userId string) *Week {
+func BuildWeek(blockId int, startDate time.Time, label int, userId string, note *string) *Week {
 	return &Week{
 		BlockId:   blockId,
 		StartDate: startDate,
 		Label:     label,
 		UserId:    userId,
+		Note:      note,
 	}
 }

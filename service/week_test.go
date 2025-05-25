@@ -27,7 +27,7 @@ func TestCreateWeek_NotFirst(t *testing.T) {
 		return nil
 	})
 
-	newWeek := model.BuildWeek(1, nextMonday, 1, "1")
+	newWeek := model.BuildWeek(1, nextMonday, 1, "1", nil)
 	// Act
 	if err := service.CreateWeek(newWeek, false); err != nil {
 		t.Fatalf("Failed to create weeks: %v", err)
@@ -53,7 +53,7 @@ func TestCreateWeek__NoLastWeek__NotFirst(t *testing.T) {
 		return nil
 	})
 
-	newWeek := model.BuildWeek(1, time.Time{}, 1, "1")
+	newWeek := model.BuildWeek(1, time.Time{}, 1, "1", nil)
 	// Act
 	if err := service.CreateWeek(newWeek, false); err != nil {
 		t.Fatalf("Failed to create weeks: %v", err)
@@ -78,7 +78,7 @@ func TestCreateWeek__First(t *testing.T) {
 		return nil
 	})
 
-	newWeek := model.BuildWeek(1, nextMonday, 1, "1")
+	newWeek := model.BuildWeek(1, nextMonday, 1, "1", nil)
 	// Act
 	if err := service.CreateWeek(newWeek, true); err != nil {
 		t.Fatalf("Failed to create weeks: %v", err)
