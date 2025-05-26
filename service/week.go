@@ -101,6 +101,11 @@ func (w Week) duplicateWeekDays(templateWeekId, newWeekId int) (newWeekDays []mo
 	if err != nil {
 		return
 	}
+	templateWeek, err := w.WeekStore.GetById(templateWeekId)
+	if err != nil {
+		return
+	}
+	dateDiffDays := newWeek.StartDate.Sub(templateWeek.StartDate).Hours() / 24
 
 	templateWeekDays, err = w.WeekDayStore.GetByWeekIdWithDeleted(templateWeekId)
 	if err != nil {
@@ -114,7 +119,7 @@ func (w Week) duplicateWeekDays(templateWeekId, newWeekId int) (newWeekDays []mo
 		weekDay.DeletedAt = nil
 		weekDay.WeekId = newWeekId
 		weekDay.TimeslotId = nil
-		weekDay.DayDate = newWeek.StartDate.AddDate(0, 0, i)
+		weekDay.DayDate = weekDay.DayDate.AddDate(0, 0, int(dateDiffDays))
 		newWeekDays[i] = weekDay
 	}
 

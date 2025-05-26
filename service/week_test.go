@@ -1,6 +1,7 @@
 package service
 
 import (
+	"slices"
 	"testing"
 	"time"
 	"trainer-helper/model"
@@ -91,44 +92,71 @@ func TestCreateWeek__First(t *testing.T) {
 }
 
 func TestDuplicateWeekDays(t *testing.T) {
-	w := store.NewMockWeek(t)
-	wd := store.NewMockWeekDay(t)
-	service := Week{WeekStore: w, WeekDayStore: wd}
-	now := time.Now()
-	week := testutil.WeekFactory(t, testutil.WeekDate(t, now))
-
-	templateWeek := testutil.WeekFactory(t)
-	weekDays := make([]model.WeekDay, 7)
-	for i := range 7 {
-		weekDays[i] = *testutil.WeekDayFactory(t,
-			testutil.WeekDayIds(t, "1", templateWeek.Id))
-	}
-	timelostId := 2
-	weekDays[0].TimeslotId = &timelostId
-
-	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
-	w.EXPECT().GetById(week.Id).Return(*week, nil)
-	wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
-
-	var insertedArgs []model.WeekDay
-	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
-		insertedArgs = *models
-		return nil
-	})
-	createWeekDays, templateWeekDays, err := service.duplicateWeekDays(templateWeek.Id, week.Id)
-
-	assert.Nil(t, err)
-	assert.Equal(t, weekDays, templateWeekDays)
-
-	for i := range 7 {
-		weekDays[i].Id = 0
-		weekDays[i].WeekId = week.Id
-		weekDays[i].DayDate = now.AddDate(0, 0, i)
-		weekDays[i].TimeslotId = nil
+	testCases := []struct {
+		name         string
+		templateDays int
+	}{
+		{
+			name:         "Template before new week",
+			templateDays: -14,
+		},
+		{
+			name:         "Template after new week",
+			templateDays: 14,
+		},
 	}
 
-	assert.Equal(t, weekDays, insertedArgs)
-	assert.Equal(t, weekDays, createWeekDays)
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			w := store.NewMockWeek(t)
+			wd := store.NewMockWeekDay(t)
+
+			service := Week{WeekStore: w, WeekDayStore: wd}
+			now := time.Now()
+			week := testutil.WeekFactory(t, testutil.WeekDate(t, now))
+
+			templateWeek := testutil.WeekFactory(t, testutil.WeekDate(t, now.AddDate(0, 0, tc.templateDays)))
+			var weekDays []model.WeekDay
+			for i := range 7 {
+				if slices.Contains([]int{2, 3, 4, 6}, i) {
+					continue
+				}
+				weekDays = append(weekDays, *testutil.WeekDayFactory(t,
+					testutil.WeekDayIds(t, "1", templateWeek.Id),
+					testutil.WeekDayTime(t, now.AddDate(0, 0, tc.templateDays+i))))
+			}
+			timelostId := 2
+			weekDays[0].TimeslotId = &timelostId
+
+			wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
+			w.EXPECT().GetById(week.Id).Return(*week, nil)
+			w.EXPECT().GetById(templateWeek.Id).Return(*templateWeek, nil)
+			wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
+
+			var insertedArgs []model.WeekDay
+			wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
+				insertedArgs = *models
+				return nil
+			})
+			createWeekDays, templateWeekDays, err := service.duplicateWeekDays(templateWeek.Id, week.Id)
+
+			assert.Nil(t, err)
+			assert.Equal(t, weekDays, templateWeekDays)
+
+			for i := range 3 {
+				weekDays[i].Id = 0
+				weekDays[i].WeekId = week.Id
+				weekDays[i].TimeslotId = nil
+			}
+			weekDays[0].DayDate = weekDays[0].DayDate.AddDate(0, 0, -tc.templateDays)
+			weekDays[1].DayDate = weekDays[1].DayDate.AddDate(0, 0, -tc.templateDays)
+			weekDays[2].DayDate = weekDays[2].DayDate.AddDate(0, 0, -tc.templateDays)
+
+			assert.Equal(t, weekDays, insertedArgs)
+			assert.Equal(t, weekDays, createWeekDays)
+		})
+	}
+
 }
 
 func TestDuplicateWeekDaysPublic(t *testing.T) {
@@ -168,6 +196,7 @@ func TestDuplicateWeekDaysPublic(t *testing.T) {
 
 	wd.EXPECT().DeleteByWeekId(week.Id).Return(nil)
 	w.EXPECT().GetById(week.Id).Return(*week, nil)
+	w.EXPECT().GetById(templateWeek.Id).Return(*templateWeek, nil)
 	wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
 	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
 		for i, _ := range *models {
