@@ -471,3 +471,50 @@ func (_c *MockExerciseType_Update_Call) RunAndReturn(run func(model1 *model.Exer
 	_c.Call.Return(run)
 	return _c
 }
+
+// UpdateMediaFile provides a mock function for the type MockExerciseType
+func (_mock *MockExerciseType) UpdateMediaFile(id int, path string, originalName string) error {
+	ret := _mock.Called(id, path, originalName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateMediaFile")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(int, string, string) error); ok {
+		r0 = returnFunc(id, path, originalName)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockExerciseType_UpdateMediaFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateMediaFile'
+type MockExerciseType_UpdateMediaFile_Call struct {
+	*mock.Call
+}
+
+// UpdateMediaFile is a helper method to define mock.On call
+//   - id
+//   - path
+//   - originalName
+func (_e *MockExerciseType_Expecter) UpdateMediaFile(id interface{}, path interface{}, originalName interface{}) *MockExerciseType_UpdateMediaFile_Call {
+	return &MockExerciseType_UpdateMediaFile_Call{Call: _e.mock.On("UpdateMediaFile", id, path, originalName)}
+}
+
+func (_c *MockExerciseType_UpdateMediaFile_Call) Run(run func(id int, path string, originalName string)) *MockExerciseType_UpdateMediaFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockExerciseType_UpdateMediaFile_Call) Return(err error) *MockExerciseType_UpdateMediaFile_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockExerciseType_UpdateMediaFile_Call) RunAndReturn(run func(id int, path string, originalName string) error) *MockExerciseType_UpdateMediaFile_Call {
+	_c.Call.Return(run)
+	return _c
+}

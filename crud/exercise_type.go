@@ -27,3 +27,15 @@ func (et ExerciseType) GetByUserId(userId string) (res []model.ExerciseType, err
 func (et ExerciseType) Undelete(modelId int) error {
 	return ErrNotImplemented
 }
+
+func (et ExerciseType) UpdateMediaFile(id int, path, originalName string) error {
+	_, err := et.db.NewUpdate().
+		Model((*model.ExerciseType)(nil)).
+		Set("file_path = ?", path).
+		Set("original_file_name = ?", originalName).
+		Where("id = ?", id).
+		Exec(context.Background())
+
+	return err
+
+}
