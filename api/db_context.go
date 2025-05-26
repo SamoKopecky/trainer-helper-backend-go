@@ -3,6 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"trainer-helper/config"
 	"trainer-helper/fetcher"
 	"trainer-helper/schema"
 	"trainer-helper/service"
@@ -32,6 +33,8 @@ type DbContext struct {
 	ExerciseService     service.Exercise
 
 	Claims *schema.JwtClaims
+
+	Config *config.Config
 }
 
 func (c DbContext) BadRequest(err error) error {

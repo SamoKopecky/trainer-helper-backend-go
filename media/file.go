@@ -4,10 +4,11 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
+	"path/filepath"
 	"trainer-helper/utils"
 )
 
-func SaveFile(file *multipart.FileHeader) (name string, err error) {
+func SaveFile(file *multipart.FileHeader, rootFilePath string) (name string, err error) {
 	name = utils.RandomUUID()
 
 	src, err := file.Open()
@@ -17,7 +18,7 @@ func SaveFile(file *multipart.FileHeader) (name string, err error) {
 	defer src.Close()
 
 	// Destination
-	dst, err := os.Create(name)
+	dst, err := os.Create(filepath.Join(rootFilePath, name))
 	if err != nil {
 		return
 	}

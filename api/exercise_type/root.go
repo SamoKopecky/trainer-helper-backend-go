@@ -2,6 +2,7 @@ package exercise_type
 
 import (
 	"errors"
+	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -45,7 +46,7 @@ func Post(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	newModel := model.BuildExerciseType(cc.Claims.Subject, params.Name, params.Note, params.YoutubeLink, params.FilePath, params.MediaType)
+	newModel := model.BuildExerciseType(cc.Claims.Subject, params.Name, params.Note, params.YoutubeLink, params.FilePath, nil, params.MediaType)
 	err = cc.ExerciseTypeCrud.Insert(newModel)
 	if err != nil {
 		return err
@@ -71,12 +72,12 @@ func PostMedia(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	fileId, err := media.SaveFile(file)
+	fileId, err := media.SaveFile(file, cc.Config.MediaFileRepository)
 	if err != nil {
 		return err
 	}
 
-	err = cc.ExerciseTypeCrud.UpdateMediaFile(id, fileId)
+	err = cc.ExerciseTypeCrud.UpdateMediaFile(id, fileId, file.Filename)
 	if err != nil {
 		return err
 	}
@@ -96,12 +97,17 @@ func GetMedia(c echo.Context) error {
 	if err != nil {
 		return cc.BadRequest(err)
 	}
+	if model.FilePath == nil {
+		return cc.NoContent(http.StatusOK)
+	}
 
-	fileData, err := os.ReadFile(filepath.Join("./", *model.FilePath))
+	fileData, err := os.ReadFile(filepath.Join(cc.Config.MediaFileRepository, *model.FilePath))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Could not read file")
 	}
 
-	// mediaType := http.DetectContentType(fileData)
-	return cc.Blob(http.StatusOK, "video/quicktime", fileData)
+	mediaType := mime.TypeByExtension(filepath.Ext(*model.OriginalFileName))
+	return cc.Blob(http.StatusOK, mediaType, fileData)
 }
+
+// TODO: Add notifaction when file upload succesful
