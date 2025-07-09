@@ -31,7 +31,6 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 	if err != nil {
 		return err
 	}
-	println(resultJson)
 
 	var exercises []schema.RawExercise
 	err = json.Unmarshal([]byte(resultJson), &exercises)
@@ -40,7 +39,6 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 	}
 
 	utils.PrettyPrint(exercises)
-	println(weekDayId)
 
 	err = ai.ExerciseStore.DeleteByWeekDayId(weekDayId)
 	if err != nil {
