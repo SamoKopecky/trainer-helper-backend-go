@@ -23,7 +23,7 @@ type Config struct {
 
 	MediaFileRepository string `env:"FILE_REPOSITORY" envDefault:"./files"`
 
-t	ClaudeToken string `env:"CLAUDE_TOKEN"`
+	ClaudeToken string `env:"CLAUDE_TOKEN"`
 }
 
 func (c Config) GetDSN() string {
