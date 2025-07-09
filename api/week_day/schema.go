@@ -6,6 +6,10 @@ import (
 	"trainer-helper/utils"
 )
 
+type weekDayPostFromRawRequest struct {
+	RawData string `json:"raw_data"`
+}
+
 type weekDayGetRequest struct {
 	WeekId *int `query:"week_id"`
 

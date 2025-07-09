@@ -133,6 +133,7 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 				BlockService:        service.Block{Store: crudBlock},
 				WeekService:         service.Week{WeekStore: crudWeek, WeekDayStore: crudWeekDay, ExerciseStore: crudExercise, WorkSetStore: crudWorkSet},
 				ExerciseService:     service.Exercise{Store: crudExercise},
+				AIService:           service.AI{Fetcher: fetcher.AI{AppConfig: cfg}, ExerciseTypeStore: crudExerciseType},
 				Config:              cfg,
 			}
 
@@ -222,6 +223,7 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	week_days.POST("", weekday.Post, trainerOnlyMiddleware)
 	week_days.PUT("", weekday.Put, trainerOnlyMiddleware)
 	week_days.DELETE("/:id", weekday.Delete, trainerOnlyMiddleware)
+	week_days.POST("/from-raw", weekday.PostFromRaw, trainerOnlyMiddleware)
 	week_days.POST("/undelete/:id", weekday.PostUndelete, trainerOnlyMiddleware)
 	week_days.DELETE("/timeslots/:id", weekday.DeleteTimeslot, trainerOnlyMiddleware)
 
