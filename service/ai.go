@@ -38,8 +38,6 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 		return err
 	}
 
-	utils.PrettyPrint(exercises)
-
 	err = ai.ExerciseStore.DeleteByWeekDayId(weekDayId)
 	if err != nil {
 		// TODO: raise error and stop process
