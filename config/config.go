@@ -22,6 +22,8 @@ type Config struct {
 	KeycloakRealm             string `env:"KC_REALM" envDefault:"trainer-helper"`
 
 	MediaFileRepository string `env:"FILE_REPOSITORY" envDefault:"./files"`
+
+	ClaudeToken string `env:"CLAUDE_TOKEN"`
 }
 
 func (c Config) GetDSN() string {

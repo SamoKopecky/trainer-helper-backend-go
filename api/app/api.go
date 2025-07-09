@@ -133,8 +133,13 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 				BlockService:        service.Block{Store: crudBlock},
 				WeekService:         service.Week{WeekStore: crudWeek, WeekDayStore: crudWeekDay, ExerciseStore: crudExercise, WorkSetStore: crudWorkSet},
 				ExerciseService:     service.Exercise{Store: crudExercise},
-				AIService:           service.AI{Fetcher: fetcher.AI{AppConfig: cfg}, ExerciseTypeStore: crudExerciseType},
-				Config:              cfg,
+				AIService: service.AI{
+					Fetcher:           fetcher.AI{AppConfig: cfg},
+					ExerciseTypeStore: crudExerciseType,
+					ExerciseStore:     crudExercise,
+					WorkSetStore:      crudWorkSet},
+
+				Config: cfg,
 			}
 
 			return next(cc)

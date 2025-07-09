@@ -8,6 +8,6 @@ type RawWorkSet struct {
 
 type RawExercise struct {
 	Note         string       `json:"note"`
-	ExerciseName string       `json:"exercise"`
+	ExerciseName string       `json:"exercise_name"`
 	WorkSets     []RawWorkSet `json:"work_sets"`
 }

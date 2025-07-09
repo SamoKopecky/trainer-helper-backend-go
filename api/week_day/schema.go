@@ -7,7 +7,8 @@ import (
 )
 
 type weekDayPostFromRawRequest struct {
-	RawData string `json:"raw_data"`
+	RawData   string `json:"raw_data"`
+	WeekDayId int    `json:"week_day_id"`
 }
 
 type weekDayGetRequest struct {

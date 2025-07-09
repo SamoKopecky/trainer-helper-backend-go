@@ -25,6 +25,7 @@ Give me the JSON output only no extra spaces no identation so that I can machine
 If there are mulitple exercise like C1 C2 and C3 Split them so that each exercise is its own exercise
 If there is Počet sérií a nubmer but only one itensity and repetitions, copy the work set to the set count
 Always provide RPE, if its missing use null
+If you split exercises of similiar cateogry like C1 and C2, also split the work sets and intensity and number of sets RPE correcly between the two exercises
 Use only these exercise names translated from the slovak language. However if the exercise name is not in the list just use the original name.
 %s
 
@@ -92,7 +93,7 @@ Here is the raw text:
 func (ai AI) RawStringToJson(exerciseList []string, rawString string) (result string, err error) {
 	client := anthropic.NewClient(
 		// TODO: Config
-		option.WithAPIKey(""),
+		option.WithAPIKey(ai.AppConfig.ClaudeToken),
 	)
 	completePrompt := fmt.Sprintf(PROMPT, strings.Join(exerciseList, ", "), rawString)
 
