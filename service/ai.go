@@ -15,10 +15,10 @@ type AI struct {
 	WorkSetStore      store.WorkSet
 }
 
-func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) error {
+func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) (newExercises []model.Exercise, err error) {
 	exerciseTypes, err := ai.ExerciseTypeStore.GetByUserId(trainerId)
 	if err != nil {
-		return err
+		return
 	}
 	exericseNames := make([]string, len(exerciseTypes))
 
@@ -28,19 +28,19 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 
 	resultJson, err := ai.Fetcher.RawStringToJson(exericseNames, rawString)
 	if err != nil {
-		return err
+		return
 	}
 
 	var exercises []schema.RawExercise
 	err = json.Unmarshal([]byte(resultJson), &exercises)
 	if err != nil {
-		return err
+		return
 	}
 
 	err = ai.ExerciseStore.DeleteByWeekDayId(weekDayId)
 	if err != nil {
 		// TODO: raise error and stop process
-		return err
+		return
 	}
 
 	for i, exercise := range exercises {
@@ -49,25 +49,27 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 			Note:      &exercise.Note,
 			GroupId:   i + 1,
 		}
-		err := ai.ExerciseStore.Insert(&newExercise)
+		err = ai.ExerciseStore.Insert(&newExercise)
 		if err != nil {
-			return err
+			return
 		}
 		newWorkSets := make([]model.WorkSet, len(exercise.WorkSets))
-		for _, work_set := range exercise.WorkSets {
+		for j, work_set := range exercise.WorkSets {
 			newWorkSet := model.WorkSet{
 				Intensity:  work_set.Intensity,
 				ExerciseId: newExercise.Id,
 				Reps:       work_set.Reps,
 				Rpe:        work_set.Rpe,
 			}
-			newWorkSets = append(newWorkSets, newWorkSet)
+			newWorkSets[j] = newWorkSet
 		}
 		err = ai.WorkSetStore.InsertMany(&newWorkSets)
 		if err != nil {
-			return err
+			return
 		}
+		newExercise.WorkSets = newWorkSets
+		newExercises = append(newExercises, newExercise)
 	}
 
-	return nil
+	return
 }

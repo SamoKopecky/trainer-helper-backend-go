@@ -51,7 +51,7 @@ kc-export:
 
 # Run app in dev mode
 run:
-	APP_ENV="dev" APP_KC_ADMIN_CLIENT_SECRET="0F32CR8bzQAMgLCYAR6pa2HbksVViCMc" air -- --debug
+	air -- --debug
 
 # Add a new migration
 add-migration:

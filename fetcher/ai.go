@@ -92,7 +92,6 @@ Here is the raw text:
 
 func (ai AI) RawStringToJson(exerciseList []string, rawString string) (result string, err error) {
 	client := anthropic.NewClient(
-		// TODO: Config
 		option.WithAPIKey(ai.AppConfig.ClaudeToken),
 	)
 	completePrompt := fmt.Sprintf(PROMPT, strings.Join(exerciseList, ", "), rawString)

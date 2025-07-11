@@ -15,10 +15,10 @@ func PostFromRaw(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 	trainerId := cc.Claims.Subject
-	err = cc.AIService.GenerateWeekDay(trainerId, params.RawData, params.WeekDayId)
+	exercises, err := cc.AIService.GenerateWeekDay(trainerId, params.RawData, params.WeekDayId)
 	if err != nil {
 		return err
 	}
 
-	return cc.NoContent(http.StatusCreated)
+	return cc.JSON(http.StatusCreated, exercises)
 }
