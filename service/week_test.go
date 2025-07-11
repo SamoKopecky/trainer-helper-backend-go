@@ -199,7 +199,7 @@ func TestDuplicateWeekDaysPublic(t *testing.T) {
 	w.EXPECT().GetById(templateWeek.Id).Return(*templateWeek, nil)
 	wd.EXPECT().GetByWeekIdWithDeleted(templateWeek.Id).Return(weekDays, nil)
 	wd.EXPECT().InsertMany(mock.Anything).RunAndReturn(func(models *[]model.WeekDay) error {
-		for i, _ := range *models {
+		for i := range *models {
 			(*models)[i].Id = utils.RandomInt()
 			newWeekDayIds = append(newWeekDayIds, (*models)[i].Id)
 		}

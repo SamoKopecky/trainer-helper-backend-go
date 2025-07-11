@@ -28,6 +28,7 @@ If there is , separated Počet opakovaní use each value for one work set so for
 6,4 is one work set with 6 repeteions other with 4
 Always provide RPE, if its missing use null
 If you split exercises of similiar cateogry like C1 and C2, also split the work sets and intensity and number of sets RPE correcly between the two exercises
+Use only decimals for RPE and only use .5 or whole numbers
 Use only these exercise names translated from the slovak language. However if the exercise name is not in the list just use the original name.
 %s
 
@@ -65,7 +66,7 @@ Here is the schema:
               "description": "The intensity of the set, represented as a string (e.g., weight, percentage)."
             },
             "rpe": {
-              "type": "integer",
+              "type": "string",
               "description": "The Rate of Perceived Exertion (RPE) for the set.",
               "minimum": 1,
               "maximum": 10

@@ -10,13 +10,13 @@ type WorkSet struct {
 	Timestamp
 	DeletedTimestamp
 
-	ExerciseId int    `json:"exercise_id"`
-	Reps       int    `json:"reps"`
-	Intensity  string `json:"intensity"`
-	Rpe        *int   `json:"rpe"`
+	ExerciseId int     `json:"exercise_id"`
+	Reps       int     `json:"reps"`
+	Intensity  string  `json:"intensity"`
+	Rpe        *string `json:"rpe"`
 }
 
-func BuildWorkSet(exerciseId, reps int, rpe *int, intensity string) *WorkSet {
+func BuildWorkSet(exerciseId, reps int, rpe *string, intensity string) *WorkSet {
 	return &WorkSet{
 		ExerciseId: exerciseId,
 		Reps:       reps,

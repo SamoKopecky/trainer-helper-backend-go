@@ -15,8 +15,7 @@ func WorkSetExerciseId(t *testing.T, exerciseId int) utils.FactoryOption[model.W
 
 func WorkSetFactory(t *testing.T, options ...utils.FactoryOption[model.WorkSet]) *model.WorkSet {
 	t.Helper()
-	rpe := utils.RandomInt()
-	ws := model.BuildWorkSet(utils.RandomInt(), utils.RandomInt(), &rpe, "10Kg")
+	ws := model.BuildWorkSet(utils.RandomInt(), utils.RandomInt(), nil, "10Kg")
 	for _, option := range options {
 		option(ws)
 	}

@@ -46,11 +46,7 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 	}
 
 	for i, rawExercise := range exercises {
-		newExercise := model.Exercise{
-			WeekDayId: weekDayId,
-			Note:      &rawExercise.Note,
-			GroupId:   i + 1,
-		}
+		newExercise := rawExercise.ToModel(weekDayId, i+1)
 		if exerciseTypeId, ok := exericseNames[rawExercise.ExerciseName]; ok {
 			newExercise.ExerciseTypeId = &exerciseTypeId
 		}
@@ -60,14 +56,8 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 			return
 		}
 		newWorkSets := make([]model.WorkSet, len(rawExercise.WorkSets))
-		for j, work_set := range rawExercise.WorkSets {
-			newWorkSet := model.WorkSet{
-				Intensity:  work_set.Intensity,
-				ExerciseId: newExercise.Id,
-				Reps:       work_set.Reps,
-				Rpe:        work_set.Rpe,
-			}
-			newWorkSets[j] = newWorkSet
+		for j, workSet := range rawExercise.WorkSets {
+			newWorkSets[j] = workSet.ToModel(newExercise.Id)
 		}
 		err = ai.WorkSetStore.InsertMany(&newWorkSets)
 		if err != nil {

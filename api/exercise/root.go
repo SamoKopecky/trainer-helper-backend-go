@@ -52,7 +52,7 @@ func Post(c echo.Context) error {
 	const workSetCount = 1
 	newWorkSets := make([]model.WorkSet, workSetCount)
 	for i := range workSetCount {
-		newWorkSets[i] = *model.BuildWorkSet(newExercise.Id, 0, (*int)(nil), "-")
+		newWorkSets[i] = *model.BuildWorkSet(newExercise.Id, 0, nil, "-")
 	}
 	err = cc.WorkSetCrud.InsertMany(&newWorkSets)
 	if err != nil {

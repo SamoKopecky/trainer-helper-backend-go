@@ -15,7 +15,7 @@ const migrationPath = "file://migrations"
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Print("Error loading .env file: %v. Continuing without .env", err)
+		log.Printf("Error loading .env file: %v. Continuing without .env", err)
 	}
 	cfg := config.GetConfig()
 	debug := flag.Bool("debug", false, "Show database queries")
