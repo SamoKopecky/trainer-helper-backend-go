@@ -16,13 +16,24 @@ func Put(c echo.Context) error {
 		return cc.BadRequest(err)
 	}
 
-	models := make([]model.WorkSet, len(params))
-	for i, param := range params {
-		models[i] = param.ToModel()
+	if len(params) == 1 {
+		model := params[0].ToModel()
+		err = cc.WorkSetCrud.Update(&model)
+		if err != nil {
+			return err
+		}
+
+	} else {
+		models := make([]model.WorkSet, len(params))
+		for i, param := range params {
+			models[i] = param.ToModel()
+		}
+		err = cc.WorkSetCrud.UpdateMany(models)
+		if err != nil {
+			return err
+		}
+
 	}
-	err = cc.WorkSetCrud.UpdateMany(models)
-	if err != nil {
-		return err
-	}
+
 	return cc.NoContent(http.StatusOK)
 }

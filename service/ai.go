@@ -6,7 +6,6 @@ import (
 	"trainer-helper/model"
 	"trainer-helper/schema"
 	"trainer-helper/store"
-	"trainer-helper/utils"
 )
 
 type AI struct {
