@@ -2,6 +2,8 @@ package service
 
 import (
 	"encoding/json"
+	"maps"
+	"slices"
 	"trainer-helper/fetcher"
 	"trainer-helper/model"
 	"trainer-helper/schema"
@@ -20,13 +22,13 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 	if err != nil {
 		return
 	}
-	exericseNames := make([]string, len(exerciseTypes))
+	exericseNames := make(map[string]int, len(exerciseTypes))
 
-	for i := range exerciseTypes {
-		exericseNames[i] = exerciseTypes[i].Name
+	for _, exerciseType := range exerciseTypes {
+		exericseNames[exerciseType.Name] = exerciseType.Id
 	}
 
-	resultJson, err := ai.Fetcher.RawStringToJson(exericseNames, rawString)
+	resultJson, err := ai.Fetcher.RawStringToJson(slices.Collect(maps.Keys(exericseNames)), rawString)
 	if err != nil {
 		return
 	}
@@ -43,18 +45,22 @@ func (ai AI) GenerateWeekDay(trainerId string, rawString string, weekDayId int) 
 		return
 	}
 
-	for i, exercise := range exercises {
+	for i, rawExercise := range exercises {
 		newExercise := model.Exercise{
 			WeekDayId: weekDayId,
-			Note:      &exercise.Note,
+			Note:      &rawExercise.Note,
 			GroupId:   i + 1,
 		}
+		if exerciseTypeId, ok := exericseNames[rawExercise.ExerciseName]; ok {
+			newExercise.ExerciseTypeId = &exerciseTypeId
+		}
+
 		err = ai.ExerciseStore.Insert(&newExercise)
 		if err != nil {
 			return
 		}
-		newWorkSets := make([]model.WorkSet, len(exercise.WorkSets))
-		for j, work_set := range exercise.WorkSets {
+		newWorkSets := make([]model.WorkSet, len(rawExercise.WorkSets))
+		for j, work_set := range rawExercise.WorkSets {
 			newWorkSet := model.WorkSet{
 				Intensity:  work_set.Intensity,
 				ExerciseId: newExercise.Id,

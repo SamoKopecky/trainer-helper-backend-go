@@ -24,6 +24,8 @@ If there is "alebo", split the work sets into 2 exercises.
 Give me the JSON output only no extra spaces no identation so that I can machine parse it.
 If there are mulitple exercise like C1 C2 and C3 Split them so that each exercise is its own exercise
 If there is Počet sérií a nubmer but only one itensity and repetitions, copy the work set to the set count
+If there is , separated Počet opakovaní use each value for one work set so for example
+6,4 is one work set with 6 repeteions other with 4
 Always provide RPE, if its missing use null
 If you split exercises of similiar cateogry like C1 and C2, also split the work sets and intensity and number of sets RPE correcly between the two exercises
 Use only these exercise names translated from the slovak language. However if the exercise name is not in the list just use the original name.
