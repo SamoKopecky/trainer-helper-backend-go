@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build 
+RUN go build
 
 FROM golang:1.24 AS runner
 
@@ -17,5 +17,5 @@ COPY migrations/ migrations/
 COPY wait-for.sh wait-for.sh
 
 EXPOSE 2001
+EXPOSE 5000
 CMD ["/app/trainer-helper"]
-

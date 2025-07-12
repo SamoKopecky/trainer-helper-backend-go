@@ -24,5 +24,8 @@ func main() {
 	dbConn := db.GetDbConn(cfg.GetDSN(), *debug, migrationPath)
 	dbConn.RunMigrations()
 
+	go func() {
+		app.RunMetricsApi()
+	}()
 	app.RunApi(dbConn.Conn, &cfg)
 }
