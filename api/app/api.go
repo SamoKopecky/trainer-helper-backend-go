@@ -125,19 +125,11 @@ func contextMiddleware(db *bun.DB, cfg *config.Config) echo.MiddlewareFunc {
 	}
 }
 
-//	@title			Trainer Helper
-//	@version		0.0.1
-//	@description	Trainer helper application backend API
-
-//	@contact.name	SamuelKopecky
-//	@contact.email	samo.kopecky@protonmail.com
-
-// @host		localhost:2001
 func RunApi(db *bun.DB, appConfig *config.Config) {
 	e := echo.New()
 	e.HTTPErrorHandler = logError
 	e.Use(contextMiddleware(db, appConfig))
-	e.Use(echoprometheus.NewMiddleware("gym-map"))
+	e.Use(echoprometheus.NewMiddleware("trainer-helper"))
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 
@@ -213,11 +205,6 @@ func RunApi(db *bun.DB, appConfig *config.Config) {
 	}
 }
 
-// @Summary      Ping endpoint
-// @Description  Checks if the service is responsive.
-// @Produce      json
-// @Success      200  {string}  string  "pong"
-// @Router       /-/ping [get]
 func pong(c echo.Context) error {
 	return c.JSON(http.StatusOK, "pong")
 }
